@@ -1,11 +1,11 @@
 server:
-  port: 8080
+  port: 8081
 spring:
   application:
-    name: user-service
+    name: card-service
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ptd-user
+    url: jdbc:mysql://localhost:3306/ptd-card
     username: root
     password: password
   jpa:

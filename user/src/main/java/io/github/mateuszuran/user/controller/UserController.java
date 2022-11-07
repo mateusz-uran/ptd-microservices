@@ -18,12 +18,17 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<HttpStatus> addUser(@RequestBody UserRequestDto userDto) {
-        service.addUser(userDto);
+        service.addUserToDB(userDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        return ResponseEntity.ok().body(service.getAllUsersFromDB());
+    }
+
     @GetMapping
-    public ResponseEntity<List<UserResponse>> getUsers() {
-        return ResponseEntity.ok().body(service.getAllUsers());
+    public ResponseEntity<UserResponse> getSingleUser(@RequestParam String username) {
+        return ResponseEntity.ok().body(service.getUserByIdFromDB(username));
     }
 }

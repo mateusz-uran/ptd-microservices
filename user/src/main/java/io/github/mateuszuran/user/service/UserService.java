@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository repository;
 
-    public void addUser(UserRequestDto userDto) {
+    public void addUserToDB(UserRequestDto userDto) {
         if(repository.existsByUsername(userDto.getUsername())) {
             log.info("User {} with given name already exists.", userDto.getUsername());
             throw new IllegalArgumentException("User with given name already exists.");
@@ -25,13 +25,24 @@ public class UserService {
             User user = User.builder()
                     .username(userDto.getUsername())
                     .password(userDto.getPassword())
+                    .active(true)
                     .build();
             repository.save(user);
             log.info("User {} added successfully", user.getUsername());
         }
     }
 
-    public List<UserResponse> getAllUsers() {
+    public UserResponse getUserByIdFromDB(String username) {
+        var user = repository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+        return UserResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .active(user.isActive())
+                .build();
+    }
+
+    public List<UserResponse> getAllUsersFromDB() {
         var users = repository.findAll();
         return users.stream()
                 .map(this::mapToUserResponse)
@@ -42,7 +53,7 @@ public class UserService {
         return UserResponse.builder()
                 .id(user.getId())
                 .username(user.getUsername())
-                .active(true)
+                .active(user.isActive())
                 .build();
     }
 }
