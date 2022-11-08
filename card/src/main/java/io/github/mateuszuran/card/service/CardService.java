@@ -24,7 +24,7 @@ public class CardService {
 
     private UserResponse getUsername(String username) {
         return webClientBuilder.build().get()
-                .uri("http://localhost:8080/api/user",
+                .uri("http://user-service/api/user",
                         uriBuilder -> uriBuilder.queryParam("username", username).build())
                 .retrieve()
                 .bodyToMono(UserResponse.class)
