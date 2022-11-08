@@ -1,4 +1,4 @@
-package io.github.mateuszuran.card.dto;
+package io.github.mateuszuran.card.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

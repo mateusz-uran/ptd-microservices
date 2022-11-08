@@ -6,23 +6,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-@Table(name = "cards")
+@Table(name = "card_fuels")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class Card {
+public class Fuel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String number;
-    private boolean done;
-    private Long userId;
-    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
-    private List<Fuel> fuels = new ArrayList<>();
+    private String refuelingDate;
+    private String refuelingLocation;
+    private Integer vehicleCounter;
+    private Integer refuelingAmount;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "card_id", nullable = false)
+    private Card card;
 }

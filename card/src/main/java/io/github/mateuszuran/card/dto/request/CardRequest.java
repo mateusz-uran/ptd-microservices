@@ -1,4 +1,4 @@
-package io.github.mateuszuran.card.dto;
+package io.github.mateuszuran.card.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponse {
-    private Long id;
+public class CardRequest {
+    private String number;
+    private String authorUsername;
 }

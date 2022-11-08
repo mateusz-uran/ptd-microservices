@@ -1,9 +1,11 @@
 package io.github.mateuszuran.card.service;
 
-import io.github.mateuszuran.card.dto.CardRequest;
-import io.github.mateuszuran.card.dto.CardResponse;
-import io.github.mateuszuran.card.dto.UserResponse;
+import io.github.mateuszuran.card.dto.request.CardRequest;
+import io.github.mateuszuran.card.dto.response.CardResponse;
+import io.github.mateuszuran.card.dto.response.FuelResponse;
+import io.github.mateuszuran.card.dto.response.UserResponse;
 import io.github.mateuszuran.card.model.Card;
+import io.github.mateuszuran.card.model.Fuel;
 import io.github.mateuszuran.card.repository.CardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +23,7 @@ public class CardService {
     private final WebClient.Builder webClientBuilder;
 
     private UserResponse getUsername(String username) {
-        return  webClientBuilder.build().get()
+        return webClientBuilder.build().get()
                 .uri("http://localhost:8080/api/user",
                         uriBuilder -> uriBuilder.queryParam("username", username).build())
                 .retrieve()
@@ -44,6 +46,11 @@ public class CardService {
         }
     }
 
+    public Card checkIfCardExists(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Card not found"));
+    }
+
     public List<CardResponse> getAllCardsByUser(CardRequest cardDto) {
         var username = getUsername(cardDto.getAuthorUsername());
         var cards = repository.findAllByUserId(username.getId());
@@ -51,6 +58,25 @@ public class CardService {
         return cards.stream()
                 .map(this::mapToCardResponse)
                 .collect(Collectors.toList());
+    }
+
+    public List<FuelResponse> getFuelsFromCard(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Card not found"))
+                .getFuels().stream()
+                .map(this::mapToFuelResponse)
+                .collect(Collectors.toList());
+
+    }
+
+    private FuelResponse mapToFuelResponse(Fuel fuel) {
+        return FuelResponse.builder()
+                .id(fuel.getId())
+                .currentDate(fuel.getRefuelingDate())
+                .refuelingLocation(fuel.getRefuelingLocation())
+                .vehicleCounter(fuel.getVehicleCounter())
+                .refuelingAmount(fuel.getRefuelingAmount())
+                .build();
     }
 
     private CardResponse mapToCardResponse(Card card) {
