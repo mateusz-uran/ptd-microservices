@@ -1,7 +1,8 @@
 package io.github.mateuszuran.card.controller;
 
-import io.github.mateuszuran.card.dto.CardRequest;
-import io.github.mateuszuran.card.dto.CardResponse;
+import io.github.mateuszuran.card.dto.request.CardRequest;
+import io.github.mateuszuran.card.dto.response.CardResponse;
+import io.github.mateuszuran.card.dto.response.FuelResponse;
 import io.github.mateuszuran.card.service.CardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,5 +29,11 @@ public class CardController {
     public ResponseEntity<List<CardResponse>> getCards(@RequestBody CardRequest cardDto) {
         log.info("card controller get");
         return ResponseEntity.ok().body(service.getAllCardsByUser(cardDto));
+    }
+
+    @GetMapping("/fuel")
+    public ResponseEntity<List<FuelResponse>> getFuelsFromCard(@RequestParam Long id) {
+        return ResponseEntity.ok()
+                .body(service.getFuelsFromCard(id));
     }
 }
