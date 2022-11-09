@@ -21,6 +21,9 @@ public class UserService {
         if(repository.existsByUsername(userDto.getUsername())) {
             log.info("User {} with given name already exists.", userDto.getUsername());
             throw new IllegalArgumentException("User with given name already exists.");
+        } else if (userDto.getUsername() == null && userDto.getPassword() == null) {
+            log.info("User or password is empty.");
+            throw new IllegalArgumentException("User or password is empty.");
         } else {
             User user = User.builder()
                     .username(userDto.getUsername())
