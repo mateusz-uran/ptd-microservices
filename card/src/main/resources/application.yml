@@ -1,5 +1,6 @@
 server:
   port: 0
+#DB
 spring:
   application:
     name: card-service
@@ -11,3 +12,28 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+#Resilience4J
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+#Reslience4J configuration
+resilience4j:
+  circuitbreaker:
+    instances:
+      user:
+        registerHealthIndicator: true
+        event-consumer-buffer-size: 10
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 5s
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true

@@ -54,7 +54,6 @@ public class CardService {
     public List<CardResponse> getAllCardsByUser(CardRequest cardDto) {
         var username = getUsername(cardDto.getAuthorUsername());
         var cards = repository.findAllByUserId(username.getId());
-        log.info("card service get all");
         return cards.stream()
                 .map(this::mapToCardResponse)
                 .collect(Collectors.toList());
