@@ -4,11 +4,13 @@ import io.github.mateuszuran.card.dto.request.CardRequest;
 import io.github.mateuszuran.card.dto.response.CardResponse;
 import io.github.mateuszuran.card.dto.response.FuelResponse;
 import io.github.mateuszuran.card.dto.response.UserResponse;
+import io.github.mateuszuran.card.event.CardToggledEvent;
 import io.github.mateuszuran.card.model.Card;
 import io.github.mateuszuran.card.model.Fuel;
 import io.github.mateuszuran.card.repository.CardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 public class CardService {
     private final CardRepository repository;
     private final WebClient.Builder webClientBuilder;
+    private final KafkaTemplate <String, CardToggledEvent> kafkaTemplate;
 
     private UserResponse getUsername(String username) {
         return webClientBuilder.build().get()
@@ -66,6 +69,14 @@ public class CardService {
                 .map(this::mapToFuelResponse)
                 .collect(Collectors.toList());
 
+    }
+
+    public String toggleCard(Long id) {
+        var result = repository.findById(id).orElseThrow();
+        result.setDone(true);
+        repository.save(result);
+        kafkaTemplate.send("notificationTopic", new CardToggledEvent(result.getNumber()));
+        return "toggle";
     }
 
     private FuelResponse mapToFuelResponse(Fuel fuel) {
