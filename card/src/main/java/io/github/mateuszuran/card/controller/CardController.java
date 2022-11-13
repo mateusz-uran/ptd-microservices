@@ -40,6 +40,12 @@ public class CardController {
                 .body(service.getFuelsFromCard(id));
     }
 
+    @PutMapping
+    public ResponseEntity<?> toggleCard(@RequestParam Long id) {
+        service.toggleCard(id);
+        return ResponseEntity.ok().body("Card toggled");
+    }
+
     public ResponseEntity<List<FailureResponse>> fallBackMethodForList(CardRequest cardDto, RuntimeException exception) {
         FailureResponse resp = FailureResponse.builder()
                 .response("No data")
