@@ -103,6 +103,10 @@ services:
       - discovery-server
     ports:
       - "8080:8080"
+    expose:
+      - "8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - zipkin
       - discovery-server
