@@ -2,10 +2,7 @@ package io.github.mateuszuran.card.service;
 
 import io.github.mateuszuran.card.dto.request.CardRequest;
 import io.github.mateuszuran.card.dto.request.TripValues;
-import io.github.mateuszuran.card.dto.response.CardResponse;
-import io.github.mateuszuran.card.dto.response.FuelResponse;
-import io.github.mateuszuran.card.dto.response.TripResponse;
-import io.github.mateuszuran.card.dto.response.UserResponse;
+import io.github.mateuszuran.card.dto.response.*;
 import io.github.mateuszuran.card.event.CardToggledEvent;
 import io.github.mateuszuran.card.model.Card;
 import io.github.mateuszuran.card.model.Fuel;
@@ -26,7 +23,7 @@ import java.util.stream.Collectors;
 public class CardService {
     private final CardRepository repository;
     private final WebClient.Builder webClientBuilder;
-    private final KafkaTemplate <String, CardToggledEvent> kafkaTemplate;
+    private final KafkaTemplate<String, CardToggledEvent> kafkaTemplate;
 
     private UserResponse getUsername(String username) {
         return webClientBuilder.build().get()
@@ -88,6 +85,28 @@ public class CardService {
         repository.save(result);
         kafkaTemplate.send("notificationTopic", new CardToggledEvent(result.getNumber()));
         return "toggle";
+    }
+
+    public CardPDFResponse sendCardToPDF(Long id) {
+        var card = checkIfCardExists(id);
+        return mapCardToPdf(card);
+    }
+
+    private CardPDFResponse mapCardToPdf(Card card) {
+        var cardValues = CardResponse.builder()
+                .id(card.getId())
+                .number(card.getNumber())
+                .done(card.isDone()).build();
+        var trips = card.getTrips().stream()
+                .map(this::mapToTripResponse).toList();
+        var fuels = card.getFuels().stream()
+                .map(this::mapToFuelResponse).toList();
+        return CardPDFResponse.builder()
+                .cardInfo(cardValues)
+                .trips(trips)
+                .fuels(fuels)
+                .build();
+
     }
 
     private TripResponse mapToTripResponse(Trip trip) {

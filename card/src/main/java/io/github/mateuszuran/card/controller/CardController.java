@@ -2,6 +2,7 @@ package io.github.mateuszuran.card.controller;
 
 import io.github.mateuszuran.card.dto.request.CardRequest;
 import io.github.mateuszuran.card.dto.request.TripValues;
+import io.github.mateuszuran.card.dto.response.CardPDFResponse;
 import io.github.mateuszuran.card.dto.response.CardResponse;
 import io.github.mateuszuran.card.dto.response.FuelResponse;
 import io.github.mateuszuran.card.dto.response.TripResponse;
@@ -52,6 +53,12 @@ public class CardController {
     public ResponseEntity<?> toggleCard(@RequestParam Long id) {
         service.toggleCard(id);
         return ResponseEntity.ok().body("Card toggled");
+    }
+
+    @GetMapping(params = "id")
+    public ResponseEntity<CardPDFResponse> sendCard(@RequestParam Long id) {
+        return ResponseEntity.ok()
+                .body(service.sendCardToPDF(id));
     }
 
     public ResponseEntity<List<FailureResponse>> fallBackMethodForList(CardRequest cardDto, RuntimeException exception) {
