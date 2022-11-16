@@ -1,12 +1,15 @@
 package io.github.mateuszuran.card.service;
 
 import io.github.mateuszuran.card.dto.request.CardRequest;
+import io.github.mateuszuran.card.dto.request.TripValues;
 import io.github.mateuszuran.card.dto.response.CardResponse;
 import io.github.mateuszuran.card.dto.response.FuelResponse;
+import io.github.mateuszuran.card.dto.response.TripResponse;
 import io.github.mateuszuran.card.dto.response.UserResponse;
 import io.github.mateuszuran.card.event.CardToggledEvent;
 import io.github.mateuszuran.card.model.Card;
 import io.github.mateuszuran.card.model.Fuel;
+import io.github.mateuszuran.card.model.Trip;
 import io.github.mateuszuran.card.repository.CardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -71,12 +74,38 @@ public class CardService {
 
     }
 
+    public List<TripResponse> getTripsFromCard(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Card not found"))
+                .getTrips().stream()
+                .map(this::mapToTripResponse)
+                .collect(Collectors.toList());
+    }
+
     public String toggleCard(Long id) {
         var result = repository.findById(id).orElseThrow();
         result.setDone(true);
         repository.save(result);
         kafkaTemplate.send("notificationTopic", new CardToggledEvent(result.getNumber()));
         return "toggle";
+    }
+
+    private TripResponse mapToTripResponse(Trip trip) {
+        return TripResponse.builder()
+                .id(trip.getId())
+                .dayStart(trip.getDayStart())
+                .dayEnd(trip.getDayEnd())
+                .hourStart(trip.getHourStart())
+                .hourEnd(trip.getHourEnd())
+                .locationStart(trip.getLocationStart())
+                .locationEnd(trip.getLocationEnd())
+                .countryStart(trip.getCountryStart())
+                .countryEnd(trip.getCountryEnd())
+                .counterStart(trip.getCounterStart())
+                .counterEnd(trip.getCounterEnd())
+                .build();
+
+
     }
 
     private FuelResponse mapToFuelResponse(Fuel fuel) {

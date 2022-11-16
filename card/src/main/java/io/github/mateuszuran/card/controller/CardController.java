@@ -1,8 +1,10 @@
 package io.github.mateuszuran.card.controller;
 
 import io.github.mateuszuran.card.dto.request.CardRequest;
+import io.github.mateuszuran.card.dto.request.TripValues;
 import io.github.mateuszuran.card.dto.response.CardResponse;
 import io.github.mateuszuran.card.dto.response.FuelResponse;
+import io.github.mateuszuran.card.dto.response.TripResponse;
 import io.github.mateuszuran.card.service.CardService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.*;
@@ -38,6 +40,12 @@ public class CardController {
     public ResponseEntity<List<FuelResponse>> getFuelsFromCard(@RequestParam Long id) {
         return ResponseEntity.ok()
                 .body(service.getFuelsFromCard(id));
+    }
+
+    @GetMapping("/trip")
+    public ResponseEntity<List<TripResponse>> getTripsFromCard(@RequestParam Long id) {
+        return ResponseEntity.ok()
+                .body(service.getTripsFromCard(id));
     }
 
     @PutMapping

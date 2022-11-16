@@ -25,4 +25,8 @@ public class Card {
     @OneToMany(mappedBy = "card", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private List<Fuel> fuels = new ArrayList<>();
+
+    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private List<Trip> trips = new ArrayList<>();
 }
