@@ -1,7 +1,6 @@
 package io.github.mateuszuran.card.service;
 
 import io.github.mateuszuran.card.dto.request.CardRequest;
-import io.github.mateuszuran.card.dto.request.TripValues;
 import io.github.mateuszuran.card.dto.response.*;
 import io.github.mateuszuran.card.event.CardToggledEvent;
 import io.github.mateuszuran.card.model.Card;
