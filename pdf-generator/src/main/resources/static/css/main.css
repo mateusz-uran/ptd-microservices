@@ -1,0 +1,10 @@
+@page {
+    size: A4 landscape;
+}
+
+table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    border: 3px solid black;
+}

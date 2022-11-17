@@ -36,4 +36,4 @@ spring:
         - id: pdf-service
           uri: lb://pdf-service
           predicates:
-            - Path=/api/pdf/**, /main.css
+            - Path=/api/pdf/**, /css/main.css
