@@ -27,6 +27,7 @@ public class Trip {
     private String countryEnd;
     private Integer counterStart;
     private Integer counterEnd;
+    private Integer carMileage;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_id", nullable = false)

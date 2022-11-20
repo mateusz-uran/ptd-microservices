@@ -1,6 +1,0 @@
-io\github\mateuszuran\card\model\Card$CardBuilder.class
-io\github\mateuszuran\card\repository\CardRepository.class
-io\github\mateuszuran\card\service\CardService.class
-io\github\mateuszuran\card\model\Card.class
-io\github\mateuszuran\card\CardApplication.class
-io\github\mateuszuran\card\controller\CardController.class

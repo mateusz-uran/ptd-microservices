@@ -4,3 +4,7 @@ card-ui.iml
 /postgres-user/
 /api-gateway/target/
 /discovery-server/target/
+/card/target/
+/notification/target/
+/pdf-generator/target/
+/user/target/
