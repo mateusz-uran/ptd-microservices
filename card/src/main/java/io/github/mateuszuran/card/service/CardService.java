@@ -1,12 +1,11 @@
 package io.github.mateuszuran.card.service;
 
 import io.github.mateuszuran.card.dto.request.CardRequest;
-import io.github.mateuszuran.card.dto.response.CardResponse;
-import io.github.mateuszuran.card.dto.response.FuelResponse;
-import io.github.mateuszuran.card.dto.response.UserResponse;
+import io.github.mateuszuran.card.dto.response.*;
 import io.github.mateuszuran.card.event.CardToggledEvent;
 import io.github.mateuszuran.card.model.Card;
 import io.github.mateuszuran.card.model.Fuel;
+import io.github.mateuszuran.card.model.Trip;
 import io.github.mateuszuran.card.repository.CardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
 public class CardService {
     private final CardRepository repository;
     private final WebClient.Builder webClientBuilder;
-    private final KafkaTemplate <String, CardToggledEvent> kafkaTemplate;
+    private final KafkaTemplate<String, CardToggledEvent> kafkaTemplate;
 
     private UserResponse getUsername(String username) {
         return webClientBuilder.build().get()
@@ -71,12 +70,60 @@ public class CardService {
 
     }
 
+    public List<TripResponse> getTripsFromCard(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Card not found"))
+                .getTrips().stream()
+                .map(this::mapToTripResponse)
+                .collect(Collectors.toList());
+    }
+
     public String toggleCard(Long id) {
         var result = repository.findById(id).orElseThrow();
         result.setDone(true);
         repository.save(result);
         kafkaTemplate.send("notificationTopic", new CardToggledEvent(result.getNumber()));
         return "toggle";
+    }
+
+    public CardPDFResponse sendCardToPDF(Long id) {
+        var card = checkIfCardExists(id);
+        return mapCardToPdf(card);
+    }
+
+    private CardPDFResponse mapCardToPdf(Card card) {
+        var cardValues = CardResponse.builder()
+                .id(card.getId())
+                .number(card.getNumber())
+                .done(card.isDone()).build();
+        var trips = card.getTrips().stream()
+                .map(this::mapToTripResponse).toList();
+        var fuels = card.getFuels().stream()
+                .map(this::mapToFuelResponse).toList();
+        return CardPDFResponse.builder()
+                .cardInfo(cardValues)
+                .trips(trips)
+                .fuels(fuels)
+                .build();
+
+    }
+
+    private TripResponse mapToTripResponse(Trip trip) {
+        return TripResponse.builder()
+                .id(trip.getId())
+                .dayStart(trip.getDayStart())
+                .dayEnd(trip.getDayEnd())
+                .hourStart(trip.getHourStart())
+                .hourEnd(trip.getHourEnd())
+                .locationStart(trip.getLocationStart())
+                .locationEnd(trip.getLocationEnd())
+                .countryStart(trip.getCountryStart())
+                .countryEnd(trip.getCountryEnd())
+                .counterStart(trip.getCounterStart())
+                .counterEnd(trip.getCounterEnd())
+                .build();
+
+
     }
 
     private FuelResponse mapToFuelResponse(Fuel fuel) {

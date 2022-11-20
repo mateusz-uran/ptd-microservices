@@ -1,8 +1,11 @@
 package io.github.mateuszuran.card.controller;
 
 import io.github.mateuszuran.card.dto.request.CardRequest;
+import io.github.mateuszuran.card.dto.request.TripValues;
+import io.github.mateuszuran.card.dto.response.CardPDFResponse;
 import io.github.mateuszuran.card.dto.response.CardResponse;
 import io.github.mateuszuran.card.dto.response.FuelResponse;
+import io.github.mateuszuran.card.dto.response.TripResponse;
 import io.github.mateuszuran.card.service.CardService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.*;
@@ -22,14 +25,14 @@ public class CardController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @CircuitBreaker(name="user", fallbackMethod = "fallbackMethod")
-    public String addCard(@RequestBody CardRequest cardDto) {
+    @CircuitBreaker(name = "user", fallbackMethod = "fallbackMethod")
+    public ResponseEntity<?> addCard(@RequestBody CardRequest cardDto) {
         service.saveCard(cardDto);
-        return "Card added";
+        return ResponseEntity.ok().body("Card added");
     }
 
     @GetMapping
-    @CircuitBreaker(name="user", fallbackMethod = "fallBackMethodForList")
+    @CircuitBreaker(name = "user", fallbackMethod = "fallBackMethodForList")
     public ResponseEntity<List<CardResponse>> getCards(@RequestBody CardRequest cardDto) {
         return ResponseEntity.ok().body(service.getAllCardsByUser(cardDto));
     }
@@ -40,22 +43,40 @@ public class CardController {
                 .body(service.getFuelsFromCard(id));
     }
 
+    @GetMapping("/trip")
+    public ResponseEntity<List<TripResponse>> getTripsFromCard(@RequestParam Long id) {
+        return ResponseEntity.ok()
+                .body(service.getTripsFromCard(id));
+    }
+
     @PutMapping
     public ResponseEntity<?> toggleCard(@RequestParam Long id) {
         service.toggleCard(id);
         return ResponseEntity.ok().body("Card toggled");
     }
 
-    public ResponseEntity<List<FailureResponse>> fallBackMethodForList(CardRequest cardDto, RuntimeException exception) {
+    @GetMapping(params = "id")
+    public ResponseEntity<CardPDFResponse> sendCard(@RequestParam Long id) {
+        return ResponseEntity.ok()
+                .body(service.sendCardToPDF(id));
+    }
+
+    public ResponseEntity<List<FailureResponse>> fallBackMethodForList(RuntimeException exception) {
         FailureResponse resp = FailureResponse.builder()
-                .response("No data")
+                .response("Something went wrong, please try again later!")
+                .exception(exception.getMessage())
                 .build();
+        log.info("User service is not responding");
         return ResponseEntity.ok().body(List.of(resp));
     }
 
-    public String fallbackMethod(CardRequest cardDto, RuntimeException exception) {
-        log.info("User service is down");
-        return "Something went wrong, please try again later!";
+    public ResponseEntity<?> fallbackMethod(RuntimeException exception) {
+        FailureResponse response = FailureResponse.builder()
+                .response("Something went wrong, please try again later!")
+                .exception(exception.getMessage())
+                .build();
+        log.info("User service is not responding");
+        return ResponseEntity.ok().body(response);
     }
 
     @AllArgsConstructor
@@ -64,5 +85,6 @@ public class CardController {
     @Builder
     static class FailureResponse {
         private String response;
+        private String exception;
     }
 }

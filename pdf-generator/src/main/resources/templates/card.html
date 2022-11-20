@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+          name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Card</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div>
+    <table>
+        <tr>
+            <th colspan="8">Rozliczenie tankowania</th>
+        </tr>
+        <tr>
+            <td>Lp</td>
+            <td>Data</td>
+            <td>Miejscowość</td>
+            <td>Licznik</td>
+            <td>Stan paliwa</td>
+            <td>Ilość tankowania</td>
+            <td>Forma płatności</td>
+            <td>Inne</td>
+        </tr>
+        <tr th:each="fuel,iterator : ${card.fuels}">
+            <td th:text="${iterator.index+1}"></td>
+            <td th:text="${fuel.currentDate}">&nbsp;</td>
+            <td th:text="${fuel.refuelingLocation}">&nbsp;</td>
+            <td th:text="${fuel.vehicleCounter}">&nbsp;</td>
+            <td>&nbsp;</td>
+            <td th:text="${fuel.refuelingAmount}">&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <th colspan="5">WYJAZD</th>
+            <th colspan="5">PRZYJAZD</th>
+            <th rowspan="2">Przebieg</th>
+            <th rowspan="2">Nazwa ładunku</th>
+            <th rowspan="2">Tonaż (kg)</th>
+        </tr>
+        <tr>
+            <td>Data</td>
+            <td>Godzina</td>
+            <td>Miejscowość</td>
+            <td>Państwo</td>
+            <td>Licznik</td>
+            <td>Data</td>
+            <td>Godzina</td>
+            <td>Miejscowość</td>
+            <td>Państwo</td>
+            <td>Licznik</td>
+        </tr>
+        <tr th:each="trip : ${card.trips}">
+            <td th:text="${trip.dayStart}"></td>
+            <td th:text="${trip.hourStart}"></td>
+            <td th:text="${trip.locationStart}"></td>
+            <td th:text="${trip.countryStart}"></td>
+            <td th:text="${trip.counterStart}" style="border-right: 1px solid black"></td>
+            <td th:text="${trip.dayEnd}"></td>
+            <td th:text="${trip.hourEnd}"></td>
+            <td th:text="${trip.locationEnd}"></td>
+            <td th:text="${trip.countryEnd}"></td>
+            <td th:text="${trip.counterEnd}" style="border-right: 1px solid black"></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
