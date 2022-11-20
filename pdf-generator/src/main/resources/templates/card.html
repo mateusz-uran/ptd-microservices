@@ -12,6 +12,17 @@
 <div>
     <table>
         <tr>
+            <th>Dane karty</th>
+        </tr>
+        <tr>
+            <td>Numer</td>
+        </tr>
+        <tr>
+            <td th:text="${card.cardInfo.number}"></td>
+        </tr>
+    </table>
+    <table>
+        <tr>
             <th colspan="8">Rozliczenie tankowania</th>
         </tr>
         <tr>
@@ -68,6 +79,17 @@
             <td th:text="${trip.counterEnd}" style="border-right: 1px solid black"></td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <th>Podsumowanie</th>
+        </tr>
+        <tr>
+            <td>Numer</td>
+        </tr>
+        <tr>
+            <td th:text="${card.cardInfo.number}"></td>
         </tr>
     </table>
 </div>

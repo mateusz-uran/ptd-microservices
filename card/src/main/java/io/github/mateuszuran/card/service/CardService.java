@@ -121,6 +121,7 @@ public class CardService {
                 .countryEnd(trip.getCountryEnd())
                 .counterStart(trip.getCounterStart())
                 .counterEnd(trip.getCounterEnd())
+                .carMileage(trip.getCarMileage())
                 .build();
 
 

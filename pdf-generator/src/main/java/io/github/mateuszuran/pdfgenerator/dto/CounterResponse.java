@@ -5,15 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class CardPDFResponse {
-    private CardResponse cardInfo;
-    private List<FuelResponse> fuels;
-    private List<TripResponse> trips;
-    private CounterResponse counter;
+public class CounterResponse {
+    private Integer firstCounter;
+    private Integer lastCounter;
+    private Integer mileage;
+    private Integer refuelingSum;
 }

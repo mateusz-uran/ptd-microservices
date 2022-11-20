@@ -6,11 +6,13 @@ import io.github.mateuszuran.card.model.Card;
 import io.github.mateuszuran.card.model.Trip;
 import io.github.mateuszuran.card.repository.TripRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TripService {
@@ -31,6 +33,7 @@ public class TripService {
                 .counterEnd(tripDto.getCounterEnd())
                 .countryStart(tripDto.getCountryStart())
                 .countryEnd(tripDto.getCountryEnd())
+                .carMileage(calculateCarMileage(tripDto.getCounterStart(), tripDto.getCounterEnd()))
                 .card(card)
                 .build();
         repository.save(trip);
@@ -52,11 +55,16 @@ public class TripService {
                             .counterEnd(tripValues.getCounterEnd())
                             .countryStart(tripValues.getCountryStart())
                             .countryEnd(tripValues.getCountryEnd())
+                            .carMileage(calculateCarMileage(tripValues.getCounterStart(), tripValues.getCounterEnd()))
                             .card(card)
                             .build();
                     trips.add(trip);
                 }
         );
         repository.saveAll(trips);
+    }
+
+    private Integer calculateCarMileage (Integer min, Integer max) {
+        return max - min;
     }
 }

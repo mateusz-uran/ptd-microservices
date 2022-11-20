@@ -22,4 +22,5 @@ public class TripResponse {
     private String countryEnd;
     private Integer counterStart;
     private Integer counterEnd;
+    private Integer carMileage;
 }
