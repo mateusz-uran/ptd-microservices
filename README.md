@@ -42,19 +42,48 @@
 PTD Manager is system that helps professional truck driver to manage data during his trip.
 All funcionalities are similar to the previous version but design is different. Application is built with microservices architecture
 which means logic responsible for PDF generation or adding, editing card information are independent parts of whole system.
+
 All that is configured with docker to be easier develop and serve on production environment.
+
+Technologies:
+* Spring (Spring-Boot, Spring-Cloud)
+* Apache Kafka
+* Resilience4J
+* Eureka Server
+* Zipkin
+* iText
+* PostgreSQL
+* Docker
 
 
 ### Built With
+
+Microservices are registered in Eureka Discovery Server and managed by Spring Cloud Api Gateway. 
+Each service has his own database, for now installed is only PostgreSQL but application will be expand
+with other databases like maybe MongoDB. User, Card servies are simple Rest Api's but they're communicating 
+with each other. Same as PDF service but it only takes stored data from Card Service and generated 
+PDF file with iText library.
+Application will be expanded with one more service for storing vehicle inforamtion.
+The whole project is built with docker images and will be deployed on kubernetes pods at the end.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
 ## Getting Started
+
+Application can be runned with docker
+
 ### Prerequisites
 
+To be able to run application you need installed docker desktop on your machine, 
+if so then run this command line in root folder of the project
+```
+docker compose up -d
+
+```
 ### Installation
 
+When above command execute then docker will download required images to run application.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
