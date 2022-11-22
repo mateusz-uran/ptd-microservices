@@ -64,6 +64,42 @@ public class TripService {
         repository.saveAll(trips);
     }
 
+    public void updateTrip(Long id, TripValues tripDto) {
+        repository.findById(id)
+                .map(trip -> {
+                    if(tripDto.getDayStart() != null) {
+                        trip.setDayStart(tripDto.getDayStart());
+                    } else if (tripDto.getDayEnd() != null) {
+                        trip.setDayEnd(tripDto.getDayEnd());
+                    } else if (tripDto.getHourStart() != null) {
+                        trip.setHourStart(tripDto.getHourStart());
+                    } else if (tripDto.getHourEnd() != null) {
+                        trip.setHourEnd(tripDto.getHourEnd());
+                    } else if (tripDto.getLocationStart() != null) {
+                        trip.setLocationStart(tripDto.getLocationStart());
+                    } else if (tripDto.getLocationEnd() != null) {
+                        trip.setLocationEnd(tripDto.getLocationEnd());
+                    } else if (tripDto.getCounterStart() != null) {
+                        trip.setCounterStart(tripDto.getCounterStart());
+                    } else if (tripDto.getCounterEnd() != null) {
+                        trip.setCounterEnd(tripDto.getCounterEnd());
+                    } else if (tripDto.getCountryStart() != null) {
+                        trip.setCountryStart(tripDto.getCountryStart());
+                    } else if (tripDto.getCountryEnd() != null) {
+                        trip.setCountryEnd(tripDto.getCountryEnd());
+                    }
+                    trip.setCarMileage(calculateCarMileage(trip.getCounterStart(), trip.getCounterEnd()));
+                    return repository.save(trip);
+                }).orElseThrow();
+    }
+
+    public void delete(Long id) {
+        repository.findById(id)
+                .ifPresent(trip -> {
+                    repository.deleteById(trip.getId());
+                });
+    }
+
     private Integer calculateCarMileage (Integer min, Integer max) {
         return max - min;
     }
