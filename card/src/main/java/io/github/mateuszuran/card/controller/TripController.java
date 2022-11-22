@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Slf4j
 @RestController
 @RequestMapping("/api/trip")
@@ -29,5 +27,17 @@ public class TripController {
         service.addManyTips(tripListValues, id);
         log.info("parametrized");
         return ResponseEntity.ok().body(HttpStatus.CREATED);
+    }
+
+    @PutMapping
+    public ResponseEntity<?> edit(@RequestParam Long id, @RequestBody TripValues tripDto) {
+        service.updateTrip(id, tripDto);
+        return ResponseEntity.ok().body(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> delete(@RequestParam Long id) {
+        service.delete(id);
+        return ResponseEntity.ok().body(HttpStatus.NO_CONTENT);
     }
 }
