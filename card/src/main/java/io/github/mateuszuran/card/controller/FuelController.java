@@ -16,6 +16,18 @@ public class FuelController {
     @PostMapping
     public ResponseEntity<?> addFuel(@RequestBody FuelRequest fuelDto, @RequestParam Long id) {
         fuelService.addRefuelling(fuelDto, id);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return ResponseEntity.ok().body(HttpStatus.CREATED);
+    }
+
+    @PutMapping
+    public ResponseEntity<?> ediFuel(@RequestBody FuelRequest fuelDto, @RequestParam Long id) {
+        fuelService.updateFuel(id, fuelDto);
+        return ResponseEntity.ok().body(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> delete(@RequestParam Long id) {
+       fuelService.delete(id);
+        return ResponseEntity.ok().body(HttpStatus.NO_CONTENT);
     }
 }
