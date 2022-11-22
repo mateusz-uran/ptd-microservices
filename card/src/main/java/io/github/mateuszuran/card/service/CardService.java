@@ -13,6 +13,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,8 +67,8 @@ public class CardService {
                 .orElseThrow(() -> new IllegalArgumentException("Card not found"))
                 .getFuels().stream()
                 .map(this::mapToFuelResponse)
+                .sorted(Comparator.comparing(FuelResponse::getVehicleCounter))
                 .collect(Collectors.toList());
-
     }
 
     public List<TripResponse> getTripsFromCard(Long id) {
@@ -75,15 +76,15 @@ public class CardService {
                 .orElseThrow(() -> new IllegalArgumentException("Card not found"))
                 .getTrips().stream()
                 .map(this::mapToTripResponse)
+                .sorted(Comparator.comparing(TripResponse::getCounterEnd))
                 .collect(Collectors.toList());
     }
 
-    public String toggleCard(Long id) {
+    public void toggleCard(Long id) {
         var result = repository.findById(id).orElseThrow();
         result.setDone(true);
         repository.save(result);
         kafkaTemplate.send("notificationTopic", new CardToggledEvent(result.getNumber()));
-        return "toggle";
     }
 
     public CardPDFResponse sendCardToPDF(Long id) {
@@ -97,9 +98,13 @@ public class CardService {
                 .number(card.getNumber())
                 .done(card.isDone()).build();
         var trips = card.getTrips().stream()
-                .map(this::mapToTripResponse).toList();
+                .map(this::mapToTripResponse)
+                .sorted(Comparator.comparing(TripResponse::getCounterEnd))
+                .toList();
         var fuels = card.getFuels().stream()
-                .map(this::mapToFuelResponse).toList();
+                .map(this::mapToFuelResponse)
+                .sorted(Comparator.comparing(FuelResponse::getVehicleCounter))
+                .toList();
         return CardPDFResponse.builder()
                 .cardInfo(cardValues)
                 .trips(trips)
@@ -123,8 +128,6 @@ public class CardService {
                 .counterEnd(trip.getCounterEnd())
                 .carMileage(trip.getCarMileage())
                 .build();
-
-
     }
 
     private FuelResponse mapToFuelResponse(Fuel fuel) {
