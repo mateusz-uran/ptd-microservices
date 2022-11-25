@@ -37,3 +37,7 @@ spring:
           uri: lb://pdf-service
           predicates:
             - Path=/api/pdf/**, /css/main.css
+        - id: vehicle-service
+          uri: lb://vehicle-service
+          predicates:
+            - Path=/api/vehicle/**
