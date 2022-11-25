@@ -36,6 +36,25 @@ services:
       - postgres-user
     restart: unless-stopped
 
+  postgres-vehicle:
+    container_name: postgres-vehicle
+    image: postgres:alpine3.16
+    environment:
+      POSTGRES_DB: vehicle-service
+      POSTGRES_USER: mateuszuran
+      POSTGRES_PASSWORD: password
+      PGDATA: /data/postgres
+    volumes:
+      - ./postgres-vehicle:/data/postgres
+    expose:
+      - "5433"
+    ports:
+      - "5433:5433"
+    command: -p 5433
+    networks:
+      - postgres-vehicle
+    restart: unless-stopped
+
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4
@@ -50,6 +69,7 @@ services:
     networks:
       - postgres-user
       - postgres-card
+      - postgres-vehicle
     restart: unless-stopped
 
   ## Broker
@@ -116,8 +136,11 @@ networks:
     driver: bridge
   postgres-card:
     driver: bridge
+  postgres-vehicle:
+    driver: bridge
 
 volumes:
   postgres-user:
   postgres-card:
+  postgres-vehicle:
   pgadmin:

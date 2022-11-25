@@ -8,3 +8,5 @@ card-ui.iml
 /notification/target/
 /pdf-generator/target/
 /user/target/
+/vehicle/target/
+/vehicle/src/main/java/io/github/mateuszuran/config/CloudinaryConfig.java
