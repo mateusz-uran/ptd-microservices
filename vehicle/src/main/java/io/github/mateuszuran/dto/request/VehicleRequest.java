@@ -16,4 +16,5 @@ public class VehicleRequest {
     private Integer leftTankFuelCapacity;
     private Integer rightTankFuelCapacity;
     private Integer adBlueCapacity;
+    private String userVehicleUsername;
 }

@@ -1,6 +1,7 @@
 package io.github.mateuszuran.service;
 
 import io.github.mateuszuran.dto.request.VehicleRequest;
+import io.github.mateuszuran.dto.response.UserResponse;
 import io.github.mateuszuran.dto.response.VehicleResponse;
 import io.github.mateuszuran.filestore.CloudinaryManager;
 import io.github.mateuszuran.model.Trailer;
@@ -9,6 +10,7 @@ import io.github.mateuszuran.model.VehicleImage;
 import io.github.mateuszuran.repository.VehicleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
@@ -17,8 +19,19 @@ import java.util.List;
 public class VehicleService {
     private final VehicleRepository repository;
     private final CloudinaryManager cloudinary;
+    private final WebClient.Builder webClientBuilder;
+
+    private UserResponse getUsername(String username) {
+        return webClientBuilder.build().get()
+                .uri("http://user-service/api/user",
+                        uriBuilder -> uriBuilder.queryParam("username", username).build())
+                .retrieve()
+                .bodyToMono(UserResponse.class)
+                .block();
+    }
 
     public void addVehicle(VehicleRequest vehicleDto) {
+        var username = getUsername(vehicleDto.getUserVehicleUsername());
         Vehicle vehicle = Vehicle.builder()
                 .model(vehicleDto.getModel())
                 .type(vehicleDto.getType())
@@ -26,6 +39,7 @@ public class VehicleService {
                 .leftTankFuelCapacity(vehicleDto.getLeftTankFuelCapacity())
                 .rightTankFuelCapacity(vehicleDto.getRightTankFuelCapacity())
                 .adBlueCapacity(vehicleDto.getAdBlueCapacity())
+                .userId(username.getId())
                 .build();
         repository.save(vehicle);
     }

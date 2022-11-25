@@ -23,6 +23,7 @@ public class Vehicle {
     private Integer leftTankFuelCapacity;
     private Integer rightTankFuelCapacity;
     private Integer adBlueCapacity;
+    private Long userId;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "trailer_id", referencedColumnName = "id")
     private Trailer trailer;
