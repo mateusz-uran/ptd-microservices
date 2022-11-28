@@ -54,9 +54,9 @@ public class CardService {
                 .orElseThrow(() -> new IllegalArgumentException("Card not found"));
     }
 
-    public List<CardResponse> getAllCardsByUser(CardRequest cardDto) {
-        var username = getUsername(cardDto.getAuthorUsername());
-        var cards = repository.findAllByUserId(username.getId());
+    public List<CardResponse> getAllCardsByUser(String username) {
+        var user = getUsername(username);
+        var cards = repository.findAllByUserId(user.getId());
         return cards.stream()
                 .map(this::mapToCardResponse)
                 .collect(Collectors.toList());

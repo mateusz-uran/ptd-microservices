@@ -1,0 +1,9 @@
+{
+  "short_name": "card-ui",
+  "name": "Interface for Card Service",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

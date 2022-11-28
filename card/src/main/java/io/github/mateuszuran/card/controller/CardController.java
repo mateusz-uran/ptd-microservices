@@ -33,8 +33,8 @@ public class CardController {
 
     @GetMapping
     @CircuitBreaker(name = "user", fallbackMethod = "fallBackMethodForList")
-    public ResponseEntity<List<CardResponse>> getCards(@RequestBody CardRequest cardDto) {
-        return ResponseEntity.ok().body(service.getAllCardsByUser(cardDto));
+    public ResponseEntity<List<CardResponse>> getCards(@RequestParam String username) {
+        return ResponseEntity.ok().body(service.getAllCardsByUser(username));
     }
 
     @GetMapping("/fuel")
