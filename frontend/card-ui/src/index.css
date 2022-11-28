@@ -11,3 +11,164 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: auto;
+  overflow-y: scroll;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#navbar {
+  display: flex;
+  flex-direction: row;
+  min-height: 15vh;
+  align-items: center;
+  background-color: #F05D5E;
+}
+
+#navbar .formColumn {
+  width: auto;
+  padding: 0 1em;
+  min-width: 15%;
+}
+
+#navbar form {
+  display: flex;
+  flex-direction: column;
+}
+
+#content {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+#content .upperBar {
+  background-color: #E7ECEF;
+  display: flex;
+  height: auto;
+  padding: 0 1em;
+}
+
+#content .lowerBar {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+#content .cardList {
+  background-color: #272932;
+  color: #fff;
+  min-width: 15%;
+  padding: 0 1em;
+  height: 100%;
+}
+
+#content .cardList ul {
+  padding: 0;
+}
+
+#content .cardElement {
+  display: flex;
+  background-color: #3685B5;
+  justify-content: space-between;
+  padding: 5px;
+  margin: 5px 0;
+  border-radius: 5px;
+  font-size: 20px;
+  align-items: center;
+  font-size: calc(15px + 0.390625vw);
+  opacity: .6;
+  border: 2px solid transparent;
+}
+
+#content li {
+  list-style: none;
+}
+
+#content .cardActive {
+  display: flex;
+  background-color: #3685B5;
+  justify-content: space-between;
+  padding: 5px;
+  margin: 5px 0;
+  border-radius: 5px;
+  font-size: 20px;
+  align-items: center;
+  font-size: calc(15px + 0.390625vw);
+  opacity: 1;
+  border: 2px solid #B6C5CE;
+}
+
+#content .icon {
+  color: #fff;
+  border-radius: 50%;
+  padding: 3px;
+}
+
+#content .icon:hover {
+  background-color: #fff;
+  color: #000;
+  cursor: pointer;
+}
+
+#content .tablesWrapper {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  overflow-x: auto;
+}
+
+#content .tripWrapper,
+.fuelWrapper {
+  padding: 0 5px;
+  overflow-x: auto;
+  transition: 0.3s ease-in-out;
+}
+
+.move-left {
+  transition: 0.3s ease-in-out;
+  transform: translateX(0);
+}
+
+.move-right {
+  transition: 0.3s ease-in-out;
+  transform: translateX(-150%);
+}
+
+@media screen and (max-width: 1340px) {
+  #content .cardElement span {
+      display: flex;
+      flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  #content .cardElement {
+      flex-direction: column;
+  }
+
+  #content .cardElement span {
+      display: flex;
+      flex-direction: row;
+  }
+}
+
+@media screen and (max-width: 720px) {
+  .move-right {
+      transform: translateX(-300%);
+  }
+}
+
+@media screen and (max-width: 350px) {
+  .move-right {
+      transform: translateX(-600%);
+  }
+}
