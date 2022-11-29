@@ -165,6 +165,49 @@ code {
   height: 100%;
 }
 
+#content .cardInputWrapper {
+  display: flex;
+  background-color: #F05D5E;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 20px;
+  font-size: calc(15px + 0.390625vw);
+  opacity: 0;
+}
+
+.cardInput {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.cardInput form {
+  display: flex;
+}
+
+.cardInput input, button {
+  border: 0;
+  outline: 0;
+  border-radius: 5px;
+}
+
+.cardInput input {
+  margin-right: 3px;
+  border: 2px solid transparent;
+}
+
+.cardInput input:focus {
+  border: 2px solid #90BEDF;
+}
+
+.cardInput button:hover {
+  background-color: #272932;
+  color: #fff;
+  cursor: pointer;
+}
+
 #content .cardList ul {
   padding: 0;
 }
