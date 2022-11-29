@@ -23,6 +23,8 @@ function AddCard({ user, setFetchedCards }) {
             (response) => {
                 console.log(response);
                 setFetchedCards(true);
+                e.target.reset();
+                setCard('');
             },
             (error) => {
                 console.log(error);
@@ -34,7 +36,7 @@ function AddCard({ user, setFetchedCards }) {
     }, []);
 
     return (
-        <div>
+        <div className='cardInput'>
             <form onSubmit={(e) => onSubmit(e)}>
                 <input
                     type={"text"}
@@ -43,7 +45,7 @@ function AddCard({ user, setFetchedCards }) {
                     onChange={(e) => onInputChange(e)}
                 />
                 <button type={"submit"}>
-                    Add
+                    ADD
                 </button>
             </form>
         </div>

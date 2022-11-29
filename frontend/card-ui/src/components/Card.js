@@ -26,6 +26,7 @@ function Card() {
         e.preventDefault();
         localStorage.setItem('user', JSON.stringify(authorUsername));
         setAuthorUsername('');
+        setFetchedCards(true);
         setToggleFetch(false);
     };
 
@@ -104,7 +105,7 @@ function Card() {
                 <div className='lowerBar'>
                     <div className='cardList'>
                         <ul>
-                            <div><AddCard user={storedUser} setFetchedCards={setFetchedCards} /></div>
+                            <div className='cardInputWrapper'><AddCard user={storedUser} setFetchedCards={setFetchedCards} /></div>
                             {cards.map((card, index) => (
                                 <div key={index} className={toggleFetch && card.id === cardId ? 'cardActive' : 'cardElement'}>
                                     <li>{card.number}</li>
