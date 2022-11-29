@@ -11,8 +11,13 @@ const getCardByUser = username => {
     return http.get(`/?username=${username}`)
 };
 
+const create = card => {
+    return http.post("/", card);
+}
+
 const CardService = {
-    getCardByUser
+    getCardByUser,
+    create
 };
 
 export default CardService;
