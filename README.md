@@ -54,6 +54,8 @@ Technologies:
 * iText
 * PostgreSQL
 * Docker
+* React
+* Cloudinary
 
 
 ### Built With
