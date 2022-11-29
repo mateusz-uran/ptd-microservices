@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import TripService from '../services/TripService';
 
-function Trip({ cardId, isVisible }) {
+function Trip({ cardId, toggleFetch }) {
 
     const [trips, setTrip] = useState([]);
-    const [fetch, setFetch] = useState(isVisible);
+    const [fetch, setFetch] = useState(toggleFetch);
 
     const retrieveTripByCardId = () => {
         TripService.getTripFromCard(cardId)

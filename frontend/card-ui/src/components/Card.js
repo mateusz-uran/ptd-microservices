@@ -5,15 +5,12 @@ import { AiOutlineArrowRight } from 'react-icons/ai';
 import { MdOutlineDeleteForever, MdOutlinePictureAsPdf } from 'react-icons/md';
 
 import Trip from './Trip';
+import Fuel from './Fuel';
 
 function Card() {
     const [authorUsername, setAuthorUsername] = useState('');
     const [cards, setCards] = useState([]);
-    const [error, setError] = useState('');
-    const [loaded, setLoaded] = useState();
-    const [slide, setSlide] = useState(false);
-    const [isVisible, setIsVisible] = useState(false);
-    const [cardNumber, setCardNumber] = useState('');
+    const [toggleFetch, setToggleFetch] = useState(false);
     const [cardId, setCardId] = useState();
 
 
@@ -27,34 +24,19 @@ function Card() {
         CardService.getCardByUser(JSON.parse(localStorage.getItem('user')))
             .then(response => {
                 setCards(response.data);
-                setLoaded(true);
             })
             .catch(e => {
                 console.log(e);
-                setLoaded(false);
-                setError("Serwis niedostępny")
             })
-    }
-
-    function toggleCardNumber(number) {
-        setCardNumber(number);
     }
 
     function toggleCardId(id) {
         setCardId(id);
     }
 
-    function handleToggle(id, number) {
+    function handleToggle(id) {
         toggleCardId(id);
-        toggleCardNumber(number);
-        setIsVisible(!isVisible);
-        setSlide(!slide)
-        if (number != null && number === cardNumber) {
-            setSlide(!slide);
-        } else {
-            setSlide(false);
-            setSlide(true);
-        }
+        setToggleFetch(!toggleFetch);
     }
 
     useEffect(() => {
@@ -94,12 +76,12 @@ function Card() {
                     <div className='cardList'>
                         <ul>
                             {cards.map((card, index) => (
-                                <div key={index} className={slide && card.number === cardNumber ? 'cardActive' : 'cardElement'}>
+                                <div key={index} className={toggleFetch && card.id === cardId ? 'cardActive' : 'cardElement'}>
                                     <li>{card.number}</li>
                                     <span>
                                         <MdOutlineDeleteForever className='icon' />
                                         <MdOutlinePictureAsPdf className='icon' />
-                                        <i onClick={() => handleToggle(card.id, card.number)}><AiOutlineArrowRight className='icon' /></i>
+                                        <i onClick={() => handleToggle(card.id)}><AiOutlineArrowRight className='icon' /></i>
                                     </span>
                                 </div>
                             ))}
@@ -107,13 +89,13 @@ function Card() {
                     </div>
                     <div className='tablesWrapper'>
                         <div className='tripWrapper'>
-                            <div className={!slide ? 'move-right' : 'move-left'}>
-                                {isVisible && <Trip cardId={cardId} isVisible={isVisible}/>}
+                            <div className={!toggleFetch ? 'move-right' : 'move-left'}>
+                                {toggleFetch && <Trip cardId={cardId} toggleFetch={toggleFetch} />}
                             </div>
                         </div>
                         <div className='fuelWrapper'>
-                            <div className={!slide ? 'move-right' : 'move-left'}>
-                                {/* {isVisible && <Fuel />} */}
+                            <div className={!toggleFetch ? 'move-right' : 'move-left'}>
+                                {toggleFetch && <Fuel cardId={cardId} toggleFetch={toggleFetch} />}
                             </div>
                         </div>
                     </div>
