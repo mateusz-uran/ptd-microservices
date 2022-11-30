@@ -78,6 +78,13 @@
     padding: 3px 0;
 }
 
+#navbar .disable {
+    cursor: not-allowed;
+    border: 0;
+    outline: 0;
+    color: #fff;
+}
+
 #navbar .buttonColumn .buttonWrapper button {
     padding: 5px;
     margin-top: 5px;
