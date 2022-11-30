@@ -74,7 +74,6 @@ function Card() {
         fetchedCards && retrieveCardsByUser();
         retrieveUser();
         setFetchedCards(false);
-        console.log("from card: " + cardId);
     }, [authorUsername, cardId, fetchedCards]);
 
     return (

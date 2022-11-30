@@ -12,23 +12,24 @@ function AddTrip() {
             console.log(error);
         }
     };
-
-
+    
     const [inputFields, setInputFields] = useState([
         { name: '', age: '' }
     ])
 
-    const [prev, setPrev] = useState('');
+    const [prev1, setPrev1] = useState('');
+    const [prev2, setPrev2] = useState('');
 
     const handleFormChange = (index, event) => {
         let data = [...inputFields];
         data[index][event.target.name] = event.target.value;
         setInputFields(data);
-        setPrev(event.target.value);
+        setPrev1(data[index].name);
+        setPrev2(data[index].age);
     }
 
     const addFields = () => {
-        let newField = { name: prev, age: '' }
+        let newField = { name: prev1, age: prev2 }
         setInputFields([...inputFields, newField])
     }
 
@@ -44,7 +45,6 @@ function AddTrip() {
     }
 
     useEffect(() => {
-        console.log("from trip: " + cardId);
     }, [])
 
     return (
