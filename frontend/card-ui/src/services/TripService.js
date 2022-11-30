@@ -1,18 +1,18 @@
 import axios from "axios";
 
 const http = axios.create({
-    baseURL: "http://localhost:8080/api/card/trip",
+    baseURL: "http://localhost:8080/api/trip",
     headers: {
         "Content-type": "application/json"
     }
 });
 
-const getTripFromCard = id => {
-    return http.get(`/?id=${id}`)
-};
+const create = (id, trips) => {
+    return http.post("/", trips, { params: { id: id } });
+}
 
 const TripService = {
-    getTripFromCard
+    create
 };
 
 export default TripService;

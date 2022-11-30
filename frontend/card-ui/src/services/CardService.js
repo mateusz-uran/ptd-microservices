@@ -8,16 +8,21 @@ const http = axios.create({
 });
 
 const getCardByUser = username => {
-    return http.get(`/?username=${username}`)
+    return http.get('/', { params: { username: username } })
 };
 
 const create = card => {
     return http.post("/", card);
 }
 
+const getTripFromCard = id => {
+    return http.get('/trip', { params: { id: id } })
+};
+
 const CardService = {
     getCardByUser,
-    create
+    create,
+    getTripFromCard
 };
 
 export default CardService;

@@ -39,10 +39,10 @@ public class TripService {
         repository.save(trip);
     }
 
-    public void addManyTips(TripListValues tripListValues, Long id) {
+    public void addManyTips(List<TripValues> trips, Long id) {
         Card card = cardService.checkIfCardExists(id);
-        List<Trip> trips = new ArrayList<>();
-        tripListValues.getTripValuesList().forEach(
+        List<Trip> tripsToSave = new ArrayList<>();
+        trips.forEach(
                 tripValues -> {
                     Trip trip = Trip.builder()
                             .dayStart(tripValues.getDayStart())
@@ -58,10 +58,10 @@ public class TripService {
                             .carMileage(calculateCarMileage(tripValues.getCounterStart(), tripValues.getCounterEnd()))
                             .card(card)
                             .build();
-                    trips.add(trip);
+                    tripsToSave.add(trip);
                 }
         );
-        repository.saveAll(trips);
+        repository.saveAll(tripsToSave);
     }
 
     public void updateTrip(Long id, TripValues tripDto) {
