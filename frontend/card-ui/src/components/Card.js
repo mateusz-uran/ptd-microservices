@@ -16,6 +16,7 @@ function Card() {
     const [cards, setCards] = useState([]);
     const [toggleFetch, setToggleFetch] = useState(false);
     const [cardId, setCardId] = useState();
+    const [cardNumber, setCardNumber] = useState();
 
     const [fetchedCards, setFetchedCards] = useState(true);
     const [toggle, setToggle] = useState(false);
@@ -28,7 +29,7 @@ function Card() {
 
     const submitHandler = async () => {
         try {
-            navigate("/add-trip", { state: { cardId: cardId } });
+            navigate("/add-trip", { state: { cardId: cardId, cardNumber: cardNumber } });
         } catch (error) {
             console.log(error);
         }
@@ -57,12 +58,13 @@ function Card() {
         setStoredUser(JSON.parse(stringifiedPerson));
     }
 
-    function toggleCardId(id) {
+    function getCardValues(id, number) {
         setCardId(id);
+        setCardNumber(number);
     }
 
-    function handleToggle(id) {
-        toggleCardId(id);
+    function handleToggle(id, number) {
+        getCardValues(id, number);
         setToggleFetch(!toggleFetch);
     }
 
@@ -74,7 +76,7 @@ function Card() {
         fetchedCards && retrieveCardsByUser();
         retrieveUser();
         setFetchedCards(false);
-        console.log("from card: " + cardId);
+        console.log(cardNumber);
     }, [authorUsername, cardId, fetchedCards]);
 
     return (
@@ -129,7 +131,7 @@ function Card() {
                                     <span>
                                         <MdOutlineDeleteForever className='icon' />
                                         <MdOutlinePictureAsPdf className='icon' />
-                                        <i onClick={() => handleToggle(card.id)}><AiOutlineArrowRight className='icon' /></i>
+                                        <i onClick={() => handleToggle(card.id, card.number)}><AiOutlineArrowRight className='icon' /></i>
                                     </span>
                                 </div>
                             ))}

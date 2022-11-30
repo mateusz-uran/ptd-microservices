@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import TripService from '../services/TripService';
+import CardService from '../services/CardService';
 
 function Trip({ cardId, toggleFetch }) {
 
@@ -7,7 +7,7 @@ function Trip({ cardId, toggleFetch }) {
     const [fetch, setFetch] = useState(toggleFetch);
 
     const retrieveTripByCardId = () => {
-        TripService.getTripFromCard(cardId)
+        CardService.getTripFromCard(cardId)
             .then(response => {
                 setTrip(response.data);
             })
