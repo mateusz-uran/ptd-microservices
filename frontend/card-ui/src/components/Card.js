@@ -8,6 +8,8 @@ import Trip from './Trip';
 import Fuel from './Fuel';
 import AddCard from './AddCard';
 
+import { useNavigate } from "react-router-dom";
+
 function Card() {
     const [authorUsername, setAuthorUsername] = useState('');
     const [storedUser, setStoredUser] = useState('');
@@ -21,6 +23,16 @@ function Card() {
     const [cardDate, setCardDate] = useState('29.11.2022');
     const [cardMileage, setCardMileage] = useState('4599');
     const [cardDone, setCardDone] = useState('done');
+
+    const navigate = useNavigate();
+
+    const submitHandler = async () => {
+        try {
+            navigate("/add-trip", { state: { cardId: cardId } });
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -62,6 +74,7 @@ function Card() {
         fetchedCards && retrieveCardsByUser();
         retrieveUser();
         setFetchedCards(false);
+        console.log("from card: " + cardId);
     }, [authorUsername, cardId, fetchedCards]);
 
     return (
@@ -84,7 +97,7 @@ function Card() {
                     <label>Manage</label>
                     <div className='buttonWrapper'>
                         <button onClick={() => toggleAddCard()}>Add card</button>
-                        <button>Add trip</button>
+                        <button disabled={!toggleFetch} onClick={() => submitHandler()} className={!toggleFetch ? 'disable' : ''}>Add trip</button>
                         <button>Add fuel</button>
                     </div>
                 </div>
