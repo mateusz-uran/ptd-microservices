@@ -16,11 +16,11 @@ function Card() {
     const [cardId, setCardId] = useState();
 
     const [fetchedCards, setFetchedCards] = useState(true);
+    const [toggle, setToggle] = useState(false);
 
     const [cardDate, setCardDate] = useState('29.11.2022');
     const [cardMileage, setCardMileage] = useState('4599');
     const [cardDone, setCardDone] = useState('done');
-
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -54,6 +54,10 @@ function Card() {
         setToggleFetch(!toggleFetch);
     }
 
+    function toggleAddCard() {
+        setToggle(!toggle);
+    }
+
     useEffect(() => {
         fetchedCards && retrieveCardsByUser();
         retrieveUser();
@@ -79,7 +83,7 @@ function Card() {
                 <div className='buttonColumn'>
                     <label>Manage</label>
                     <div className='buttonWrapper'>
-                        <button>Add card</button>
+                        <button onClick={() => toggleAddCard()}>Add card</button>
                         <button>Add trip</button>
                         <button>Add fuel</button>
                     </div>
@@ -105,7 +109,7 @@ function Card() {
                 <div className='lowerBar'>
                     <div className='cardList'>
                         <ul>
-                            <div className='cardInputWrapper'><AddCard user={storedUser} setFetchedCards={setFetchedCards} /></div>
+                            <div className={toggle ? 'cardInputWrapperOn' : 'cardInputWrapperOff'}><AddCard user={storedUser} setFetchedCards={setFetchedCards} /></div>
                             {cards.map((card, index) => (
                                 <div key={index} className={toggleFetch && card.id === cardId ? 'cardActive' : 'cardElement'}>
                                     <li>{card.number}</li>
