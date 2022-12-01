@@ -10,95 +10,310 @@
 </head>
 <body>
 <div>
-    <table>
-        <tr>
-            <th>Dane karty</th>
-        </tr>
-        <tr>
-            <td>Numer</td>
-        </tr>
-        <tr>
-            <td th:text="${card.cardInfo.number}"></td>
-        </tr>
-    </table>
-    <table>
-        <tr>
-            <th colspan="8">Rozliczenie tankowania</th>
-        </tr>
-        <tr>
-            <td>Lp</td>
-            <td>Data</td>
-            <td>Miejscowość</td>
-            <td>Licznik</td>
-            <td>Stan paliwa</td>
-            <td>Ilość tankowania</td>
-            <td>Forma płatności</td>
-            <td>Inne</td>
-        </tr>
-        <tr th:each="fuel,iterator : ${card.fuels}">
-            <td th:text="${iterator.index+1}"></td>
-            <td th:text="${fuel.currentDate}">&nbsp;</td>
-            <td th:text="${fuel.refuelingLocation}">&nbsp;</td>
-            <td th:text="${fuel.vehicleCounter}">&nbsp;</td>
-            <td>&nbsp;</td>
-            <td th:text="${fuel.refuelingAmount}">&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-        </tr>
-    </table>
-    <table>
-        <tr>
-            <th colspan="5">WYJAZD</th>
-            <th colspan="5">PRZYJAZD</th>
-            <th rowspan="2">Przebieg</th>
-            <th rowspan="2">Nazwa ładunku</th>
-            <th rowspan="2">Tonaż (kg)</th>
-        </tr>
-        <tr>
-            <td>Data</td>
-            <td>Godzina</td>
-            <td>Miejscowość</td>
-            <td>Państwo</td>
-            <td>Licznik</td>
-            <td>Data</td>
-            <td>Godzina</td>
-            <td>Miejscowość</td>
-            <td>Państwo</td>
-            <td>Licznik</td>
-        </tr>
-        <tr th:each="trip : ${card.trips}">
-            <td th:text="${trip.dayStart}"></td>
-            <td th:text="${trip.hourStart}"></td>
-            <td th:text="${trip.locationStart}"></td>
-            <td th:text="${trip.countryStart}"></td>
-            <td th:text="${trip.counterStart}" style="border-right: 1px solid black"></td>
-            <td th:text="${trip.dayEnd}"></td>
-            <td th:text="${trip.hourEnd}"></td>
-            <td th:text="${trip.locationEnd}"></td>
-            <td th:text="${trip.countryEnd}"></td>
-            <td th:text="${trip.counterEnd}" style="border-right: 1px solid black"></td>
-            <td th:text="${trip.getCarMileage}"></td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-        </tr>
-    </table>
-    <table>
-        <tr>
-            <th>Podsumowanie</th>
-        </tr>
-        <tr>
-            <td>Początek trasy</td>
-            <td>Koniec trasy</td>
-            <td>Przebieg</td>
-            <td>Suma tankowania</td>
-        </tr>
-        <tr>
-            <td th:text="${card.counter.getFirstCounter}"></td>
-            <td th:text="${card.counter.getLastCounter}"></td>
-            <td th:text="${card.counter.getMileage}"></td>
-            <td th:text="${card.counter.getRefuelingSum}"></td>
-        </tr>
-    </table>
+<table id="first_table">
+    <tr>
+        <td style="border-right: 1px solid;">
+            <table id="card_image">
+                <tr>
+                    <td>
+<!--                        <img th:src="@{${card.vehicle.vehicleImagePath}}" alt="volvo"-->
+<!--                             style="width: 226px;height: 115px;"/>-->
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-size: 15px;text-transform:uppercase">volvo/krone
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td style="border-right: 1px solid;">
+            <table id="card_main">
+                <tr>
+                    <td class="card_info" th:text="'Karta Drogowa nr: ' + ${card.cardInfo.number}">Karta Drogowa nr
+                        1111/XX
+                    </td>
+                </tr>
+                <tr>
+                    <td class="card_info">Data od....................godz............
+                        do..................godz................
+                    </td>
+                </tr>
+                <tr>
+                    <td class="card_info" style="font-size: 25px;text-transform:uppercase; padding: 0;">MODEL AUTA
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td>
+            <table id="address_table">
+                <tr>
+                    <td class="address">Transport Ciezarowy i Handel</td>
+                </tr>
+                <tr>
+                    <td class="address">Mariusz Kludka</td>
+                </tr>
+                <tr>
+                    <td class="address">24-300 Opole Lubelskie, ul. Łąkowa 16</td>
+                </tr>
+                <tr>
+                    <td class="address">NIP PL717-100-13-69. Regon 430039839</td>
+                </tr>
+                <tr>
+                    <td class="address">email.: mkludka@op.pl</td>
+                </tr>
+                <tr>
+                    <td class="address">0048-81-827-39-37</td>
+                </tr>
+                <tr>
+                    <td class="address">tel.601-095-259, 607-690-990</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<table id="second_table">
+    <tr>
+        <td>
+            <table id="car_info_table">
+                <tr>
+                    <td>Samochód</td>
+                    <td>
+                        <p class="car_info">LLL 111</p>
+                        <p class="car_info" style="font-size: 10px;">Nr rejestracyjny</p>
+                    </td>
+                    <td>
+                        <p class="car_info">Ciagnik siodłowy</p>
+                        <p class="car_info" style="font-size: 10px;">Typ</p>
+                    </td>
+                    <td>
+                        <p class="car_info">1111 litrów</p>
+                        <p class="car_info" style="font-size: 10px;">Poj zbiornika</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Naczepa</td>
+                    <td>
+                        <p class="car_info">LLL 111</p>
+                        <p class="car_info" style="font-size: 10px;">Nr rejestracyjny</p>
+                    </td>
+                    <td>
+                        <p class="car_info">Naczepa chłodnia</p>
+                        <p class="car_info" style="font-size: 10px;">Typ</p>
+                    </td>
+                    <td>
+                        <p class="car_info">240 litrów</p>
+                        <p class="car_info" style="font-size: 10px;">Poj zbiornika</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Kierowca</td>
+                    <td>......................</td>
+                    <td style="text-align: right;">Zmiennik</td>
+                    <td>...................</td>
+                </tr>
+            </table>
+        </td>
+        <td style="width: 40%; border-left: 1px solid;">
+            <table id="counters_info_table">
+                <tr style="border-bottom: 1px solid;">
+                    <th colspan="2">LICZNIK-POJAZD</th>
+                    <th colspan="2">LICZNIK-AGREGAT</th>
+                </tr>
+                <tr>
+                    <td>Powrót:</td>
+                    <td th:text="${card.counter.lastCounter}">.................</td>
+                    <td>Powrót:</td>
+                    <td>.................mtg</td>
+                </tr>
+                <tr>
+                    <td>Wyjazd:</td>
+                    <td th:text="${card.counter.firstCounter}">.................</td>
+                    <td>Wyjazd:</td>
+                    <td> .................mtg</td>
+                </tr>
+                <tr>
+                    <td>Przebieg:</td>
+                    <td th:text="${card.counter.mileage}">.................</td>
+                    <td>Przebieg:</td>
+                    <td> .................mtg</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<table id="third_table">
+    <tr>
+        <td>
+            <table id="fuel_table">
+                <tr>
+                    <th colspan="8">Rozliczenie tankowania</th>
+                </tr>
+                <tr>
+                    <td>Lp</td>
+                    <td>Data</td>
+                    <td>Miejscowość</td>
+                    <td>Licznik</td>
+                    <td>Stan paliwa</td>
+                    <td>Ilość tankowania</td>
+                    <td>Forma płatności</td>
+                    <td>Inne</td>
+                </tr>
+                <tr th:each="fuel,iterator : ${card.fuels}">
+                    <td th:text="${iterator.index+1}"></td>
+                    <td th:text="${fuel.currentDate}">&nbsp;</td>
+                    <td th:text="${fuel.refuelingLocation}">&nbsp;</td>
+                    <td th:text="${fuel.vehicleCounter}">&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td th:text="${fuel.refuelingAmount}">&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="5" style="text-align: right;">Razem: Paliwa</td>
+                    <td>paliwo</td>
+                    <td colspan="2" style="font-size: 10px; text-align: left;">*Gotówka / Przelew</td>
+                </tr>
+            </table>
+        </td>
+        <td>
+            <table id="fuel_final_table">
+                <tr>
+                    <th colspan="2">PALIWO-POJAZD</th>
+                    <th colspan="2">PALIWO-AGREGAT</th>
+                </tr>
+                <tr>
+                    <td>Stan pocz.</td>
+                    <td>..............</td>
+                    <td colspan="2">..............</td>
+                </tr>
+                <tr>
+                    <td>Tankow.</td>
+                    <td>..............</td>
+                    <td colspan="2">..............</td>
+                </tr>
+                <tr>
+                    <td>Stan konc.</td>
+                    <td>..............</td>
+                    <td colspan="2">..............</td>
+                </tr>
+                <tr>
+                    <td>Zuzycie.</td>
+                    <td>..............</td>
+                    <td colspan="2">..............</td>
+                </tr>
+                <tr>
+                    <td style="font-size: 10px;">Zuzycie litr/100km</td>
+                    <td style="border: 1px solid;">..............</td>
+                    <td style="font-size: 10px;">Zuzycie litr/100km</td>
+                    <td style="border: 1px solid;">..............</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Ad Blue/miejscowosc</td>
+                    <td>Ilosc / litry</td>
+                </tr>
+                <tr>
+                    <td colspan="3">&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="3">&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="3">&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="3">Stan Ad Blue po trasie</td>
+                    <td>&nbsp;</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<table id="bottom_table">
+    <tr>
+        <td></td>
+        <td>&nbsp;</td>
+    </tr>
+    <tr>
+        <td>KIEROWCO - Tylko prawidlowo wypelniona karta jest podstawa do rozliczenia wyjazdu !!!</td>
+        <td>....................................</td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td>podpis</td>
+    </tr>
+</table>
+<table id="trip_table">
+    <tr>
+        <th colspan="5">WYJAZD</th>
+        <th colspan="5">PRZYJAZD</th>
+        <th rowspan="2">Przebieg</th>
+        <th rowspan="2">Nazwa ładunku</th>
+        <th rowspan="2">Tonaż (kg)</th>
+    </tr>
+    <tr>
+        <td>Data</td>
+        <td>Godzina</td>
+        <td>Miejscowość</td>
+        <td>Państwo</td>
+        <td>Licznik</td>
+        <td>Data</td>
+        <td>Godzina</td>
+        <td>Miejscowość</td>
+        <td>Państwo</td>
+        <td>Licznik</td>
+    </tr>
+    <tr th:each="trip : ${card.trips}">
+        <td th:text="${trip.dayStart}"></td>
+        <td th:text="${trip.hourStart}"></td>
+        <td th:text="${trip.locationStart}"></td>
+        <td th:text="${trip.countryStart}"></td>
+        <td th:text="${trip.counterStart}" style="border-right: 1px solid black"></td>
+        <td th:text="${trip.dayEnd}"></td>
+        <td th:text="${trip.hourEnd}"></td>
+        <td th:text="${trip.locationEnd}"></td>
+        <td th:text="${trip.countryEnd}"></td>
+        <td th:text="${trip.counterEnd}" style="border-right: 1px solid black"></td>
+        <td th:text="${trip.carMileage}">&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+    </tr>
+    <tr style="border: 0;">
+        <td colspan="10" style="border: 0;"></td>
+        <td style="border: 0; font-weight: bold;">12345
+            km
+        </td>
+        <td colspan="4" style="border: 0;"></td>
+    </tr>
+</table>
+<table style="font-size: 14px;">
+    <tr>
+        <td>Dane etapowe z przejazdu z wg. wskazań komputera :</td>
+    </tr>
+    <tr>
+        <td>
+            Km przejechane na etapie: ..........................
+            Średnie zużycie paliwa na etapie: ..........................
+            Całkowite zużycie paliwa na etapie: ..........................
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Śrendia prędkosc na etapie: ..........................
+            Zużycie paliwa na biegu jałowym na etapie: ..........................
+        </td>
+    </tr>
+    <tr>
+        <td>Zużycie paliwa na nieekonomicznych obrotach: ..........................</td>
+        <td>..........................</td>
+    </tr>
+    <tr style="text-align: center;">
+        <td>&nbsp;</td>
+        <td>podpis</td>
+    </tr>
+</table>
 </div>
 </body>
 </html>

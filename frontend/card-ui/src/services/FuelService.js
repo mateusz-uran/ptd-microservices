@@ -11,9 +11,14 @@ const create = (id, fuel) => {
     return http.post("/", fuel, { params: { id: id } });
 }
 
+const deleteFuel = (id) => {
+return http.delete("/", { params: { id: id } })
+}
+
 
 const FuelService = {
-    create
+    create,
+    deleteFuel
 };
 
 export default FuelService;
