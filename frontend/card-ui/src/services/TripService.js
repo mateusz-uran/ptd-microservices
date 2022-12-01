@@ -11,8 +11,13 @@ const create = (id, trips) => {
     return http.post("/", trips, { params: { id: id } });
 }
 
+const deleteTrip = (id) => {
+    return http.delete("/", { params: { id: id } })
+}
+
 const TripService = {
-    create
+    create,
+    deleteTrip
 };
 
 export default TripService;

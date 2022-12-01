@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import CardService from '../services/CardService';
+import TripService from '../services/TripService';
 
 function Trip({ cardId, toggleFetch }) {
 
@@ -16,9 +17,20 @@ function Trip({ cardId, toggleFetch }) {
             })
     }
 
+    const deleteTripById = (id) => {
+        TripService.deleteTrip(id)
+        .then(response => {
+            console.log(response);
+            retrieveTripByCardId();
+        })
+        .catch(e => {
+            console.log(e);
+        })
+    }
+
     useEffect(() => {
         fetch && retrieveTripByCardId();
-    }, []);
+    }, [fetch]);
 
     return (
         <div>
@@ -62,8 +74,7 @@ function Trip({ cardId, toggleFetch }) {
                             <td>{trip.carMileage}</td>
                             <td>
                                 <div>
-                                    <button>edit</button>
-                                    <button>delete</button>
+                                    <button onClick={() => deleteTripById(trip.id)}>delete</button>
                                 </div>
                             </td>
                         </tr>

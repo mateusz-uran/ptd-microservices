@@ -3,8 +3,6 @@ import CardService from '../services/CardService';
 
 function AddCard({ user, setFetchedCards }) {
 
-    // const [fetch, setFetch] = useState(fetchedCards);
-
     const [card, setCard] = useState({
         number: '',
         authorUsername: ''

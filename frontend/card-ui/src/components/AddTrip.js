@@ -10,7 +10,7 @@ function AddTrip() {
     let cardNumber = location.state.cardNumber;
     const submitHandler = async () => {
         try {
-            navigate(-1); // Omit optional second argument
+            navigate(-1);
         } catch (error) {
             console.log(error);
         }
@@ -50,7 +50,6 @@ function AddTrip() {
 
     const submit = (e) => {
         e.preventDefault();
-        console.log(inputFields);
         TripService.create(cardId, inputFields).then(
             (response) => {
                 navigate(-1);

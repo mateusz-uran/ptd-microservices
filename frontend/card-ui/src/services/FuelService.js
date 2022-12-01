@@ -1,18 +1,19 @@
 import axios from "axios";
 
 const http = axios.create({
-    baseURL: "http://localhost:8080/api/card/fuel",
+    baseURL: "http://localhost:8080/api/fuel",
     headers: {
         "Content-type": "application/json"
     }
 });
 
-const getFuelFromCard = id => {
-    return http.get(`/?id=${id}`)
-};
+const create = (id, fuel) => {
+    return http.post("/", fuel, { params: { id: id } });
+}
+
 
 const FuelService = {
-    getFuelFromCard
+    create
 };
 
 export default FuelService;

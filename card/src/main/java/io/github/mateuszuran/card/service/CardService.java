@@ -92,6 +92,13 @@ public class CardService {
         return mapCardToPdf(card);
     }
 
+    public void deleteCard(Long id) {
+        repository.findById(id)
+                .ifPresent(card -> {
+                    repository.deleteById(card.getId());
+                });
+    }
+
     private CardPDFResponse mapCardToPdf(Card card) {
         var cardValues = CardResponse.builder()
                 .id(card.getId())

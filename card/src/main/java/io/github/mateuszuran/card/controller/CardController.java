@@ -61,6 +61,12 @@ public class CardController {
                 .body(service.sendCardToPDF(id));
     }
 
+    @DeleteMapping
+    public ResponseEntity<?> delete(@RequestParam Long id) {
+        service.deleteCard(id);
+        return ResponseEntity.ok().body(HttpStatus.NO_CONTENT);
+    }
+
     public ResponseEntity<List<FailureResponse>> fallBackMethodForList(RuntimeException exception) {
         FailureResponse resp = FailureResponse.builder()
                 .response("Something went wrong, please try again later!")

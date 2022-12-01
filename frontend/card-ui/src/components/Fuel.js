@@ -1,15 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import FuelService from '../services/FuelService';
+import CardService from '../services/CardService';
 
 function Fuel({ cardId, toggleFetch }) {
-    
-    const [fuels, setFuel] = useState([]);
+
+    const [fuels, setFuels] = useState([]);
     const [fetch, setFetch] = useState(toggleFetch);
 
+    const [fuel, setFuel] = useState({
+        currentDate: '',
+        refuelingLocation: '',
+        vehicleCounter: '',
+        refuelingAmount: ''
+    });
+
+    const { currentDate, refuelingLocation, vehicleCounter, refuelingAmount } = fuel;
+
+    const onInputChange = (e) => {
+        setFuel({ ...fuel, [e.target.name]: e.target.value });
+    };
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+        FuelService.create(cardId, fuel)
+            .then(
+                (response) => {
+                    console.log(response);
+                    retrieveFuelByCardId();
+                },
+                (error) => {
+                    console.log(error);
+                }
+            )
+    }
+
     const retrieveFuelByCardId = () => {
-        FuelService.getFuelFromCard(cardId)
+        CardService.getFuelFromCard(cardId)
             .then(response => {
-                setFuel(response.data);
+                setFuels(response.data);
             })
             .catch(e => {
                 console.log(e);
@@ -21,7 +49,7 @@ function Fuel({ cardId, toggleFetch }) {
     }, []);
 
     return (
-        <div>
+        <div id='fuels'>
             <table>
                 <thead>
                     <tr>
@@ -43,7 +71,6 @@ function Fuel({ cardId, toggleFetch }) {
                             <td>{fuel.refuelingAmount}</td>
                             <td>
                                 <div>
-                                    <button>edit</button>
                                     <button>delete</button>
                                 </div>
                             </td>
@@ -51,6 +78,43 @@ function Fuel({ cardId, toggleFetch }) {
                     ))}
                 </tbody>
             </table>
+            <div className='fuelFormWrapper'>
+                <form onSubmit={(e) => onSubmit(e)}>
+                    <div className='input'>
+                        <label>date</label>
+                        <input
+                            name={"currentDate"}
+                            value={currentDate}
+                            onChange={(e) => onInputChange(e)}
+                        />
+                    </div>
+                    <div className='input'>
+                        <label>location</label>
+                        <input
+                            name={"refuelingLocation"}
+                            value={refuelingLocation}
+                            onChange={(e) => onInputChange(e)}
+                        />
+                    </div>
+                    <div className='input'>
+                        <label>counter</label>
+                        <input
+                            name={"vehicleCounter"}
+                            value={vehicleCounter}
+                            onChange={(e) => onInputChange(e)}
+                        />
+                    </div>
+                    <div className='input'>
+                        <label>amount</label>
+                        <input
+                            name={"refuelingAmount"}
+                            value={refuelingAmount}
+                            onChange={(e) => onInputChange(e)}
+                        />
+                    </div>
+                    <button onClick={onSubmit}>Add</button>
+                </form>
+            </div>
         </div>
     );
 }
