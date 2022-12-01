@@ -25,6 +25,7 @@ function AddTrip() {
 
     const [prevLocalization, setPrevLocalization] = useState('');
     const [prevCountry, setPrevCountry] = useState('');
+    const [pervCoutner, setPrevCounter] = useState('');
 
     const handleFormChange = (index, event) => {
         let data = [...inputFields];
@@ -32,11 +33,12 @@ function AddTrip() {
         setInputFields(data);
         setPrevLocalization(data[index].locationEnd);
         setPrevCountry(data[index].countryEnd);
+        setPrevCounter(data[index].counterEnd);
     }
 
     const addFields = () => {
         let newField = {
-            dayStart: '', hourStart: '', locationStart: prevLocalization, countryStart: prevCountry, counterStart: '',
+            dayStart: '', hourStart: '', locationStart: prevLocalization, countryStart: prevCountry, counterStart: pervCoutner,
             dayEnd: '', hourEnd: '', locationEnd: '', countryEnd: '', counterEnd: ''
         }
         setInputFields([...inputFields, newField])

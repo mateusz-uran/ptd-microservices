@@ -3,6 +3,7 @@ import CardService from '../services/CardService';
 import { FaSearch } from 'react-icons/fa';
 import { AiOutlineArrowRight } from 'react-icons/ai';
 import { MdOutlineDeleteForever, MdOutlinePictureAsPdf } from 'react-icons/md';
+import PdfService from '../services/PdfService';
 
 import Trip from './Trip';
 import Fuel from './Fuel';
@@ -63,6 +64,22 @@ function Card() {
             .catch(e => {
                 console.log(e);
             })
+    }
+    const generatePdf = (id) => {
+        try {
+            PdfService.getPdf(id)
+                .then(response => {
+                    //Create a Blob from the PDF Stream
+                    const file = new Blob([response.data], { type: "application/pdf" });
+                    //Build a URL from the file
+                    const fileURL = URL.createObjectURL(file);
+                    //Open the URL on new Window
+                    const pdfWindow = window.open();
+                    pdfWindow.location.href = fileURL;
+                })
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const retrieveUser = () => {
@@ -141,7 +158,7 @@ function Card() {
                                     <li>{card.number}</li>
                                     <span>
                                         <i onClick={() => deleteCardById(card.id)}><MdOutlineDeleteForever className='icon' /></i>
-                                        <MdOutlinePictureAsPdf className='icon' />
+                                        <i onClick={() => generatePdf(card.id)}><MdOutlinePictureAsPdf className='icon' /></i>
                                         <i onClick={() => handleToggle(card.id, card.number)}><AiOutlineArrowRight className='icon' /></i>
                                     </span>
                                 </div>

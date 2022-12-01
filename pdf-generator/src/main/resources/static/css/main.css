@@ -2,9 +2,140 @@
     size: A4 landscape;
 }
 
-table {
-    table-layout: fixed;
+#first_table {
+    border: 1px solid;
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+}
+
+#card_image {
+    width: 100%;
+}
+
+#card_main {
+    width: 100%;
+}
+
+#card_main td {
+    padding-bottom: 20px;
+}
+
+#address_table {
+    width: 100%;
+}
+
+.address {
+    font-size: 13px;
+    color: #4600B7;
+}
+
+#second_table {
+    border: 1px solid;
+    width: 100%;
+    text-align: center;
+}
+
+#car_info_table {
     width: 100%;
     border-collapse: collapse;
-    border: 3px solid black;
+    margin: 0;
+}
+
+#counters_info_table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+#counters_info_table th {
+    text-align: center;
+    border-right: 1px solid;
+}
+
+#counters_info_table th:last-child {
+    text-align: center;
+    border-right: none;
+}
+
+#counters_info_table td:nth-child(2) {
+    border-right: 1px solid;
+}
+
+.car_info {
+    margin: 0;
+}
+
+#third_table {
+    width: 100%;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-collapse: collapse;
+}
+
+#fuel_table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+#fuel_table th {
+    border-bottom: 1px solid;
+    padding: 0;
+}
+
+#fuel_table tr td {
+    border: 1px solid;
+}
+
+#fuel_final_table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    border-style: hidden;
+    border-left: 1px solid;
+}
+
+#fuel_final_table th {
+    border-bottom: 1px solid;
+    border-left: 1px solid;
+    padding: 0;
+}
+
+#fuel_final_table tr td {
+    border: 1px solid;
+}
+
+#fuel_final_table th:last-child {
+    text-align: center;
+    border-right: none;
+}
+
+#fuel_final_table p {
+    padding: 0;
+    margin: 0;
+    display: inline
+}
+
+#bottom_table {
+    width: 100%;
+    font-weight: bold;
+    text-align: center;
+}
+
+#trip_table {
+    page-break-before: always;
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    border-style: hidden;
+}
+
+#trip_table tr th {
+    border: 1px solid;
+}
+
+#trip_table tr td {
+    border: 1px solid;
 }

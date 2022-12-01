@@ -27,11 +27,28 @@ function Fuel({ cardId, toggleFetch }) {
                 (response) => {
                     console.log(response);
                     retrieveFuelByCardId();
+                    setFuel({
+                        currentDate: '',
+                        refuelingLocation: '',
+                        vehicleCounter: '',
+                        refuelingAmount: ''
+                    })
                 },
                 (error) => {
                     console.log(error);
                 }
             )
+    }
+
+    const onDelete = (id) => {
+        FuelService.deleteFuel(id)
+            .then(response => {
+                console.log(response);
+                retrieveFuelByCardId();
+            })
+            .catch(e => {
+                console.log(e);
+            })
     }
 
     const retrieveFuelByCardId = () => {
@@ -71,7 +88,7 @@ function Fuel({ cardId, toggleFetch }) {
                             <td>{fuel.refuelingAmount}</td>
                             <td>
                                 <div>
-                                    <button>delete</button>
+                                    <button onClick={() => onDelete(fuel.id)}>delete</button>
                                 </div>
                             </td>
                         </tr>
@@ -79,10 +96,11 @@ function Fuel({ cardId, toggleFetch }) {
                 </tbody>
             </table>
             <div className='fuelFormWrapper'>
-                <form onSubmit={(e) => onSubmit(e)}>
+                <form onSubmit={(e) => onSubmit(e)} id='fuel-form'>
                     <div className='input'>
                         <label>date</label>
                         <input
+                            type={"text"}
                             name={"currentDate"}
                             value={currentDate}
                             onChange={(e) => onInputChange(e)}
@@ -91,6 +109,7 @@ function Fuel({ cardId, toggleFetch }) {
                     <div className='input'>
                         <label>location</label>
                         <input
+                            type={"text"}
                             name={"refuelingLocation"}
                             value={refuelingLocation}
                             onChange={(e) => onInputChange(e)}
@@ -99,6 +118,7 @@ function Fuel({ cardId, toggleFetch }) {
                     <div className='input'>
                         <label>counter</label>
                         <input
+                            type={"number"}
                             name={"vehicleCounter"}
                             value={vehicleCounter}
                             onChange={(e) => onInputChange(e)}
@@ -107,6 +127,7 @@ function Fuel({ cardId, toggleFetch }) {
                     <div className='input'>
                         <label>amount</label>
                         <input
+                            type={"number"}
                             name={"refuelingAmount"}
                             value={refuelingAmount}
                             onChange={(e) => onInputChange(e)}
