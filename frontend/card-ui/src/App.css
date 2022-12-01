@@ -265,14 +265,65 @@ button {
     display: flex;
     flex-wrap: wrap;
     overflow-x: auto;
+    justify-content: center;
 }
 
 #content .tripWrapper,
 .fuelWrapper {
     padding: 0 5px;
+    padding-top: 15px;
     overflow-x: auto;
     transition: 0.3s ease-in-out;
 }
+
+/*fuel component inputs*/
+#fuels {
+    display: flex;
+}
+
+#fuels .fuelFormWrapper {
+    background-color: #515567;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+#fuels .input {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 3px;
+}
+
+#fuels .input input {
+    outline: 0;
+    border: 2px solid transparent;
+}
+
+#fuels .input input:focus {
+    border: 2px solid #3685B5;
+}
+
+#fuels .fuelFormWrapper button {
+    border: 0;
+    outline: 0;
+    background-color: #272932;
+    padding: 5px;
+    color: #fff;
+    font-weight: bold;
+}
+
+#fuels .fuelFormWrapper button:hover {
+    background-color: #3685B5;
+    cursor: pointer;
+}
+
+/**/
 
 .move-left {
     transition: 0.3s ease-in-out;
@@ -325,12 +376,6 @@ table tr:nth-child(odd) {
 table tbody tr td:first-child {
     background-color: #3685B5;
     color: #fff;
-}
-/**/
-
-#content .tripWrapper,
-.fuelWrapper {
-    padding-top: 15px;
 }
 
 /*css for AddTrip component*/
@@ -445,7 +490,11 @@ table tbody tr td:first-child {
 
 #tripInputWrapper input {
     outline: 0;
-    border: 0;
+    border: 2px solid transparent;
+}
+
+#tripInputWrapper input:focus {
+    border: 2px solid #F05D5E;
 }
 
 #tripInputWrapper .endInputs {
@@ -483,7 +532,6 @@ table tbody tr td:first-child {
 
 #tripInputWrapper .submitButton {
     padding: 10px;
-
 }
 
 #tripInputWrapper button {

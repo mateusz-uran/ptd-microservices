@@ -12,17 +12,27 @@ const getCardByUser = username => {
 };
 
 const create = card => {
-    return http.post("/", card);
+    return http.post('/', card);
 }
 
 const getTripFromCard = id => {
     return http.get('/trip', { params: { id: id } })
 };
 
+const getFuelFromCard = id => {
+    return http.get('/fuel', { params: { id: id } })
+};
+
+const deleteCard = id => {
+    return http.delete('/', { params: { id: id } })
+}
+
 const CardService = {
     getCardByUser,
     create,
-    getTripFromCard
+    getTripFromCard,
+    getFuelFromCard,
+    deleteCard
 };
 
 export default CardService;

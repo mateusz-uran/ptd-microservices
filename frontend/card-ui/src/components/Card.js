@@ -53,6 +53,18 @@ function Card() {
             })
     }
 
+    const deleteCardById = (id) => {
+        CardService.deleteCard(id)
+            .then(response => {
+                console.log(response)
+                retrieveCardsByUser();
+                setToggleFetch(false);
+            })
+            .catch(e => {
+                console.log(e);
+            })
+    }
+
     const retrieveUser = () => {
         const stringifiedPerson = localStorage.getItem('user');
         setStoredUser(JSON.parse(stringifiedPerson));
@@ -76,7 +88,6 @@ function Card() {
         fetchedCards && retrieveCardsByUser();
         retrieveUser();
         setFetchedCards(false);
-        console.log(cardNumber);
     }, [authorUsername, cardId, fetchedCards]);
 
     return (
@@ -129,7 +140,7 @@ function Card() {
                                 <div key={index} className={toggleFetch && card.id === cardId ? 'cardActive' : 'cardElement'}>
                                     <li>{card.number}</li>
                                     <span>
-                                        <MdOutlineDeleteForever className='icon' />
+                                        <i onClick={() => deleteCardById(card.id)}><MdOutlineDeleteForever className='icon' /></i>
                                         <MdOutlinePictureAsPdf className='icon' />
                                         <i onClick={() => handleToggle(card.id, card.number)}><AiOutlineArrowRight className='icon' /></i>
                                     </span>
