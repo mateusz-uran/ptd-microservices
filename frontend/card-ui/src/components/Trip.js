@@ -1,11 +1,58 @@
 import React, { useEffect, useState } from 'react';
 import CardService from '../services/CardService';
 import TripService from '../services/TripService';
+import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai';
 
-function Trip({ cardId, toggleFetch }) {
+function Trip({ cardId, toggle }) {
 
     const [trips, setTrip] = useState([]);
-    const [fetch, setFetch] = useState(toggleFetch);
+    const [fetch, setFetch] = useState(true);
+
+    const [inputFields, setInputFields] = useState([
+        {
+            dayStart: '', hourStart: '', locationStart: '', countryStart: '', counterStart: '',
+            dayEnd: '', hourEnd: '', locationEnd: '', countryEnd: '', counterEnd: ''
+        }
+    ])
+
+    const [prevLocalization, setPrevLocalization] = useState('');
+    const [prevCountry, setPrevCountry] = useState('');
+    const [pervCoutner, setPrevCounter] = useState('');
+
+    const handleFormChange = (index, event) => {
+        let data = [...inputFields];
+        data[index][event.target.name] = event.target.value;
+        setInputFields(data);
+        setPrevLocalization(data[index].locationEnd);
+        setPrevCountry(data[index].countryEnd);
+        setPrevCounter(data[index].counterEnd);
+    }
+
+    const addFields = () => {
+        let newField = {
+            dayStart: '', hourStart: '', locationStart: prevLocalization, countryStart: prevCountry, counterStart: pervCoutner,
+            dayEnd: '', hourEnd: '', locationEnd: '', countryEnd: '', counterEnd: ''
+        }
+        setInputFields([...inputFields, newField])
+    }
+
+    const removeFields = (index) => {
+        let data = [...inputFields];
+        data.splice(index, 1)
+        setInputFields(data)
+    }
+
+    const submit = (e) => {
+        e.preventDefault();
+        TripService.create(cardId, inputFields).then(
+            (response) => {
+                console.log(response);
+            },
+            (error) => {
+                console.log(error);
+            }
+        )
+    }
 
     const retrieveTripByCardId = () => {
         CardService.getTripFromCard(cardId)
@@ -17,70 +64,161 @@ function Trip({ cardId, toggleFetch }) {
             })
     }
 
-    const deleteTripById = (id) => {
-        TripService.deleteTrip(id)
-        .then(response => {
-            console.log(response);
-            retrieveTripByCardId();
-        })
-        .catch(e => {
-            console.log(e);
-        })
-    }
-
     useEffect(() => {
         fetch && retrieveTripByCardId();
-    }, [fetch]);
+    }, []);
 
     return (
-        <div>
-            <table>
-                <thead>
-                    <tr>
-                        <th colSpan={6}>START</th>
-                        <th colSpan={6}>END</th>
-                        <th></th>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <th>day</th>
-                        <th>hour</th>
-                        <th>location</th>
-                        <th>country</th>
-                        <th>counter</th>
-                        <th>day</th>
-                        <th>hour</th>
-                        <th>location</th>
-                        <th>country</th>
-                        <th>counter</th>
-                        <th>mileage</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {trips.map((trip, index) => (
-                        <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{trip.dayStart}</td>
-                            <td>{trip.hourStart}</td>
-                            <td>{trip.locationStart}</td>
-                            <td>{trip.countryStart}</td>
-                            <td>{trip.counterStart}</td>
-                            <td>{trip.dayEnd}</td>
-                            <td>{trip.hourEnd}</td>
-                            <td>{trip.locationEnd}</td>
-                            <td>{trip.countryEnd}</td>
-                            <td>{trip.counterEnd}</td>
-                            <td>{trip.carMileage}</td>
-                            <td>
-                                <div>
-                                    <button onClick={() => deleteTripById(trip.id)}>delete</button>
-                                </div>
-                            </td>
+        <div className='flex flex-col mx-1 rounded'>
+            {toggle &&
+                <div>
+                    {
+                        inputFields.map((input, index) => {
+                            return (
+                                <form key={index} className='bg-slate-100 my-2'>
+                                    <div className='md:flex'>
+                                        <div className='md:py-1 md:border-r-2'>
+                                            <label className='text-sm text-gray-400 uppercase'>start</label>
+                                            <div className='grid grid-cols-2 gap-2 items-center px-1 sm:grid-cols-5'>
+                                                <input
+                                                    type={'text'}
+                                                    name={'dayStart'}
+                                                    placeholder={'day'}
+                                                    value={input.dayStart}
+                                                    onChange={event => handleFormChange(index, event)}
+                                                    className='px-1 border-b-2 border-transparent outline-0 focus:border-b-2 focus:border-slate-300'
+                                                />
+                                                <input
+                                                    type={'text'}
+                                                    name={'hourStart'}
+                                                    placeholder={'hour'}
+                                                    value={input.hourStart}
+                                                    onChange={event => handleFormChange(index, event)}
+                                                    className='px-1 border-b-2 border-transparent outline-0 focus:border-b-2 focus:border-slate-300'
+                                                />
+                                                <input
+                                                    type={'text'}
+                                                    name={'locationStart'}
+                                                    placeholder={'location'}
+                                                    value={input.locationStart}
+                                                    onChange={event => handleFormChange(index, event)}
+                                                    className='px-1 border-b-2 border-transparent outline-0 focus:border-b-2 focus:border-slate-300'
+                                                />
+                                                <input
+                                                    type={'text'}
+                                                    name={'countryStart'}
+                                                    placeholder={'country'}
+                                                    value={input.countryStart}
+                                                    onChange={event => handleFormChange(index, event)}
+                                                    className='px-1 border-b-2 border-transparent outline-0 focus:border-b-2 focus:border-slate-300'
+                                                />
+                                                <input
+                                                    type={'number'}
+                                                    name={'counterStart'}
+                                                    placeholder={'counter'}
+                                                    value={input.counterStart}
+                                                    onChange={event => handleFormChange(index, event)}
+                                                    className='col-start-1 col-end-3 px-1 sm:col-start-5 sm:col-end-5 border-b-2 border-transparent outline-0 focus:border-b-2 focus:border-slate-300'
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className='md:py-1'>
+                                            <label className='text-sm text-gray-400 uppercase'>end</label>
+                                            <div className='grid grid-cols-2 gap-2 items-center px-1 sm:grid-cols-5'>
+                                                <input
+                                                    type={'text'}
+                                                    name={'dayEnd'}
+                                                    placeholder={'day'}
+                                                    value={input.dayEnd}
+                                                    onChange={event => handleFormChange(index, event)}
+                                                    className='px-1 border-b-2 border-transparent outline-0 focus:border-b-2 focus:border-slate-300'
+                                                />
+                                                <input
+                                                    type={'text'}
+                                                    name={'hourEnd'}
+                                                    placeholder={'hour'}
+                                                    value={input.hourEnd}
+                                                    onChange={event => handleFormChange(index, event)}
+                                                    className='px-1 border-b-2 border-transparent outline-0 focus:border-b-2 focus:border-slate-300'
+                                                />
+                                                <input
+                                                    type={'text'}
+                                                    name={'locationEnd'}
+                                                    placeholder={'location'}
+                                                    value={input.locationEnd}
+                                                    onChange={event => handleFormChange(index, event)}
+                                                    className='px-1 border-b-2 border-transparent outline-0 focus:border-b-2 focus:border-slate-300'
+                                                />
+                                                <input
+                                                    type={'text'}
+                                                    name={'countryEnd'}
+                                                    placeholder={'country'}
+                                                    value={input.countryEnd}
+                                                    onChange={event => handleFormChange(index, event)}
+                                                    className='px-1 border-b-2 border-transparent outline-0 focus:border-b-2 focus:border-slate-300'
+                                                />
+                                                <input
+                                                    type={'number'}
+                                                    name={'counterEnd'}
+                                                    placeholder={'counter'}
+                                                    value={input.counterEnd}
+                                                    onChange={event => handleFormChange(index, event)}
+                                                    className='col-start-1 col-end-3 px-1 sm:col-start-5 sm:col-end-5 border-b-2 border-transparent outline-0 focus:border-b-2 focus:border-slate-300'
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className='flex m-1 rounded text-black md:flex-col md:items-center'>
+                                            <button type='button' onClick={addFields} className='px-1 rounded md:my-1 hover:bg-blue-400 hover:text-white'><AiOutlinePlus /></button>
+                                            <button type='button' onClick={() => removeFields(index)} className='px-1 rounded md:my-1 hover:bg-blue-400 hover:text-white'><AiOutlineMinus /></button>
+                                            <button onClick={submit} className='px-1 ml-1 mb-1 bg-blue-400 text-white rounded md:my-1 hover:bg-slate-300 hover:text-gray-600'>Add</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            )
+                        })
+                    }
+                </div>
+            }
+            <div className='flex w-full overflow-x-auto'>
+                <table className='w-full bg-slate-200 rounded text-sm table-auto text-center'>
+                    <thead className='text-gray-400'>
+                        <tr className='uppercase border-b-2 border-white'>
+                            <th colSpan={5} className='border-r-4 border-blue-300'>start</th>
+                            <th colSpan={5} className=''>end</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                        <tr className='text-slate-500 border-b-2 border-white uppercase text-xs'>
+                            <th className='px-2'>day</th>
+                            <th className='px-2'>hour</th>
+                            <th className='px-2'>location</th>
+                            <th className='px-2'>country</th>
+                            <th className='px-2 border-r-4 border-blue-300'>counter</th>
+                            <th className='px-2'>day</th>
+                            <th className='px-2'>hour</th>
+                            <th className='px-2'>location</th>
+                            <th className='px-2'>country</th>
+                            <th className='px-2'>counter</th>
+                            <th className='px-2'>mileage</th>
+                        </tr>
+                    </thead>
+                    <tbody className='text-slate-600'>
+                        {trips.map((trip, index) => (
+                            <tr key={index} className='border-t-2 border-white hover:bg-blue-400 hover:text-white'>
+                                <td className=''>{trip.dayStart}</td>
+                                <td className=''>{trip.hourStart}</td>
+                                <td className=''>{trip.locationStart}</td>
+                                <td className=''>{trip.countryStart}</td>
+                                <td className='border-r-4 border-blue-300'>{trip.counterStart}</td>
+                                <td className=''>{trip.dayEnd}</td>
+                                <td className=''>{trip.hourEnd}</td>
+                                <td className=''>{trip.locationEnd}</td>
+                                <td className=''>{trip.countryEnd}</td>
+                                <td className=''>{trip.counterEnd}</td>
+                                <td className=''>{trip.carMileage}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }
