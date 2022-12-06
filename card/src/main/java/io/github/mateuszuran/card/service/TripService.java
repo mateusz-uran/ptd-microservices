@@ -2,6 +2,7 @@ package io.github.mateuszuran.card.service;
 
 import io.github.mateuszuran.card.dto.request.TripListValues;
 import io.github.mateuszuran.card.dto.request.TripValues;
+import io.github.mateuszuran.card.dto.response.TripResponse;
 import io.github.mateuszuran.card.model.Card;
 import io.github.mateuszuran.card.model.Trip;
 import io.github.mateuszuran.card.repository.TripRepository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -64,33 +66,34 @@ public class TripService {
         repository.saveAll(tripsToSave);
     }
 
-    public void updateTrip(Long id, TripValues tripDto) {
-        repository.findById(id)
-                .map(trip -> {
-                    if(tripDto.getDayStart() != null) {
-                        trip.setDayStart(tripDto.getDayStart());
-                    } else if (tripDto.getDayEnd() != null) {
-                        trip.setDayEnd(tripDto.getDayEnd());
-                    } else if (tripDto.getHourStart() != null) {
-                        trip.setHourStart(tripDto.getHourStart());
-                    } else if (tripDto.getHourEnd() != null) {
-                        trip.setHourEnd(tripDto.getHourEnd());
-                    } else if (tripDto.getLocationStart() != null) {
-                        trip.setLocationStart(tripDto.getLocationStart());
-                    } else if (tripDto.getLocationEnd() != null) {
-                        trip.setLocationEnd(tripDto.getLocationEnd());
-                    } else if (tripDto.getCounterStart() != null) {
-                        trip.setCounterStart(tripDto.getCounterStart());
-                    } else if (tripDto.getCounterEnd() != null) {
-                        trip.setCounterEnd(tripDto.getCounterEnd());
-                    } else if (tripDto.getCountryStart() != null) {
-                        trip.setCountryStart(tripDto.getCountryStart());
-                    } else if (tripDto.getCountryEnd() != null) {
-                        trip.setCountryEnd(tripDto.getCountryEnd());
-                    }
-                    trip.setCarMileage(calculateCarMileage(trip.getCounterStart(), trip.getCounterEnd()));
-                    return repository.save(trip);
-                }).orElseThrow();
+    public TripResponse loadTrip(Long id) {
+        return repository.findById(id)
+                .stream()
+                .findFirst()
+                .map(this::mapToTripResponse)
+                .orElseThrow(() -> new IllegalArgumentException("Trip not found"));
+    }
+
+    public TripResponse update(Long id, TripValues tripDto) {
+        var result = repository.findById(id).orElseThrow();
+        //TODO replace with object mapper to avoid boilerplate code
+        result.setDayStart(tripDto.getDayStart());
+        result.setHourStart(tripDto.getHourStart());
+        result.setLocationStart(tripDto.getLocationStart());
+        result.setCountryStart(tripDto.getCountryStart());
+        result.setCounterStart(tripDto.getCounterStart());
+
+        result.setDayEnd(tripDto.getDayEnd());
+        result.setHourEnd(tripDto.getHourEnd());
+        result.setLocationEnd(tripDto.getLocationEnd());
+        result.setCountryEnd(tripDto.getCountryEnd());
+        result.setCounterEnd(tripDto.getCounterEnd());
+        repository.save(result);
+        return Optional.of(result)
+                .stream()
+                .findFirst()
+                .map(this::mapToTripResponse)
+                .orElseThrow();
     }
 
     public void delete(Long id) {
@@ -98,6 +101,22 @@ public class TripService {
                 .ifPresent(trip -> {
                     repository.deleteById(trip.getId());
                 });
+    }
+
+    private TripResponse mapToTripResponse(Trip trip) {
+        return TripResponse.builder()
+                .id(trip.getId())
+                .dayStart(trip.getDayStart())
+                .dayEnd(trip.getDayEnd())
+                .hourStart(trip.getHourStart())
+                .hourEnd(trip.getHourEnd())
+                .locationStart(trip.getLocationStart())
+                .locationEnd(trip.getLocationEnd())
+                .countryStart(trip.getCountryStart())
+                .countryEnd(trip.getCountryEnd())
+                .counterStart(trip.getCounterStart())
+                .counterEnd(trip.getCounterEnd())
+                .build();
     }
 
     private Integer calculateCarMileage (Integer min, Integer max) {

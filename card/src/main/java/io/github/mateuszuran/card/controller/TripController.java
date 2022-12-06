@@ -1,6 +1,7 @@
 package io.github.mateuszuran.card.controller;
 
 import io.github.mateuszuran.card.dto.request.TripValues;
+import io.github.mateuszuran.card.dto.response.TripResponse;
 import io.github.mateuszuran.card.service.TripService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,15 +20,18 @@ public class TripController {
 
     @PostMapping
     public ResponseEntity<?> addTripsList(@RequestBody List<TripValues> trips, @RequestParam Long id) {
-        log.info(String.valueOf(trips.get(0)));
         service.addManyTips(trips, id);
-        log.info("parametrized");
         return ResponseEntity.ok().body(HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<TripResponse> getTrip(@RequestParam Long id) {
+        return ResponseEntity.ok().body(service.loadTrip(id));
     }
 
     @PutMapping
     public ResponseEntity<?> edit(@RequestParam Long id, @RequestBody TripValues tripDto) {
-        service.updateTrip(id, tripDto);
+        service.update(id, tripDto);
         return ResponseEntity.ok().body(HttpStatus.CREATED);
     }
 

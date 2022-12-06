@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CardService from '../services/CardService';
 import PdfService from '../services/PdfService';
 import Trip from './Trip';
+import Fuel from './Fuel';
 import {
     AiOutlineArrowRight,
     AiFillFilePdf,
@@ -174,6 +175,7 @@ function Card() {
                         <button onClick={() => onToggleFuelForm()} className='mx-1 bg-blue-300 px-1 rounded uppercase font-bold text-slate-100 hover:bg-slate-300 hover:text-gray-500 text-xs'>add fuel</button>
                     </div>
                     {toggleFetch && <Trip toggleForm={addTripToggle} cardId={cardId} />}
+                    {toggleFetch && <Fuel toggleForm={addFuelToggle} cardId={cardId} />}
                 </div>
             </div>
         </div>
