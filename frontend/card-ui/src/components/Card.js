@@ -11,13 +11,13 @@ import {
 } from 'react-icons/ai'
 
 function Card() {
-    const [authorUsername, setAuthorUsername] = useState('');
+    const [user, setUser] = useState('');
     const [fetchedCards, setFetchedCards] = useState(true);
     const [storedUser, setStoredUser] = useState('');
+
     const [cards, setCards] = useState([]);
     const [toggleFetch, setToggleFetch] = useState(false);
     const [cardId, setCardId] = useState();
-    const [cardNumber, setCardNumber] = useState();
     const [addCardToggle, setAddCardToggle] = useState(true);
 
     const [addTripToggle, setAddTripToggle] = useState(false);
@@ -34,6 +34,17 @@ function Card() {
         setCard({ ...card, [e.target.name]: e.target.value });
     };
 
+    const handleUsernameInLocalStorage = (e) => {
+        e.preventDefault();
+        localStorage.setItem('user', JSON.stringify(user));
+        setUser('');
+        setFetchedCards(true);
+    };
+
+    const retrieveUser = () => {
+        setStoredUser(JSON.parse(localStorage.getItem('user')));
+    }
+
     const onSubmit = (e) => {
         e.preventDefault();
         card.authorUsername = storedUser;
@@ -49,13 +60,6 @@ function Card() {
             }
         )
     }
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        localStorage.setItem('user', JSON.stringify(authorUsername));
-        setAuthorUsername('');
-        setFetchedCards(true);
-    };
 
     const retrieveCardsByUser = () => {
         CardService.getCardByUser(JSON.parse(localStorage.getItem('user')))
@@ -95,18 +99,8 @@ function Card() {
         }
     }
 
-    const retrieveUser = () => {
-        const stringifiedPerson = localStorage.getItem('user');
-        setStoredUser(JSON.parse(stringifiedPerson));
-    }
-
-    function getCardValues(id, number) {
+    const handleToggleCardContent = (id) => {
         setCardId(id);
-        setCardNumber(number);
-    }
-
-    function handleToggle(id, number) {
-        getCardValues(id, number);
         setToggleFetch(!toggleFetch);
     }
 
@@ -126,19 +120,19 @@ function Card() {
         fetchedCards && retrieveCardsByUser();
         retrieveUser();
         setFetchedCards(false);
-    }, [authorUsername, cardId, fetchedCards]);
+    }, [user, cardId, fetchedCards]);
 
     return (
         <div className='flex flex-col'>
             <div className='flex w-full px-2 py-4 bg-blue-200 items-center'>
-                <form onSubmit={handleSubmit} className='flex h-10 m-2 rounded bg-gray-200'>
+                <form onSubmit={handleUsernameInLocalStorage} className='flex h-10 m-2 rounded bg-gray-200'>
                     <button className='h-full border-r border-gray-300 px-1 hover:bg-stone-100'><AiOutlineSearch /></button>
                     <input
                         type="text"
                         className="w-full bg-transparent outline-0 px-1"
                         placeholder="Username"
-                        value={authorUsername}
-                        onChange={(e) => setAuthorUsername(e.target.value)}
+                        value={user}
+                        onChange={(e) => setUser(e.target.value)}
                     />
                 </form>
                 <button onClick={() => onShowCardForm()} className='flex bg-blue-300 items-center rounded px-2 text-slate-600 font-bold text-sm uppercase h-10 hover:bg-gray-500 hover:text-slate-100'>add card</button>
@@ -165,7 +159,7 @@ function Card() {
                                 <div className={toggleFetch && card.id == cardId ? 'flex flex-col md:flex-row md:w-full md:justify-between rounded bg-slate-200 m-1 p-2 flex text-center items-center' : 'flex flex-col md:flex-row md:w-full md:justify-between bg-transparent rounded m-1 p-2 flex text-center items-center'}>
                                     <p>{card.number}</p>
                                     <span className='flex'>
-                                        <i onClick={() => handleToggle(card.id, card.number)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200'><AiOutlineArrowRight className='icon rotate-90 md:rotate-0' /></i>
+                                        <i onClick={() => handleToggleCardContent(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200'><AiOutlineArrowRight className='icon rotate-90 md:rotate-0' /></i>
                                         <i onClick={() => generatePdf(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200'><AiFillFilePdf /></i>
                                         <i onClick={() => deleteCardById(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200'><AiOutlineDelete /></i>
                                     </span>
@@ -179,7 +173,7 @@ function Card() {
                         <button onClick={() => onToggleTripForm()} className='mx-1 bg-blue-300 px-1 rounded uppercase font-bold text-slate-100 hover:bg-slate-300 hover:text-gray-500 text-xs'>add trip</button>
                         <button onClick={() => onToggleFuelForm()} className='mx-1 bg-blue-300 px-1 rounded uppercase font-bold text-slate-100 hover:bg-slate-300 hover:text-gray-500 text-xs'>add fuel</button>
                     </div>
-                    {toggleFetch && <Trip toggle={addTripToggle} cardId={cardId} />}
+                    {toggleFetch && <Trip toggleForm={addTripToggle} cardId={cardId} />}
                 </div>
             </div>
         </div>

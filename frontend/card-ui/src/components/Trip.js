@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import CardService from '../services/CardService';
 import TripService from '../services/TripService';
-import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai';
+import { AiOutlinePlus, AiOutlineMinus, AiOutlineEdit, AiOutlineClose } from 'react-icons/ai';
 
-function Trip({ cardId, toggle }) {
+function Trip({ cardId, toggleForm }) {
 
     const [trips, setTrip] = useState([]);
     const [fetch, setFetch] = useState(true);
+    const [tripId, setTripId] = useState();
+    const [editMode, setEditMode] = useState(false);
 
     const [inputFields, setInputFields] = useState([
         {
@@ -38,20 +40,81 @@ function Trip({ cardId, toggle }) {
 
     const removeFields = (index) => {
         let data = [...inputFields];
-        data.splice(index, 1)
-        setInputFields(data)
+        if (data.length == 1) {
+            console.log("Single input row");
+        } else {
+            data.splice(index, 1)
+            setInputFields(data)
+        }
     }
 
-    const submit = (e) => {
+    const onSubmitNewTrip = (e) => {
         e.preventDefault();
         TripService.create(cardId, inputFields).then(
             (response) => {
                 console.log(response);
+                retrieveTripByCardId();
+                setInputFields([
+                    {
+                        dayStart: '', hourStart: '', locationStart: '', countryStart: '', counterStart: '',
+                        dayEnd: '', hourEnd: '', locationEnd: '', countryEnd: '', counterEnd: ''
+                    }
+                ]);
             },
             (error) => {
                 console.log(error);
             }
         )
+    }
+
+    const onSubmitEditedTrip = (e) => {
+        e.preventDefault();
+        let data = [...inputFields];
+        TripService.editTrip(tripId, data[0]).then(
+            (response) => {
+                console.log(response);
+                retrieveTripByCardId();
+                setInputFields([
+                    {
+                        dayStart: '', hourStart: '', locationStart: '', countryStart: '', counterStart: '',
+                        dayEnd: '', hourEnd: '', locationEnd: '', countryEnd: '', counterEnd: ''
+                    }
+                ]);
+                setEditMode(false);
+            },
+            (error) => {
+                console.log(error);
+            }
+        )
+    }
+
+    const loadTripToEdit = (id) => {
+        if (toggleForm == false) {
+            console.log("Toggle form first")
+        } else {
+            setEditMode(true);
+            TripService.retrieveSingle(id)
+                .then(response => {
+                    let data = [...inputFields];
+                    data[0] = response.data;
+                    setInputFields(data);
+                    setTripId(response.data.id);
+                })
+                .catch(e => {
+                    console.log(e);
+                })
+        }
+    }
+
+    const deleteTrip = (id) => {
+        TripService.deleteTrip(id)
+            .then(response => {
+                console.log("deleted")
+                retrieveTripByCardId();
+            })
+            .catch(e => {
+                console.log(e);
+            })
     }
 
     const retrieveTripByCardId = () => {
@@ -63,14 +126,13 @@ function Trip({ cardId, toggle }) {
                 console.log(e);
             })
     }
-
     useEffect(() => {
         fetch && retrieveTripByCardId();
-    }, []);
+    }, [tripId]);
 
     return (
         <div className='flex flex-col mx-1 rounded'>
-            {toggle &&
+            {toggleForm &&
                 <div>
                     {
                         inputFields.map((input, index) => {
@@ -170,7 +232,9 @@ function Trip({ cardId, toggle }) {
                                         <div className='flex m-1 rounded text-black md:flex-col md:items-center'>
                                             <button type='button' onClick={addFields} className='px-1 rounded md:my-1 hover:bg-blue-400 hover:text-white'><AiOutlinePlus /></button>
                                             <button type='button' onClick={() => removeFields(index)} className='px-1 rounded md:my-1 hover:bg-blue-400 hover:text-white'><AiOutlineMinus /></button>
-                                            <button onClick={submit} className='px-1 ml-1 mb-1 bg-blue-400 text-white rounded md:my-1 hover:bg-slate-300 hover:text-gray-600'>Add</button>
+                                            {editMode ?
+                                                <button onClick={onSubmitEditedTrip} className='px-1 ml-1 mb-1 bg-blue-400 text-white rounded md:my-1 hover:bg-slate-300 hover:text-gray-600'>Save</button>
+                                                : <button onClick={onSubmitNewTrip} className='px-1 ml-1 mb-1 bg-blue-400 text-white rounded md:my-1 hover:bg-slate-300 hover:text-gray-600'>Add</button>}
                                         </div>
                                     </div>
                                 </form>
@@ -197,7 +261,8 @@ function Trip({ cardId, toggle }) {
                             <th className='px-2'>location</th>
                             <th className='px-2'>country</th>
                             <th className='px-2'>counter</th>
-                            <th className='px-2'>mileage</th>
+                            <th className='px-2 border-l-2 border-gray-300'>mileage</th>
+                            <th className=''></th>
                         </tr>
                     </thead>
                     <tbody className='text-slate-600'>
@@ -213,7 +278,13 @@ function Trip({ cardId, toggle }) {
                                 <td className=''>{trip.locationEnd}</td>
                                 <td className=''>{trip.countryEnd}</td>
                                 <td className=''>{trip.counterEnd}</td>
-                                <td className=''>{trip.carMileage}</td>
+                                <td className='border-l-2 border-gray-300'>{trip.carMileage}</td>
+                                <td className='bg-slate-600 text-slate-200'>
+                                    <div className='flex flex-col md:flex-row space-between md:justify-center rounded cursor-pointer py-1'>
+                                        <i className='rounded p-1 hover:bg-white hover:text-blue-600' onClick={() => loadTripToEdit(trip.id)}><AiOutlineEdit /></i>
+                                        <i className='rounded p-1 hover:bg-white hover:text-red-600' onClick={() => deleteTrip(trip.id)}><AiOutlineClose /></i>
+                                    </div>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
