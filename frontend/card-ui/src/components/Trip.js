@@ -131,13 +131,13 @@ function Trip({ cardId, toggleForm }) {
     }, [tripId]);
 
     return (
-        <div className='flex flex-col mx-1 rounded'>
+        <div className='flex flex-col mx-1 py-1 rounded'>
             {toggleForm &&
                 <div>
                     {
                         inputFields.map((input, index) => {
                             return (
-                                <form key={index} className='bg-slate-100 my-2'>
+                                <form key={index} className='bg-slate-100 mb-2'>
                                     <div className='md:flex'>
                                         <div className='md:py-1 md:border-r-2'>
                                             <label className='text-sm text-gray-400 uppercase'>start</label>

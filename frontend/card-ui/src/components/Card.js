@@ -125,7 +125,7 @@ function Card() {
 
     return (
         <div className='flex flex-col'>
-            <div className='flex w-full px-2 py-4 bg-blue-200 items-center'>
+            <div className='flex w-full px-2 py-4 bg-blue-200 items-center w-100'>
                 <form onSubmit={handleUsernameInLocalStorage} className='flex h-10 m-2 rounded bg-gray-200'>
                     <button className='h-full border-r border-gray-300 px-1 hover:bg-stone-100'><AiOutlineSearch /></button>
                     <input
@@ -138,8 +138,8 @@ function Card() {
                 </form>
                 <button onClick={() => onShowCardForm()} className='flex bg-blue-300 items-center rounded px-2 text-slate-600 font-bold text-sm uppercase h-10 hover:bg-gray-500 hover:text-slate-100'>add card</button>
             </div>
-            <div className='flex flex-col md:flex-row md:h-screen'>
-                <div className='flex md:flex-col bg-gray-100 overflow-x-auto pb-2  md:min-w-min'>
+            <div className='flex flex-col md:flex-row md:h-screen overflow-x-auto'>
+                <div className='flex md:flex-col bg-gray-100 overflow-x-auto pb-2 md:min-w-min'>
                     <div className={addCardToggle ? 'flex hidden' : 'flex'}>
                         <form onSubmit={(e) => onSubmit(e)} className='flex md:flex-row p-1 mr-1'>
                             <input
@@ -159,10 +159,10 @@ function Card() {
                             <div key={index} className='flex content-center md:w-full justify-center'>
                                 <div className={toggleFetch && card.id == cardId ? 'flex flex-col md:flex-row md:w-full md:justify-between rounded bg-slate-200 m-1 p-2 flex text-center items-center' : 'flex flex-col md:flex-row md:w-full md:justify-between bg-transparent rounded m-1 p-2 flex text-center items-center'}>
                                     <p>{card.number}</p>
-                                    <span className='flex'>
-                                        <i onClick={() => handleToggleCardContent(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200'><AiOutlineArrowRight className='icon rotate-90 md:rotate-0' /></i>
-                                        <i onClick={() => generatePdf(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200'><AiFillFilePdf /></i>
-                                        <i onClick={() => deleteCardById(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200'><AiOutlineDelete /></i>
+                                    <span className='flex md:ml-1'>
+                                        <i onClick={() => handleToggleCardContent(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 cursor-pointer'><AiOutlineArrowRight className='icon rotate-90 md:rotate-0' /></i>
+                                        <i onClick={() => generatePdf(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 cursor-pointer'><AiFillFilePdf /></i>
+                                        <i onClick={() => deleteCardById(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 cursor-pointer'><AiOutlineDelete /></i>
                                     </span>
                                 </div>
                             </div>
@@ -174,8 +174,8 @@ function Card() {
                         <button onClick={() => onToggleTripForm()} className='mx-1 bg-blue-300 px-1 rounded uppercase font-bold text-slate-100 hover:bg-slate-300 hover:text-gray-500 text-xs'>add trip</button>
                         <button onClick={() => onToggleFuelForm()} className='mx-1 bg-blue-300 px-1 rounded uppercase font-bold text-slate-100 hover:bg-slate-300 hover:text-gray-500 text-xs'>add fuel</button>
                     </div>
-                    {toggleFetch && <Trip toggleForm={addTripToggle} cardId={cardId} />}
-                    {toggleFetch && <Fuel toggleForm={addFuelToggle} cardId={cardId} />}
+                    <div className='m-1 bg-blue-200 rounded'>{toggleFetch && <Trip toggleForm={addTripToggle} cardId={cardId} />}</div>
+                    <div className='mx-1 bg-blue-200 rounded'>{toggleFetch && <Fuel toggleForm={addFuelToggle} cardId={cardId} />}</div>
                 </div>
             </div>
         </div>

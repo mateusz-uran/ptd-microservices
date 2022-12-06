@@ -82,13 +82,13 @@ function Fuel({ cardId, toggleForm }) {
     }, [fuelId]);
 
     return (
-        <div>
+        <div className='flex flex-col mx-1 py-1 rounded items-center'>
             {toggleForm &&
-                <div>
-                    <form className='bg-slate-100 my-2'>
-                        <div className='md:flex md:bg-red-600'>
+                <div className='md:w-1/2'>
+                    <form className='bg-slate-100 mb-1 rounded'>
+                        <div className='md:flex md:items-center'>
                             <div className='md:py-1 md:border-r-2'>
-                                <div className='grid grid-cols-2 gap-2 items-center px-1 sm:grid-cols-5'>
+                                <div className='grid grid-cols-4 gap-1 items-center px-1'>
                                     <input
                                         type={'text'}
                                         name={'currentDate'}
@@ -132,8 +132,8 @@ function Fuel({ cardId, toggleForm }) {
                     </form>
                 </div>
             }
-            <div className='flex w-full overflow-x-auto'>
-                <table className='w-full bg-slate-200 rounded text-sm table-auto text-center'>
+            <div className='flex w-full overflow-x-auto justify-center'>
+                <table className='w-full md:w-1/2 bg-slate-200 rounded text-sm table-auto text-center'>
                     <thead className='text-gray-400'>
                         <tr className='text-slate-500 border-b-2 border-white uppercase text-xs'>
                             <th className='px-2'>date</th>
@@ -151,7 +151,7 @@ function Fuel({ cardId, toggleForm }) {
                                 <td className=''>{fuel.vehicleCounter}</td>
                                 <td className=''>{fuel.refuelingAmount}</td>
                                 <td className='bg-slate-600 text-slate-200'>
-                                    <div className='flex flex-col md:flex-row space-between md:justify-center rounded cursor-pointer py-1'>
+                                    <div className='flex flex-col md:flex-row items-center md:justify-center rounded cursor-pointer py-1'>
                                         <i className='rounded p-1 hover:bg-white hover:text-blue-600' onClick={() => loadFuelToEdit(fuel.id)}><AiOutlineEdit /></i>
                                         <i className='rounded p-1 hover:bg-white hover:text-red-600' onClick={() => deleteFuel(fuel.id)}><AiOutlineClose /></i>
                                     </div>
