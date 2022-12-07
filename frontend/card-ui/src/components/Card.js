@@ -10,6 +10,8 @@ import {
     AiOutlineSearch,
     AiOutlinePlus
 } from 'react-icons/ai'
+import { BsFillSunFill } from 'react-icons/bs';
+import { MdDarkMode } from 'react-icons/md';
 
 function Card() {
     const [user, setUser] = useState('');
@@ -23,6 +25,13 @@ function Card() {
 
     const [addTripToggle, setAddTripToggle] = useState(false);
     const [addFuelToggle, setAddFuelToggle] = useState(false);
+
+    const [darkMode, setDarkMode] = useState();
+
+    function toggleDarkMode() {
+        setDarkMode(prevDarkMode => !prevDarkMode)
+        localStorage.setItem('themeMode', JSON.stringify(darkMode));
+    }
 
     const [card, setCard] = useState({
         number: '',
@@ -117,29 +126,44 @@ function Card() {
         setAddFuelToggle(!addFuelToggle);
     }
 
+    const retrieveDarkMode = () => {
+        if(darkMode != null && JSON.parse(localStorage.getItem('themeMode')) == false) {
+            setDarkMode(true);
+        } else {
+            setDarkMode(false);
+        }
+    }
+
     useEffect(() => {
         fetchedCards && retrieveCardsByUser();
         retrieveUser();
         setFetchedCards(false);
+        retrieveDarkMode();
     }, [user, cardId, fetchedCards]);
 
     return (
-        <div className='flex flex-col'>
-            <div className='flex w-full px-2 py-4 bg-blue-200 items-center w-100'>
-                <form onSubmit={handleUsernameInLocalStorage} className='flex h-10 m-2 rounded bg-gray-200'>
-                    <button className='h-full border-r border-gray-300 px-1 hover:bg-stone-100'><AiOutlineSearch /></button>
-                    <input
-                        type="text"
-                        className="w-full bg-transparent outline-0 px-1"
-                        placeholder="Username"
-                        value={user}
-                        onChange={(e) => setUser(e.target.value)}
-                    />
-                </form>
-                <button onClick={() => onShowCardForm()} className='flex bg-blue-300 items-center rounded px-2 text-slate-600 font-bold text-sm uppercase h-10 hover:bg-gray-500 hover:text-slate-100'>add card</button>
+        <div className={darkMode ? 'dark flex flex-col h-screen bg-slate-900' : 'flex flex-col h-screen'}>
+            <div className='flex w-full px-2 py-4 bg-blue-200 justify-between dark:bg-gray-600 items-center w-100'>
+                <div className='flex items-center'>
+                    <form onSubmit={handleUsernameInLocalStorage} className='flex h-10 m-2 rounded bg-gray-200'>
+                        <button className='h-full border-r border-gray-300 px-1 hover:bg-stone-100 rounded'><AiOutlineSearch /></button>
+                        <input
+                            type="text"
+                            className="w-full bg-transparent outline-0 px-1"
+                            placeholder="Username"
+                            value={user}
+                            onChange={(e) => setUser(e.target.value)}
+                        />
+                    </form>
+                    <button onClick={() => onShowCardForm()} className='flex bg-blue-300 dark:bg-gray-800 items-center rounded px-2 text-slate-600 dark:text-slate-300 font-bold text-sm uppercase h-10 hover:bg-gray-500 dark:hover:bg-gray-400 hover:text-slate-100 dark:hover:text-slate-800'>add card</button>
+                </div>
+                <div className='mx-1 rounded-lg'>
+                    <div onClick={darkMode ? undefined : toggleDarkMode} className={darkMode ? 'bg-gray-900 text-white p-1 rounded-t-lg' : 'text-white p-1 rounded-t-lg cursor-pointer'}><MdDarkMode /></div>
+                    <div onClick={darkMode ? toggleDarkMode : undefined} className={darkMode ? 'text-white p-1 rounded-b-lg cursor-pointer' : 'text-white p-1 bg-blue-400 rounded-b-lg'}><BsFillSunFill /></div>
+                </div>
             </div>
             <div className='flex flex-col md:flex-row md:h-screen overflow-x-auto'>
-                <div className='flex md:flex-col bg-gray-100 overflow-x-auto pb-2 md:min-w-min'>
+                <div className='flex md:flex-col bg-gray-100 dark:bg-gray-700 overflow-x-auto pb-2 md:min-w-min'>
                     <div className={addCardToggle ? 'flex hidden' : 'flex'}>
                         <form onSubmit={(e) => onSubmit(e)} className='flex md:flex-row p-1 mr-1'>
                             <input
@@ -147,9 +171,9 @@ function Card() {
                                 name={"number"}
                                 defaultValue={number || ''}
                                 onChange={(e) => onInputChange(e)}
-                                className='p-1'
+                                className='p-1 dark:bg-transparent dark:border-b-2 dark:border-slate-300 dark:text-slate-300 dark:outline-0'
                             />
-                            <button type={"submit"} className='p-1 m-1 hover:bg-zinc-200 rounded'>
+                            <button type={"submit"} className='p-1 m-1 dark:text-white dark:bg-slate-500 hover:bg-zinc-200 dark:hover:bg-slate-800 rounded'>
                                 <AiOutlinePlus />
                             </button>
                         </form>
@@ -157,25 +181,25 @@ function Card() {
                     <div className='flex md:flex-col items-center w-full'>
                         {cards.map((card, index) => (
                             <div key={index} className='flex content-center md:w-full justify-center'>
-                                <div className={toggleFetch && card.id == cardId ? 'flex flex-col md:flex-row md:w-full md:justify-between rounded bg-slate-200 m-1 p-2 flex text-center items-center' : 'flex flex-col md:flex-row md:w-full md:justify-between bg-transparent rounded m-1 p-2 flex text-center items-center'}>
+                                <div className={toggleFetch && card.id == cardId ? 'flex flex-col md:flex-row md:w-full md:justify-between rounded bg-slate-200 dark:bg-slate-600 m-1 p-2 flex dark:text-gray-300 text-center items-center' : 'flex flex-col md:flex-row md:w-full md:justify-between bg-transparent rounded m-1 p-2 flex dark:text-gray-300 text-center items-center'}>
                                     <p>{card.number}</p>
                                     <span className='flex md:ml-1'>
-                                        <i onClick={() => handleToggleCardContent(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 cursor-pointer'><AiOutlineArrowRight className='icon rotate-90 md:rotate-0' /></i>
-                                        <i onClick={() => generatePdf(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 cursor-pointer'><AiFillFilePdf /></i>
-                                        <i onClick={() => deleteCardById(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 cursor-pointer'><AiOutlineDelete /></i>
+                                        <i onClick={() => handleToggleCardContent(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black cursor-pointer'><AiOutlineArrowRight className='icon rotate-90 md:rotate-0' /></i>
+                                        <i onClick={() => generatePdf(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black  cursor-pointer'><AiFillFilePdf /></i>
+                                        <i onClick={() => deleteCardById(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black  cursor-pointer'><AiOutlineDelete /></i>
                                     </span>
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
-                <div className='flex flex-col w-full'>
-                    <div className='flex bg-slate-200 p-1 m-1 rounded'>
-                        <button onClick={() => onToggleTripForm()} className='mx-1 bg-blue-300 px-1 rounded uppercase font-bold text-slate-100 hover:bg-slate-300 hover:text-gray-500 text-xs'>add trip</button>
-                        <button onClick={() => onToggleFuelForm()} className='mx-1 bg-blue-300 px-1 rounded uppercase font-bold text-slate-100 hover:bg-slate-300 hover:text-gray-500 text-xs'>add fuel</button>
+                <div className='flex flex-col w-full dark:bg-gray-900'>
+                    <div className='flex bg-slate-200 dark:bg-gray-600 p-1 m-1 rounded'>
+                        <button onClick={() => onToggleTripForm()} className='mx-1 bg-blue-300 dark:bg-gray-900 px-1 rounded uppercase font-bold text-slate-100 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-blue-900 hover:text-gray-500 text-xs'>add trip</button>
+                        <button onClick={() => onToggleFuelForm()} className='mx-1 bg-blue-300 dark:bg-gray-900 px-1 rounded uppercase font-bold text-slate-100 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-blue-900 hover:text-gray-500 text-xs'>add fuel</button>
                     </div>
-                    <div className='m-1 bg-blue-200 rounded'>{toggleFetch && <Trip toggleForm={addTripToggle} cardId={cardId} />}</div>
-                    <div className='mx-1 bg-blue-200 rounded'>{toggleFetch && <Fuel toggleForm={addFuelToggle} cardId={cardId} />}</div>
+                    <div className='m-1 bg-blue-200 dark:bg-slate-600 rounded'>{toggleFetch && <Trip toggleForm={addTripToggle} cardId={cardId} theme={darkMode} />}</div>
+                    <div className='mx-1 bg-blue-200 dark:bg-slate-600 rounded'>{toggleFetch && <Fuel toggleForm={addFuelToggle} cardId={cardId} theme={darkMode} />}</div>
                 </div>
             </div>
         </div>
