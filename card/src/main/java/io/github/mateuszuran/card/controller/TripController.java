@@ -31,7 +31,7 @@ public class TripController {
 
     @PutMapping
     public ResponseEntity<?> edit(@RequestParam Long id, @RequestBody TripValues tripDto) {
-        service.update(id, tripDto);
+        service.updateTrip(id, tripDto);
         return ResponseEntity.ok().body(HttpStatus.CREATED);
     }
 
