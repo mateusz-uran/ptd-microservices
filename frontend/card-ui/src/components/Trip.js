@@ -279,7 +279,7 @@ function Trip({ cardId, toggleForm, theme }) {
                                 <td className=''>{trip.countryEnd}</td>
                                 <td className=''>{trip.counterEnd}</td>
                                 <td className='border-l-2 border-gray-300 dark:border-gray-400'>{trip.carMileage}</td>
-                                <td className='bg-slate-300 dark:bg-slate-800 text-slate-800'>
+                                <td className='bg-slate-300 dark:bg-slate-800 text-slate-600 dark:text-slate-300'>
                                     <div className='flex flex-col md:flex-row space-between md:justify-center rounded cursor-pointer py-1'>
                                         <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-blue-600 dark:hover:text-blue-800' onClick={() => loadTripToEdit(trip.id)}><AiOutlineEdit /></i>
                                         <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-red-600' onClick={() => deleteTrip(trip.id)}><AiOutlineClose /></i>

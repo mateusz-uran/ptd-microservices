@@ -12,6 +12,8 @@ import {
 } from 'react-icons/ai'
 import { BsFillSunFill } from 'react-icons/bs';
 import { MdDarkMode } from 'react-icons/md';
+import { useFormik } from 'formik';
+import { cardSchema } from '../schema/CardSchema';
 
 function Card() {
     const [user, setUser] = useState('');
@@ -28,22 +30,6 @@ function Card() {
 
     const [darkMode, setDarkMode] = useState();
 
-    function toggleDarkMode() {
-        setDarkMode(prevDarkMode => !prevDarkMode)
-        localStorage.setItem('themeMode', JSON.stringify(darkMode));
-    }
-
-    const [card, setCard] = useState({
-        number: '',
-        authorUsername: ''
-    });
-
-    const { number } = card;
-
-    const onInputChange = (e) => {
-        setCard({ ...card, [e.target.name]: e.target.value });
-    };
-
     const handleUsernameInLocalStorage = (e) => {
         e.preventDefault();
         localStorage.setItem('user', JSON.stringify(user));
@@ -55,20 +41,32 @@ function Card() {
         setStoredUser(JSON.parse(localStorage.getItem('user')));
     }
 
-    const onSubmit = (e) => {
-        e.preventDefault();
-        card.authorUsername = storedUser;
-        CardService.create(card).then(
+    const onSubmit = (values, actions) => {
+        values.authorUsername = storedUser;
+        CardService.create(values).then(
             (response) => {
                 console.log(response);
                 setFetchedCards(true);
-                e.target.reset();
-                setCard('');
+                actions.resetForm();
             },
             (error) => {
                 console.log(error);
             }
         )
+    }
+
+    const { values, errors, touched, handleBlur, handleChange, handleSubmit } = useFormik({
+        initialValues: {
+            number: '',
+            authorUsername: ''
+        },
+        validationSchema: cardSchema,
+        onSubmit
+    });
+
+    function toggleDarkMode() {
+        setDarkMode(prevDarkMode => !prevDarkMode)
+        localStorage.setItem('themeMode', JSON.stringify(darkMode));
     }
 
     const retrieveCardsByUser = () => {
@@ -127,7 +125,7 @@ function Card() {
     }
 
     const retrieveDarkMode = () => {
-        if(darkMode != null && JSON.parse(localStorage.getItem('themeMode')) == false) {
+        if (darkMode != null && JSON.parse(localStorage.getItem('themeMode')) == false) {
             setDarkMode(true);
         } else {
             setDarkMode(false);
@@ -142,7 +140,7 @@ function Card() {
     }, [user, cardId, fetchedCards]);
 
     return (
-        <div className={darkMode ? 'dark flex flex-col h-screen bg-slate-900' : 'flex flex-col h-screen'}>
+        <div className={`flex flex-col h-screen ${darkMode ? 'dark bg-slate-900' : ''}`}>
             <div className='flex w-full px-2 py-4 bg-blue-200 justify-between dark:bg-gray-600 items-center w-100'>
                 <div className='flex items-center'>
                     <form onSubmit={handleUsernameInLocalStorage} className='flex h-10 m-2 rounded bg-gray-200'>
@@ -163,22 +161,29 @@ function Card() {
                 </div>
             </div>
             <div className='flex flex-col md:flex-row md:h-screen overflow-x-auto'>
-                <div className='flex md:flex-col bg-gray-100 dark:bg-gray-700 overflow-x-auto pb-2 md:min-w-min'>
+                <div className='flex md:flex-col bg-gray-100 dark:bg-gray-700 pb-2 md:min-w-min'>
                     <div className={addCardToggle ? 'flex hidden' : 'flex'}>
-                        <form onSubmit={(e) => onSubmit(e)} className='flex md:flex-row p-1 mr-1'>
-                            <input
-                                type={"text"}
-                                name={"number"}
-                                defaultValue={number || ''}
-                                onChange={(e) => onInputChange(e)}
-                                className='p-1 dark:bg-transparent dark:border-b-2 dark:border-slate-300 dark:text-slate-300 dark:outline-0'
-                            />
-                            <button type={"submit"} className='p-1 m-1 dark:text-white dark:bg-slate-500 hover:bg-zinc-200 dark:hover:bg-slate-800 rounded'>
-                                <AiOutlinePlus />
-                            </button>
+                        <form onSubmit={handleSubmit} className='flex justify-between flex-col p-1 mr-1'>
+                            <div className='flex flex'>
+                                <input
+                                    type={"text"}
+                                    name={"number"}
+                                    id={"number"}
+                                    value={values.number}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    className={errors.number && touched.number ? 'p-1 dark:bg-transparent border-b-2 border-red-600 dark:text-slate-300 dark:outline-0' : 'p-1 dark:bg-transparent dark:border-b-2 dark:border-slate-300 dark:text-slate-300 dark:outline-0'}
+                                />
+                                <button type="submit" className='p-1 m-1 dark:text-white dark:bg-slate-500 hover:bg-zinc-200 dark:hover:bg-slate-800 rounded'>
+                                    <AiOutlinePlus />
+                                </button>
+                            </div>
+                            <div>
+                                {errors.number && touched.number && <p className='bg-transparent text-red-600 text-xs'>{errors.number}</p>}
+                            </div>
                         </form>
                     </div>
-                    <div className='flex md:flex-col items-center w-full'>
+                    <div className='flex md:flex-col items-center w-full overflow-x-auto'>
                         {cards.map((card, index) => (
                             <div key={index} className='flex content-center md:w-full justify-center'>
                                 <div className={toggleFetch && card.id == cardId ? 'flex flex-col md:flex-row md:w-full md:justify-between rounded bg-slate-200 dark:bg-slate-600 m-1 p-2 flex dark:text-gray-300 text-center items-center' : 'flex flex-col md:flex-row md:w-full md:justify-between bg-transparent rounded m-1 p-2 flex dark:text-gray-300 text-center items-center'}>

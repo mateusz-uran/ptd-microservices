@@ -148,8 +148,8 @@ function Fuel({ cardId, toggleForm, theme }) {
                             </div>
                             <div className='flex m-1 rounded text-black md:flex-col md:items-center'>
                                 {editMode ?
-                                    <button onClick={onSubmitEditedFuel} className='px-1 ml-1 mb-1 bg-blue-400 dark:bg-blue-900 text-white dark:text-slate-300 rounded md:my-1 hover:bg-slate-300 dark:hover:bg-gray-600 hover:text-gray-600'>Save</button>
-                                    : <button onClick={onSubmitNewFuel} className='px-1 ml-1 mb-1 bg-blue-400 dark:bg-blue-900 text-white dark:text-slate-300 rounded md:my-1 hover:bg-slate-300 dark:hover:bg-gray-600 hover:text-gray-600'>Add</button>}
+                                    <button onClick={onSubmitEditedFuel} className='px-1 mb-1 bg-blue-400 dark:bg-blue-900 text-white dark:text-slate-300 rounded md:my-1 hover:bg-slate-300 dark:hover:bg-gray-600 hover:text-gray-600'>Save</button>
+                                    : <button onClick={onSubmitNewFuel} className='px-1 mb-1 bg-blue-400 dark:bg-blue-900 text-white dark:text-slate-300 rounded md:my-1 hover:bg-slate-300 dark:hover:bg-gray-600 hover:text-gray-600'>Add</button>}
                             </div>
                         </div>
                     </form>
@@ -173,7 +173,7 @@ function Fuel({ cardId, toggleForm, theme }) {
                                 <td>{fuel.refuelingLocation}</td>
                                 <td>{fuel.vehicleCounter}</td>
                                 <td>{fuel.refuelingAmount}</td>
-                                <td className='bg-slate-300 dark:bg-slate-800 text-slate-800'>
+                                <td className='bg-slate-300 dark:bg-slate-800 text-slate-600 dark:text-slate-300'>
                                     <div className='flex flex-col md:flex-row items-center md:justify-center rounded cursor-pointer py-1'>
                                         <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-blue-600 dark:hover:text-blue-800' onClick={() => loadFuelToEdit(fuel.id)}><AiOutlineEdit /></i>
                                         <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-red-600' onClick={() => deleteFuel(fuel.id)}><AiOutlineClose /></i>
