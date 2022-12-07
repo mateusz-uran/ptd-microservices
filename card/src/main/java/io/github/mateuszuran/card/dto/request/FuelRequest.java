@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FuelRequest {
-    private String currentDate;
+    private String refuelingDate;
     private String refuelingLocation;
     private Integer vehicleCounter;
     private Integer refuelingAmount;

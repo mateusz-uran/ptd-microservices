@@ -22,10 +22,6 @@ public class FuelService {
         repository.save(fuel);
     }
 
-    private Fuel mapToFuelRequest(FuelRequest fuelRequest) {
-        return mapper.modelMapper().map(fuelRequest, Fuel.class);
-    }
-
     public FuelResponse getSingleFuel(Long id) {
         return repository.findById(id)
                 .stream()
@@ -55,5 +51,9 @@ public class FuelService {
 
     private FuelResponse mapToFuelResponse(Fuel fuel) {
         return mapper.modelMapper().map(fuel, FuelResponse.class);
+    }
+
+    private Fuel mapToFuelRequest(FuelRequest fuelRequest) {
+        return mapper.modelMapper().map(fuelRequest, Fuel.class);
     }
 }

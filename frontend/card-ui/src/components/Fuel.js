@@ -11,13 +11,13 @@ function Fuel({ cardId, toggleForm, theme }) {
     const [editMode, setEditMode] = useState(false);
 
     const [fuel, setFuel] = useState({
-        currentDate: '',
+        refuelingDate: '',
         refuelingLocation: '',
         vehicleCounter: '',
         refuelingAmount: ''
     });
 
-    const { currentDate, refuelingLocation, vehicleCounter, refuelingAmount } = fuel;
+    const { refuelingDate, refuelingLocation, vehicleCounter, refuelingAmount } = fuel;
 
     const handleFormChange = (e) => {
         setFuel({ ...fuel, [e.target.name]: e.target.value });
@@ -31,7 +31,7 @@ function Fuel({ cardId, toggleForm, theme }) {
                     console.log(response);
                     retrieveFuelByCardId();
                     setFuel({
-                        currentDate: '',
+                        refuelingDate: '',
                         refuelingLocation: '',
                         vehicleCounter: '',
                         refuelingAmount: ''
@@ -45,14 +45,37 @@ function Fuel({ cardId, toggleForm, theme }) {
 
     const onSubmitEditedFuel = (e) => {
         e.preventDefault();
-
+        FuelService.editFuel(fuelId, fuel).then(
+            (response) => {
+                console.log(response);
+                retrieveFuelByCardId();
+                setFuel({
+                    refuelingDate: '',
+                    refuelingLocation: '',
+                    vehicleCounter: '',
+                    refuelingAmount: ''
+                })
+                setEditMode(false);
+            },
+            (error) => {
+                console.log(error);
+            }
+        )
     }
 
     const loadFuelToEdit = (id) => {
         if (toggleForm == false) {
             console.log("Toggle form first")
         } else {
-
+            setEditMode(true);
+            FuelService.singleFuel(id)
+                .then(response => {
+                    setFuel(response.data);
+                    setFuelId(response.data.id);
+                })
+                .catch(e => {
+                    console.log(e);
+                })
         }
     }
 
@@ -91,9 +114,9 @@ function Fuel({ cardId, toggleForm, theme }) {
                                 <div className='grid grid-cols-4 gap-1 items-center px-1'>
                                     <input
                                         type={'text'}
-                                        name={'currentDate'}
+                                        name={'refuelingDate'}
                                         placeholder={'date'}
-                                        value={currentDate}
+                                        value={refuelingDate}
                                         onChange={event => handleFormChange(event)}
                                         className='px-1 border-b-2 border-transparent outline-0 focus:border-b-2 focus:border-slate-300 dark:bg-slate-500 dark:text-slate-200 dark:focus:border-blue-800'
                                     />
@@ -146,11 +169,11 @@ function Fuel({ cardId, toggleForm, theme }) {
                     <tbody className='text-slate-600 dark:text-slate-300'>
                         {fuels.map((fuel, index) => (
                             <tr key={index} className='border-t-2 border-white dark:border-zinc-500 hover:bg-blue-400 dark:hover:bg-slate-900 hover:text-white dark:hover:text-gray-200'>
-                                <td className=''>{fuel.currentDate}</td>
-                                <td className=''>{fuel.refuelingLocation}</td>
-                                <td className=''>{fuel.vehicleCounter}</td>
-                                <td className=''>{fuel.refuelingAmount}</td>
-                                <td className='bg-slate-600 dark:bg-slate-800 text-slate-200'>
+                                <td>{fuel.currentDate}</td>
+                                <td>{fuel.refuelingLocation}</td>
+                                <td>{fuel.vehicleCounter}</td>
+                                <td>{fuel.refuelingAmount}</td>
+                                <td className='bg-slate-300 dark:bg-slate-800 text-slate-800'>
                                     <div className='flex flex-col md:flex-row items-center md:justify-center rounded cursor-pointer py-1'>
                                         <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-blue-600 dark:hover:text-blue-800' onClick={() => loadFuelToEdit(fuel.id)}><AiOutlineEdit /></i>
                                         <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-red-600' onClick={() => deleteFuel(fuel.id)}><AiOutlineClose /></i>
