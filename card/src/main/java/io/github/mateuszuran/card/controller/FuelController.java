@@ -1,6 +1,7 @@
 package io.github.mateuszuran.card.controller;
 
 import io.github.mateuszuran.card.dto.request.FuelRequest;
+import io.github.mateuszuran.card.dto.response.FuelResponse;
 import io.github.mateuszuran.card.service.FuelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,9 +20,15 @@ public class FuelController {
         return ResponseEntity.ok().body(HttpStatus.CREATED);
     }
 
+    @GetMapping
+    public ResponseEntity<FuelResponse> getFuel(@RequestParam Long id) {
+        return ResponseEntity.ok().body(fuelService.getSingleFuel(id));
+    }
+
+
     @PutMapping
     public ResponseEntity<?> ediFuel(@RequestBody FuelRequest fuelDto, @RequestParam Long id) {
-        fuelService.updateFuel(id, fuelDto);
+        fuelService.update(id, fuelDto);
         return ResponseEntity.ok().body(HttpStatus.CREATED);
     }
 
