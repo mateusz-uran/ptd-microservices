@@ -142,14 +142,16 @@ function Trip({ cardId, toggleForm, theme }) {
                                         <div className='md:py-1 md:border-r-2 dark:border-slate-900'>
                                             <label className='text-sm text-gray-400 uppercase'>start</label>
                                             <div className='grid grid-cols-2 gap-2 items-center px-1 sm:grid-cols-5'>
-                                                <input
-                                                    type={'text'}
-                                                    name={'dayStart'}
-                                                    placeholder={'day'}
-                                                    value={input.dayStart}
-                                                    onChange={event => handleFormChange(index, event)}
-                                                    className='px-1 border-b-2 border-transparent outline-0 focus:border-b-2 focus:border-slate-300 dark:bg-slate-500 dark:text-slate-200 dark:focus:border-blue-800'
-                                                />
+                                                <div className='flex flex-col'>
+                                                    <input
+                                                        type={'text'}
+                                                        name={'dayStart'}
+                                                        placeholder={'day'}
+                                                        value={input.dayStart}
+                                                        onChange={event => handleFormChange(index, event)}
+                                                        className='px-1 border-b-2 border-transparent outline-0 focus:border-b-2 focus:border-slate-300 dark:bg-slate-500 dark:text-slate-200 dark:focus:border-blue-800'
+                                                    />
+                                                </div>
                                                 <input
                                                     type={'text'}
                                                     name={'hourStart'}

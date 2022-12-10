@@ -8,3 +8,4 @@
 /user/target/
 /vehicle/target/
 /vehicle/src/main/java/io/github/mateuszuran/config/CloudinaryConfig.java
+/postgres-vehicle/

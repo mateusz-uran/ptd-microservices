@@ -30,7 +30,7 @@ function TripFormik({ cardId, toggleForm, theme }) {
                     dayEnd: trip.dayEnd, hourEnd: trip.hourEnd, locationEnd: trip.locationEnd, countryEnd: trip.countryEnd, counterEnd: trip.counterEnd
                 }]
             }
-        }
+        } else { console.log("Trip value is empty.") }
     }
 
     const onSubmitNewTrip = (values, actions) => {

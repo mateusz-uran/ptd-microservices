@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CardService from '../services/CardService';
 import PdfService from '../services/PdfService';
-import Trip from './Trip';
 import Fuel from './Fuel';
 import TripFormik from './TripFormik';
 import {
@@ -44,6 +43,7 @@ function Card() {
     }
 
     const onSubmit = (values, actions) => {
+        console.log(values);
         values.authorUsername = storedUser;
         CardService.create(values).then(
             (response) => {
@@ -205,7 +205,6 @@ function Card() {
                         <button onClick={() => onToggleTripForm()} className='mx-1 bg-blue-300 dark:bg-gray-900 px-1 rounded uppercase font-bold text-slate-100 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-blue-900 hover:text-gray-500 text-xs'>add trip</button>
                         <button onClick={() => onToggleFuelForm()} className='mx-1 bg-blue-300 dark:bg-gray-900 px-1 rounded uppercase font-bold text-slate-100 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-blue-900 hover:text-gray-500 text-xs'>add fuel</button>
                     </div>
-                    {/* <div className='m-1 bg-blue-200 dark:bg-slate-600 rounded'>{toggleFetch && <Trip toggleForm={addTripToggle} cardId={cardId} theme={darkMode} />}</div> */}
                     <div className='mx-1 bg-blue-200 dark:bg-slate-600 rounded'>{toggleFetch && <TripFormik toggleForm={addTripToggle} cardId={cardId} theme={darkMode} />}</div>
                     <div className='mx-1 bg-blue-200 dark:bg-slate-600 rounded'>{toggleFetch && <Fuel toggleForm={addFuelToggle} cardId={cardId} theme={darkMode} />}</div>
                 </div>
