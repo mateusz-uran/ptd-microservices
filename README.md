@@ -56,6 +56,7 @@ Technologies:
 * Docker
 * React
 * Tailwind CSS
+* Formik and Yup
 * Cloudinary
 
 
