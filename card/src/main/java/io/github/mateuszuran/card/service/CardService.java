@@ -140,7 +140,7 @@ public class CardService {
     private FuelResponse mapToFuelResponse(Fuel fuel) {
         return FuelResponse.builder()
                 .id(fuel.getId())
-                .currentDate(fuel.getRefuelingDate())
+                .refuelingDate(fuel.getRefuelingDate())
                 .refuelingLocation(fuel.getRefuelingLocation())
                 .vehicleCounter(fuel.getVehicleCounter())
                 .refuelingAmount(fuel.getRefuelingAmount())
