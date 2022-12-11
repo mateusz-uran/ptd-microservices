@@ -29,7 +29,7 @@ public class PdfController {
     private final ServletContext servletContext;
     private final TemplateEngine templateEngine;
 
-    @CircuitBreaker(name = "card", fallbackMethod = "cardFailureResponse")
+    @CircuitBreaker(name = "card")
     @GetMapping
     public ResponseEntity<?> getPDF(@RequestParam Long id, HttpServletRequest request, HttpServletResponse response) {
         var card = service.calculateCardDataForPdf(id);

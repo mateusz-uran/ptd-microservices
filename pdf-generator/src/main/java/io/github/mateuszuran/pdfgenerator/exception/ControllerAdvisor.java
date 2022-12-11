@@ -1,4 +1,4 @@
-package io.github.mateuszuran.card.exception;
+package io.github.mateuszuran.pdfgenerator.exception;
 
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import lombok.AllArgsConstructor;
@@ -23,6 +23,15 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
                 HttpStatus.SERVICE_UNAVAILABLE.value(),
                 ErrorMessage.trimExceptionTimestamp(),
                 "Service not available at the moment, please try again later.");
+        return new ResponseEntity<>(message, HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
+    @ExceptionHandler(CardNotReadyException.class)
+    public ResponseEntity<ErrorMessage> handleCardNotReadyException(CardNotReadyException exception) {
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.FORBIDDEN.value(),
+                ErrorMessage.trimExceptionTimestamp(),
+                exception.getMessage());
         return new ResponseEntity<>(message, HttpStatus.SERVICE_UNAVAILABLE);
     }
 
