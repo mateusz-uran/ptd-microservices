@@ -82,16 +82,16 @@ public class CardService {
 
     public void toggleCard(Long id) {
         var result = repository.findById(id).orElseThrow();
-        result.setDone(!result.isDone());
-        repository.save(result);
-        if (result.isDone()) {
-            kafkaTemplate
-                    .send("notificationTopic",
-                            new CardToggledEvent(result.getNumber(), "Card is ready."));
+        if (result.getTrips().isEmpty() && result.getFuels().isEmpty()) {
+            throw new IllegalArgumentException("Card is empty");
         } else {
-            kafkaTemplate
-                    .send("notificationTopic",
-                            new CardToggledEvent(result.getNumber(), "Card is not ready yet."));
+            result.setDone(!result.isDone());
+            repository.save(result);
+            if (result.isDone()) {
+                kafkaTemplate.send("notificationTopic", new CardToggledEvent(result.getNumber(), "Card is ready."));
+            } else {
+                kafkaTemplate.send("notificationTopic", new CardToggledEvent(result.getNumber(), "Card is not ready yet."));
+            }
         }
     }
 

@@ -57,7 +57,6 @@ public class PdfController {
                 .response("Service was unable to generate PDF, try again later")
                 .exception(exception.getMessage())
                 .build();
-        log.info("Card service is not responding");
         return ResponseEntity.ok().body(failureResponse);
     }
 

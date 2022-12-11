@@ -7,7 +7,6 @@ import { cardSchema } from '../validation/schema';
 import { fuelSchema } from '../validation/schema';
 
 function Fuel({ cardId, toggleForm, theme }) {
-
     const [fuels, setFuels] = useState([]);
     const [fetch, setFetch] = useState(true);
     const [fuelId, setFuelId] = useState();
@@ -172,7 +171,7 @@ function Fuel({ cardId, toggleForm, theme }) {
                                 <td>{fuel.vehicleCounter}</td>
                                 <td>{fuel.refuelingAmount}</td>
                                 <td className='bg-slate-300 dark:bg-slate-800 text-slate-600 dark:text-slate-300'>
-                                    <div className='flex flex-col md:flex-row items-center md:justify-center rounded cursor-pointer py-1'>
+                                    <div className={`flex flex-col md:flex-row items-center md:justify-center rounded cursor-pointer py-1`}>
                                         <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-blue-600 dark:hover:text-blue-800' onClick={() => loadFuelToEdit(fuel.id)}><AiOutlineEdit /></i>
                                         <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-red-600' onClick={() => deleteFuel(fuel.id)}><AiOutlineClose /></i>
                                     </div>

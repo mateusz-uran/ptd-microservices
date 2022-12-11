@@ -44,18 +44,21 @@ function Card() {
     }
 
     const onSubmit = (values, actions) => {
-        console.log(values);
-        values.authorUsername = storedUser;
-        CardService.create(values).then(
-            (response) => {
-                console.log(response);
-                setFetchedCards(true);
-                actions.resetForm();
-            },
-            (error) => {
-                console.log(error);
-            }
-        )
+        if (storedUser != null) {
+            values.authorUsername = storedUser;
+            CardService.create(values).then(
+                (response) => {
+                    console.log(response);
+                    setFetchedCards(true);
+                    actions.resetForm();
+                },
+                (error) => {
+                    console.log(error);
+                }
+            )
+        } else {
+            console.log("no user available");
+        }
     }
 
     const { values, errors, touched, handleBlur, handleChange, handleSubmit } = useFormik({
@@ -75,6 +78,7 @@ function Card() {
     const retrieveCardsByUser = () => {
         CardService.getCardByUser(JSON.parse(localStorage.getItem('user')))
             .then(response => {
+                console.log(response);
                 setCards(response.data);
             })
             .catch(e => {
@@ -94,8 +98,8 @@ function Card() {
             })
     }
 
-    const toggleCard = () => {
-        CardService.toggleCard(cardId)
+    const toggleCard = (id) => {
+        CardService.toggleCard(id)
             .then(
                 (response) => {
                     console.log(response);
@@ -111,13 +115,22 @@ function Card() {
         try {
             PdfService.getPdf(id)
                 .then(response => {
-                    //Create a Blob from the PDF Stream
-                    const file = new Blob([response.data], { type: "application/pdf" });
-                    //Build a URL from the file
-                    const fileURL = URL.createObjectURL(file);
-                    //Open the URL on new Window
-                    const pdfWindow = window.open();
-                    pdfWindow.location.href = fileURL;
+                    console.log(response);
+                    // //Create a Blob from the PDF Stream
+                    // const file = new Blob([response.data], { type: "application/pdf" });
+                    // //Build a URL from the file
+                    // const fileURL = URL.createObjectURL(file);
+                    // //Open the URL on new Window
+                    // const pdfWindow = window.open();
+                    // pdfWindow.location.href = fileURL;
+                    const url = window.URL.createObjectURL(new Blob([response.data]));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', 'file.pdf'); //or any other extension
+                    document.body.appendChild(link);
+                    link.click()
+                }, (error) => {
+                    console.log(error);
                 })
         } catch (error) {
             console.log(error);
@@ -211,6 +224,7 @@ function Card() {
                                             <i onClick={() => handleToggleCardContent(card.id, card.done)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black cursor-pointer'><AiOutlineArrowRight className='icon rotate-90 md:rotate-0' /></i>
                                             <i onClick={() => generatePdf(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black  cursor-pointer'><AiFillFilePdf /></i>
                                             <i onClick={() => deleteCardById(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black  cursor-pointer'><AiOutlineDelete /></i>
+                                            <button onClick={() => toggleCard(card.id)}>toggle</button>
                                         </span>
                                     </div>
                                 </div>
@@ -224,7 +238,7 @@ function Card() {
                         <button onClick={toggleFetch ? () => onToggleFuelForm() : undefined} className={`mx-1 bg-blue-300 dark:bg-gray-900 px-1 rounded uppercase font-bold text-slate-100 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-blue-900 hover:text-gray-500 text-xs ${!toggleFetch ? 'opacity-10 hover:cursor-not-allowed' : 'opacity-100'}`}>add fuel</button>
                     </div>
                     <div className='m-1 bg-blue-200 dark:bg-slate-600 rounded'>{toggleFetch && <TripFormik toggleForm={addTripToggle} cardId={cardId} cardReady={cardReady} toggleCard={toggleCard} theme={darkMode} />}</div>
-                    <div className='m-1 bg-blue-200 dark:bg-slate-600 rounded'>{toggleFetch && <Fuel toggleForm={addFuelToggle} cardId={cardId} theme={darkMode} />}</div>
+                    <div className='m-1 bg-blue-200 dark:bg-slate-600 rounded'>{toggleFetch && <Fuel toggleForm={addFuelToggle} cardId={cardId} cardReady={cardReady} toggleCard={toggleCard} theme={darkMode} />}</div>
                 </div>
             </div>
         </div>
