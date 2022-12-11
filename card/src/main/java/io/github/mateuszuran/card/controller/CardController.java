@@ -49,10 +49,15 @@ public class CardController {
                 .body(service.getTripsFromCard(id));
     }
 
-    @PutMapping
+    @GetMapping("/toggle")
     public ResponseEntity<?> toggleCard(@RequestParam Long id) {
         service.toggleCard(id);
         return ResponseEntity.ok().body("Card toggled");
+    }
+
+    @GetMapping("/single")
+    public ResponseEntity<?> getSingleCard(@RequestParam Long id) {
+        return ResponseEntity.ok().body("single card" + id);
     }
 
     @GetMapping(params = "id")

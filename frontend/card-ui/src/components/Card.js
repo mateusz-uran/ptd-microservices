@@ -24,6 +24,7 @@ function Card() {
     const [cards, setCards] = useState([]);
     const [toggleFetch, setToggleFetch] = useState(false);
     const [cardId, setCardId] = useState();
+    const [cardReady, setCardReady] = useState();
     const [addCardToggle, setAddCardToggle] = useState(true);
 
     const [addTripToggle, setAddTripToggle] = useState(false);
@@ -92,6 +93,20 @@ function Card() {
                 console.log(e);
             })
     }
+
+    const toggleCard = () => {
+        CardService.toggleCard(cardId)
+            .then(
+                (response) => {
+                    console.log(response);
+                    retrieveCardsByUser();
+                },
+                (error) => {
+                    console.log(error);
+                }
+            )
+    }
+
     const generatePdf = (id) => {
         try {
             PdfService.getPdf(id)
@@ -109,8 +124,9 @@ function Card() {
         }
     }
 
-    const handleToggleCardContent = (id) => {
+    const handleToggleCardContent = (id, done) => {
         setCardId(id);
+        setCardReady(done);
         setToggleFetch(!toggleFetch);
     }
 
@@ -135,8 +151,8 @@ function Card() {
     }
 
     useEffect(() => {
-        fetchedCards && retrieveCardsByUser();
         retrieveUser();
+        fetchedCards && retrieveCardsByUser();
         setFetchedCards(false);
         retrieveDarkMode();
     }, [user, cardId, fetchedCards]);
@@ -188,13 +204,15 @@ function Card() {
                     <div className='flex md:flex-col items-center w-full overflow-x-auto'>
                         {cards.map((card, index) => (
                             <div key={index} className='flex content-center md:w-full justify-center'>
-                                <div className={toggleFetch && card.id == cardId ? 'flex flex-col md:flex-row md:w-full md:justify-between rounded bg-slate-200 dark:bg-slate-600 m-1 p-2 flex dark:text-gray-300 text-center items-center' : 'flex flex-col md:flex-row md:w-full md:justify-between bg-transparent rounded m-1 p-2 flex dark:text-gray-300 text-center items-center'}>
-                                    <p>{card.number}</p>
-                                    <span className='flex md:ml-1'>
-                                        <i onClick={() => handleToggleCardContent(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black cursor-pointer'><AiOutlineArrowRight className='icon rotate-90 md:rotate-0' /></i>
-                                        <i onClick={() => generatePdf(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black  cursor-pointer'><AiFillFilePdf /></i>
-                                        <i onClick={() => deleteCardById(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black  cursor-pointer'><AiOutlineDelete /></i>
-                                    </span>
+                                <div className={`flex w-full m-1 rounded border-2 border-transparent ${card.done ? 'border-green-600' : ''}`}>
+                                    <div className={toggleFetch && card.id == cardId ? 'flex flex-col md:flex-row md:w-full md:justify-between rounded bg-slate-200 dark:bg-slate-600 p-2 flex dark:text-gray-300 text-center items-center' : 'flex flex-col md:flex-row md:w-full md:justify-between bg-transparent rounded p-2 flex dark:text-gray-300 text-center items-center'}>
+                                        <p>{card.number}</p>
+                                        <span className='flex md:ml-1'>
+                                            <i onClick={() => handleToggleCardContent(card.id, card.done)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black cursor-pointer'><AiOutlineArrowRight className='icon rotate-90 md:rotate-0' /></i>
+                                            <i onClick={() => generatePdf(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black  cursor-pointer'><AiFillFilePdf /></i>
+                                            <i onClick={() => deleteCardById(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black  cursor-pointer'><AiOutlineDelete /></i>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         ))}
@@ -202,11 +220,11 @@ function Card() {
                 </div>
                 <div className='flex flex-col w-full dark:bg-gray-900'>
                     <div className='flex bg-slate-200 dark:bg-gray-600 p-1 m-1 rounded'>
-                        <button onClick={() => onToggleTripForm()} className='mx-1 bg-blue-300 dark:bg-gray-900 px-1 rounded uppercase font-bold text-slate-100 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-blue-900 hover:text-gray-500 text-xs'>add trip</button>
-                        <button onClick={() => onToggleFuelForm()} className='mx-1 bg-blue-300 dark:bg-gray-900 px-1 rounded uppercase font-bold text-slate-100 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-blue-900 hover:text-gray-500 text-xs'>add fuel</button>
+                        <button onClick={toggleFetch ? () => onToggleTripForm() : undefined} className={`mx-1 bg-blue-300 dark:bg-gray-900 px-1 rounded uppercase font-bold text-slate-100 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-blue-900 hover:text-gray-500 text-xs ${!toggleFetch ? 'opacity-10 hover:cursor-not-allowed' : 'opacity-100'}`}>add trip</button>
+                        <button onClick={toggleFetch ? () => onToggleFuelForm() : undefined} className={`mx-1 bg-blue-300 dark:bg-gray-900 px-1 rounded uppercase font-bold text-slate-100 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-blue-900 hover:text-gray-500 text-xs ${!toggleFetch ? 'opacity-10 hover:cursor-not-allowed' : 'opacity-100'}`}>add fuel</button>
                     </div>
-                    <div className='mx-1 bg-blue-200 dark:bg-slate-600 rounded'>{toggleFetch && <TripFormik toggleForm={addTripToggle} cardId={cardId} theme={darkMode} />}</div>
-                    <div className='mx-1 bg-blue-200 dark:bg-slate-600 rounded'>{toggleFetch && <Fuel toggleForm={addFuelToggle} cardId={cardId} theme={darkMode} />}</div>
+                    <div className='m-1 bg-blue-200 dark:bg-slate-600 rounded'>{toggleFetch && <TripFormik toggleForm={addTripToggle} cardId={cardId} cardReady={cardReady} toggleCard={toggleCard} theme={darkMode} />}</div>
+                    <div className='m-1 bg-blue-200 dark:bg-slate-600 rounded'>{toggleFetch && <Fuel toggleForm={addFuelToggle} cardId={cardId} theme={darkMode} />}</div>
                 </div>
             </div>
         </div>

@@ -5,7 +5,8 @@ import { Formik, Field, Form, ErrorMessage, FieldArray, FormikProvider, useFormi
 import { trips } from '../validation/schema';
 import { AiOutlinePlus, AiOutlineMinus, AiOutlineEdit, AiOutlineClose } from 'react-icons/ai';
 
-function TripFormik({ cardId, toggleForm, theme }) {
+function TripFormik({ cardId, cardReady, toggleCard, toggleForm, theme }) {
+    const [done, setDone] = useState(cardReady);
     const [fetch, setFetch] = useState(true);
     const [editMode, setEditMode] = useState(false);
     const [fetchedTrips, setFetchedTrips] = useState([]);
@@ -96,13 +97,25 @@ function TripFormik({ cardId, toggleForm, theme }) {
             })
     }
 
+    const handleToggleCard = () => {
+        toggleCard(cardId);
+        setDone(!done);
+    }
+
     useEffect(() => {
         fetch && retrieveTripByCardId();
-    }, [editMode]);
+    }, [editMode, done]);
 
     return (
         <div className={theme ? 'dark flex flex-col mx-1 py-1 rounded' : 'flex flex-col mx-1 py-1 rounded'}>
-            {toggleForm &&
+            <div className='text-left my-1'>
+                <div className='flex px-1 items-center font-bold bg-blue-300 dark:bg-slate-700 text-white dark:text-slate-400 rounded text-xs'>
+                    Status: {done ?
+                        <p onClick={handleToggleCard} className='mx-1 px-1 dark:bg-slate-800 uppercase rounded hover:dark:bg-slate-400 hover:dark:text-slate-800 hover:cursor-pointer'>done</p> :
+                        <p onClick={handleToggleCard} className='mx-1 px-1 dark:bg-slate-800 uppercase rounded hover:dark:bg-slate-400 hover:dark:text-slate-800 hover:cursor-pointer'>undone</p>}
+                </div>
+            </div>
+            {toggleForm && !done &&
                 <Formik
                     initialValues={initialValues}
                     validationSchema={trips}
@@ -405,8 +418,8 @@ function TripFormik({ cardId, toggleForm, theme }) {
                                 <td className=''>{trip.countryEnd}</td>
                                 <td className=''>{trip.counterEnd}</td>
                                 <td className='border-l-2 border-gray-300 dark:border-gray-400'>{trip.carMileage}</td>
-                                <td className='bg-slate-600 dark:bg-slate-800 text-slate-200'>
-                                    <div className='flex flex-col md:flex-row space-between md:justify-center rounded cursor-pointer py-1'>
+                                <td className='bg-slate-300 dark:bg-slate-800 text-slate-600 dark:text-slate-300'>
+                                    <div className={`flex flex-col md:flex-row space-between md:justify-center rounded cursor-pointer py-1 ${done ? '' : 'invisible'}`}>
                                         <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-blue-600 dark:hover:text-blue-800' onClick={() => loadTripToEdit(trip.id)}><AiOutlineEdit /></i>
                                         <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-red-600' onClick={() => deleteTrip(trip.id)}><AiOutlineClose /></i>
                                     </div>

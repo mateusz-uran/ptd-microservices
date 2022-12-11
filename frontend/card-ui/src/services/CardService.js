@@ -25,6 +25,14 @@ const getFuelFromCard = id => {
 
 const deleteCard = id => {
     return http.delete('/', { params: { id: id } })
+};
+
+const toggleCard = id => {
+    return http.get("/toggle", { params: { id: id } })
+};
+
+const singleCard = id => {
+    return http.get('/single', { params: { id: id } })
 }
 
 const CardService = {
@@ -32,7 +40,9 @@ const CardService = {
     create,
     getTripFromCard,
     getFuelFromCard,
-    deleteCard
+    deleteCard,
+    toggleCard,
+    singleCard
 };
 
 export default CardService;

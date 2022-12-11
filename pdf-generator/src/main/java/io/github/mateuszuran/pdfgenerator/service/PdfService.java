@@ -26,14 +26,17 @@ public class PdfService {
 
     public CardPDFResponse calculateCardDataForPdf(Long id) {
         var card = getCardValues(id);
-
-        var minimalCounter = card.getTrips().stream().mapToInt(TripResponse::getCounterStart).min()
-                .orElseThrow(NoSuchElementException::new);
-        var maximumCounter = card.getTrips().stream().mapToInt(TripResponse::getCounterEnd).max()
-                .orElseThrow(NoSuchElementException::new);
-        var sumMileage = card.getTrips().stream().mapToInt(TripResponse::getCarMileage).sum();
-        var cardRefuelingAmount = card.getFuels().stream().mapToInt(FuelResponse::getRefuelingAmount).sum();
-        card.setCounter(new CounterResponse(minimalCounter, maximumCounter, sumMileage, cardRefuelingAmount));
-        return card;
+        if (card.getCardInfo().isDone()) {
+            var minimalCounter = card.getTrips().stream().mapToInt(TripResponse::getCounterStart).min()
+                    .orElseThrow(NoSuchElementException::new);
+            var maximumCounter = card.getTrips().stream().mapToInt(TripResponse::getCounterEnd).max()
+                    .orElseThrow(NoSuchElementException::new);
+            var sumMileage = card.getTrips().stream().mapToInt(TripResponse::getCarMileage).sum();
+            var cardRefuelingAmount = card.getFuels().stream().mapToInt(FuelResponse::getRefuelingAmount).sum();
+            card.setCounter(new CounterResponse(minimalCounter, maximumCounter, sumMileage, cardRefuelingAmount));
+            return card;
+        } else {
+            throw new IllegalArgumentException("Card not done yet");
+        }
     }
 }
