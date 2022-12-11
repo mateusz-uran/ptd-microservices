@@ -24,6 +24,8 @@ spring:
             allowedMethods:
               - GET
               - POST
+              - PUT
+              - DELETE
       routes:
         - id: user-service
           uri: lb://user-service

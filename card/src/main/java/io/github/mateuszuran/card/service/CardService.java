@@ -82,9 +82,17 @@ public class CardService {
 
     public void toggleCard(Long id) {
         var result = repository.findById(id).orElseThrow();
-        result.setDone(true);
+        result.setDone(!result.isDone());
         repository.save(result);
-        kafkaTemplate.send("notificationTopic", new CardToggledEvent(result.getNumber()));
+        if (result.isDone()) {
+            kafkaTemplate
+                    .send("notificationTopic",
+                            new CardToggledEvent(result.getNumber(), "Card is ready."));
+        } else {
+            kafkaTemplate
+                    .send("notificationTopic",
+                            new CardToggledEvent(result.getNumber(), "Card is not ready yet."));
+        }
     }
 
     public CardPDFResponse sendCardToPDF(Long id) {
