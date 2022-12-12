@@ -29,7 +29,7 @@ public class PdfController {
     private final ServletContext servletContext;
     private final TemplateEngine templateEngine;
 
-    @CircuitBreaker(name = "card", fallbackMethod = "cardFailureResponse")
+    @CircuitBreaker(name = "card")
     @GetMapping
     public ResponseEntity<?> getPDF(@RequestParam Long id, HttpServletRequest request, HttpServletResponse response) {
         var card = service.calculateCardDataForPdf(id);
@@ -57,7 +57,6 @@ public class PdfController {
                 .response("Service was unable to generate PDF, try again later")
                 .exception(exception.getMessage())
                 .build();
-        log.info("Card service is not responding");
         return ResponseEntity.ok().body(failureResponse);
     }
 

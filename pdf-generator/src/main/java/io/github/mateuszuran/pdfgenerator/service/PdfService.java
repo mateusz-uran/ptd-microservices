@@ -4,6 +4,7 @@ import io.github.mateuszuran.pdfgenerator.dto.CardPDFResponse;
 import io.github.mateuszuran.pdfgenerator.dto.CounterResponse;
 import io.github.mateuszuran.pdfgenerator.dto.FuelResponse;
 import io.github.mateuszuran.pdfgenerator.dto.TripResponse;
+import io.github.mateuszuran.pdfgenerator.exception.CardNotReadyException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -36,7 +37,7 @@ public class PdfService {
             card.setCounter(new CounterResponse(minimalCounter, maximumCounter, sumMileage, cardRefuelingAmount));
             return card;
         } else {
-            throw new IllegalArgumentException("Card not done yet");
+            throw new CardNotReadyException();
         }
     }
 }

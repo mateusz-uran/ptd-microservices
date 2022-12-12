@@ -1,4 +1,10 @@
 .App {
-    text-align: center;
-  }
-  
+  text-align: center;
+}
+
+.toast-err {
+  display: flex;
+  font-size: .7rem;
+  padding: 0;
+  margin: 0;
+}
