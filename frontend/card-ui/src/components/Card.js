@@ -8,7 +8,9 @@ import {
     AiFillFilePdf,
     AiOutlineDelete,
     AiOutlineSearch,
-    AiOutlinePlus
+    AiOutlinePlus,
+    AiOutlineEye,
+    AiOutlineEyeInvisible
 } from 'react-icons/ai'
 import { BsFillSunFill } from 'react-icons/bs';
 import { MdDarkMode } from 'react-icons/md';
@@ -104,6 +106,7 @@ function Card() {
                 (response) => {
                     console.log(response);
                     retrieveCardsByUser();
+                    setToggleFetch(false);
                 },
                 (error) => {
                     console.log(error);
@@ -142,10 +145,16 @@ function Card() {
     }
 
     const onToggleTripForm = () => {
+        if(cardReady) {
+            console.log("Card is ready, cant edit");
+        }
         setAddTripToggle(!addTripToggle);
     }
 
     const onToggleFuelForm = () => {
+        if(cardReady) {
+            console.log("Card is ready, cant edit");
+        }
         setAddFuelToggle(!addFuelToggle);
     }
 
@@ -218,7 +227,9 @@ function Card() {
                                             <i onClick={() => handleToggleCardContent(card.id, card.done)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black cursor-pointer'><AiOutlineArrowRight className='icon rotate-90 md:rotate-0' /></i>
                                             <i onClick={() => generatePdf(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black  cursor-pointer'><AiFillFilePdf /></i>
                                             <i onClick={() => deleteCardById(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black  cursor-pointer'><AiOutlineDelete /></i>
-                                            <button onClick={() => toggleCard(card.id)}>toggle</button>
+                                            <i onClick={() => toggleCard(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black cursor-pointer'>
+                                                {card.done ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+                                            </i>
                                         </span>
                                     </div>
                                 </div>
