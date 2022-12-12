@@ -16,6 +16,8 @@ import { BsFillSunFill } from 'react-icons/bs';
 import { MdDarkMode } from 'react-icons/md';
 import { useFormik } from 'formik';
 import { cardSchema } from '../validation/schema';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function Card() {
@@ -32,17 +34,22 @@ function Card() {
     const [addTripToggle, setAddTripToggle] = useState(false);
     const [addFuelToggle, setAddFuelToggle] = useState(false);
 
-    const [darkMode, setDarkMode] = useState();
+    const [darkMode, setDarkMode] = useState(JSON.parse(localStorage.getItem('themeMode')));
 
     const handleUsernameInLocalStorage = (e) => {
         e.preventDefault();
         localStorage.setItem('user', JSON.stringify(user));
         setUser('');
         setFetchedCards(true);
+        setToggleFetch(false);
     };
 
     const retrieveUser = () => {
-        setStoredUser(JSON.parse(localStorage.getItem('user')));
+        if (!localStorage.getItem('user')) {
+            console.log('Local storage is empty')
+        } else {
+            setStoredUser(JSON.parse(localStorage.getItem('user')));
+        }
     }
 
     const onSubmit = (values, actions) => {
@@ -56,6 +63,7 @@ function Card() {
                 },
                 (error) => {
                     console.log(error);
+                    toast.error(error.response.data.description);
                 }
             )
         } else {
@@ -78,14 +86,17 @@ function Card() {
     }
 
     const retrieveCardsByUser = () => {
-        CardService.getCardByUser(JSON.parse(localStorage.getItem('user')))
-            .then(response => {
-                console.log(response);
-                setCards(response.data);
-            })
-            .catch(e => {
-                console.log(e);
-            })
+        if (!localStorage.getItem('user')) {
+            console.log("Cant find any user")
+        } else {
+            CardService.getCardByUser(JSON.parse(localStorage.getItem('user')))
+                .then(response => {
+                    setCards(response.data);
+                })
+                .catch(e => {
+                    console.log(e);
+                })
+        }
     }
 
     const deleteCardById = (id) => {
@@ -97,6 +108,7 @@ function Card() {
             })
             .catch(e => {
                 console.log(e);
+                toast.error(e.response.data.description);
             })
     }
 
@@ -110,6 +122,7 @@ function Card() {
                 },
                 (error) => {
                     console.log(error);
+                    toast.error(error.response.data.description);
                 }
             )
     }
@@ -145,21 +158,21 @@ function Card() {
     }
 
     const onToggleTripForm = () => {
-        if(cardReady) {
-            console.log("Card is ready, cant edit");
+        if (cardReady) {
+            toast.error("Card is ready, cant edit");
         }
         setAddTripToggle(!addTripToggle);
     }
 
     const onToggleFuelForm = () => {
-        if(cardReady) {
-            console.log("Card is ready, cant edit");
+        if (cardReady) {
+            toast.error("Card is ready, cant edit");
         }
         setAddFuelToggle(!addFuelToggle);
     }
 
     const retrieveDarkMode = () => {
-        if (darkMode != null && JSON.parse(localStorage.getItem('themeMode')) == false) {
+        if (darkMode !== null && JSON.parse(localStorage.getItem('themeMode')) === false) {
             setDarkMode(true);
         } else {
             setDarkMode(false);
@@ -175,6 +188,18 @@ function Card() {
 
     return (
         <div className={`flex flex-col h-screen ${darkMode ? 'dark bg-slate-900' : ''}`}>
+            <ToastContainer
+                position="top-right"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick={false}
+                rtl={false}
+                pauseOnFocusLoss={false}
+                draggable
+                pauseOnHover={false}
+                theme={darkMode ? 'dark' : 'light'}
+            />
             <div className='flex w-full px-2 py-4 bg-blue-200 justify-between dark:bg-gray-600 items-center w-100'>
                 <div className='flex items-center'>
                     <form onSubmit={handleUsernameInLocalStorage} className='flex h-10 m-2 rounded bg-gray-200'>
@@ -187,7 +212,9 @@ function Card() {
                             onChange={(e) => setUser(e.target.value)}
                         />
                     </form>
-                    <button onClick={() => onShowCardForm()} className='flex bg-blue-300 dark:bg-gray-800 items-center rounded px-2 text-slate-600 dark:text-slate-300 font-bold text-sm uppercase h-10 hover:bg-gray-500 dark:hover:bg-gray-400 hover:text-slate-100 dark:hover:text-slate-800'>add card</button>
+                    {storedUser !== null && storedUser !== '' &&
+                        <button onClick={() => onShowCardForm()} className='flex bg-blue-300 dark:bg-gray-800 items-center rounded px-2 text-slate-600 dark:text-slate-300 font-bold text-sm uppercase h-10 hover:bg-gray-500 dark:hover:bg-gray-400 hover:text-slate-100 dark:hover:text-slate-800'>add card</button>
+                    }
                 </div>
                 <div className='mx-1 rounded-lg'>
                     <div onClick={darkMode ? undefined : toggleDarkMode} className={darkMode ? 'bg-gray-900 text-white p-1 rounded-t-lg' : 'text-white p-1 rounded-t-lg cursor-pointer'}><MdDarkMode /></div>
@@ -218,23 +245,32 @@ function Card() {
                         </form>
                     </div>
                     <div className='flex md:flex-col items-center w-full overflow-x-auto'>
-                        {cards.map((card, index) => (
-                            <div key={index} className='flex content-center md:w-full justify-center'>
-                                <div className={`flex w-full m-1 rounded border-2 border-transparent ${card.done ? 'border-green-600' : ''}`}>
-                                    <div className={toggleFetch && card.id == cardId ? 'flex flex-col md:flex-row md:w-full md:justify-between rounded bg-slate-200 dark:bg-slate-600 p-2 flex dark:text-gray-300 text-center items-center' : 'flex flex-col md:flex-row md:w-full md:justify-between bg-transparent rounded p-2 flex dark:text-gray-300 text-center items-center'}>
-                                        <p>{card.number}</p>
-                                        <span className='flex md:ml-1'>
-                                            <i onClick={() => handleToggleCardContent(card.id, card.done)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black cursor-pointer'><AiOutlineArrowRight className='icon rotate-90 md:rotate-0' /></i>
-                                            <i onClick={() => generatePdf(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black  cursor-pointer'><AiFillFilePdf /></i>
-                                            <i onClick={() => deleteCardById(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black  cursor-pointer'><AiOutlineDelete /></i>
-                                            <i onClick={() => toggleCard(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black cursor-pointer'>
-                                                {card.done ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-                                            </i>
-                                        </span>
+                        {cards && cards.length > 0 ?
+                            cards.map((card, index) => (
+                                <div key={index} className='flex content-center md:w-full justify-center'>
+                                    <div className={`flex w-full m-1 rounded border-2 border-transparent ${card.done ? 'border-green-600' : ''}`}>
+                                        <div className={toggleFetch && card.id === cardId ? 'flex flex-col md:flex-row md:w-full md:justify-between rounded bg-slate-200 dark:bg-slate-600 p-2 flex dark:text-gray-300 text-center items-center' : 'flex flex-col md:flex-row md:w-full md:justify-between bg-transparent rounded p-2 flex dark:text-gray-300 text-center items-center'}>
+                                            <p>{card.number}</p>
+                                            <span className='flex md:ml-1'>
+                                                <i onClick={() => handleToggleCardContent(card.id, card.done)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black cursor-pointer'><AiOutlineArrowRight className={toggleFetch && card.id === cardId ? '-rotate-90 md:rotate-180' : 'rotate-90 md:rotate-0'} /></i>
+                                                <i onClick={() => generatePdf(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black  cursor-pointer'><AiFillFilePdf /></i>
+                                                <i onClick={() => deleteCardById(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black  cursor-pointer'><AiOutlineDelete /></i>
+                                                <i onClick={() => toggleCard(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black cursor-pointer'>
+                                                    {card.done ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+                                                </i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )) :
+                            <div className='flex content-center md:w-full justify-center'>
+                                <div className='flex w-full m-1 rounded border-2 border-transparent'>
+                                    <div className='flex flex-col md:flex-row md:w-full md:justify-between rounded bg-slate-200 dark:bg-slate-600 p-2 flex dark:text-gray-300 text-center items-center'>
+                                        <p className='text-xs'>No cards found for {storedUser}</p>
                                     </div>
                                 </div>
                             </div>
-                        ))}
+                        }
                     </div>
                 </div>
                 <div className='flex flex-col w-full dark:bg-gray-900'>

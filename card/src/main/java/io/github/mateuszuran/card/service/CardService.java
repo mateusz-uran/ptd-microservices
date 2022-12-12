@@ -3,6 +3,9 @@ package io.github.mateuszuran.card.service;
 import io.github.mateuszuran.card.dto.request.CardRequest;
 import io.github.mateuszuran.card.dto.response.*;
 import io.github.mateuszuran.card.event.CardToggledEvent;
+import io.github.mateuszuran.card.exception.card.CardEmptyException;
+import io.github.mateuszuran.card.exception.card.CardExistsException;
+import io.github.mateuszuran.card.exception.card.CardNotFoundException;
 import io.github.mateuszuran.card.model.Card;
 import io.github.mateuszuran.card.model.Fuel;
 import io.github.mateuszuran.card.model.Trip;
@@ -37,7 +40,7 @@ public class CardService {
     public void saveCard(CardRequest cardDto) {
         if (repository.existsByNumber(cardDto.getNumber())) {
             log.info("Card {} with given number already exists.", cardDto.getNumber());
-            throw new IllegalArgumentException("Card with given number already exists.");
+            throw new CardExistsException(cardDto.getNumber());
         } else {
             var username = getUsername(cardDto.getAuthorUsername());
             Card card = Card.builder()
@@ -51,7 +54,7 @@ public class CardService {
 
     public Card checkIfCardExists(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Card not found"));
+                .orElseThrow(CardNotFoundException::new);
     }
 
     public List<CardResponse> getAllCardsByUser(String username) {
@@ -64,7 +67,7 @@ public class CardService {
 
     public List<FuelResponse> getFuelsFromCard(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Card not found"))
+                .orElseThrow(CardNotFoundException::new)
                 .getFuels().stream()
                 .map(this::mapToFuelResponse)
                 .sorted(Comparator.comparing(FuelResponse::getVehicleCounter))
@@ -73,7 +76,7 @@ public class CardService {
 
     public List<TripResponse> getTripsFromCard(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Card not found"))
+                .orElseThrow(CardNotFoundException::new)
                 .getTrips().stream()
                 .map(this::mapToTripResponse)
                 .sorted(Comparator.comparing(TripResponse::getCounterEnd))
@@ -83,7 +86,7 @@ public class CardService {
     public void toggleCard(Long id) {
         var result = repository.findById(id).orElseThrow();
         if (result.getTrips().isEmpty() && result.getFuels().isEmpty()) {
-            throw new IllegalArgumentException("Card is empty");
+            throw new CardEmptyException();
         } else {
             result.setDone(!result.isDone());
             repository.save(result);
@@ -101,9 +104,10 @@ public class CardService {
     }
 
     public void deleteCard(Long id) {
-        repository.findById(id)
-                .ifPresent(card -> {
-                    repository.deleteById(card.getId());
+        repository.findById(id).ifPresentOrElse(
+                (card) -> repository.deleteById(card.getId()),
+                () -> {
+                    throw new CardNotFoundException();
                 });
     }
 
