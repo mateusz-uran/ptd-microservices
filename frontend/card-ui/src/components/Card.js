@@ -4,13 +4,8 @@ import PdfService from '../services/PdfService';
 import Fuel from './Fuel';
 import TripFormik from './TripFormik';
 import {
-    AiOutlineArrowRight,
-    AiFillFilePdf,
-    AiOutlineDelete,
-    AiOutlineSearch,
-    AiOutlinePlus,
-    AiOutlineEye,
-    AiOutlineEyeInvisible
+    AiOutlineArrowRight, AiFillFilePdf, AiOutlineDelete, AiOutlineSearch,
+    AiOutlinePlus, AiOutlineEye, AiOutlineEyeInvisible
 } from 'react-icons/ai'
 import { BsFillSunFill } from 'react-icons/bs';
 import { MdDarkMode } from 'react-icons/md';
@@ -18,6 +13,7 @@ import { useFormik } from 'formik';
 import { cardSchema } from '../validation/schema';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Alert from './Alert';
 
 
 function Card() {
@@ -97,6 +93,17 @@ function Card() {
                     console.log(e);
                 })
         }
+    }
+
+    const [confirmOpen, setConfirmOpen] = useState();
+    const [id, setId] = useState();
+    const [cardNumber, setCardNumber] = useState();
+
+    const handleModal = (id, number) => {
+        console.log(id);
+        setConfirmOpen(true);
+        setId(id);
+        setCardNumber(number);
     }
 
     const deleteCardById = (id) => {
@@ -200,6 +207,13 @@ function Card() {
                 pauseOnHover={false}
                 theme={darkMode ? 'dark' : 'light'}
             />
+            <Alert
+                title={"Delete card with " + cardNumber}
+                id={id}
+                open={confirmOpen}
+                setOpen={setConfirmOpen}
+                onConfirm={deleteCardById} 
+            />
             <div className='flex w-full px-2 py-4 bg-blue-200 justify-between dark:bg-gray-600 items-center w-100'>
                 <div className='flex items-center'>
                     <form onSubmit={handleUsernameInLocalStorage} className='flex h-10 m-2 rounded bg-gray-200'>
@@ -254,7 +268,7 @@ function Card() {
                                             <span className='flex md:ml-1'>
                                                 <i onClick={() => handleToggleCardContent(card.id, card.done)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black cursor-pointer'><AiOutlineArrowRight className={toggleFetch && card.id === cardId ? '-rotate-90 md:rotate-180' : 'rotate-90 md:rotate-0'} /></i>
                                                 <i onClick={card.done ? () => generatePdf(card.id) : undefined} className={`px-1 rounded ${card.done ? 'cursor-pointer hover:bg-blue-200 active:bg-blue-200 dark:active:bg-slate-400 hover:text-black active:text-black dark:hover:bg-slate-400' : 'cursor-not-allowed'}`}><AiFillFilePdf /></i>
-                                                <i onClick={() => deleteCardById(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black'><AiOutlineDelete /></i>
+                                                <i onClick={() => handleModal(card.id, card.number)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black'><AiOutlineDelete /></i>
                                                 <i onClick={() => toggleCard(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black cursor-pointer'>
                                                     {card.done ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
                                                 </i>

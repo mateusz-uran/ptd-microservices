@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import TripService from '../services/TripService';
 import CardService from '../services/CardService';
-import { Formik, Field, Form, ErrorMessage, FieldArray, FormikProvider, useFormik, useFormikContext, setIn, insert } from 'formik';
+import { Formik, Field, Form, ErrorMessage, FieldArray } from 'formik';
 import { trips } from '../validation/schema';
 import { AiOutlinePlus, AiOutlineMinus, AiOutlineEdit, AiOutlineClose } from 'react-icons/ai';
 
@@ -60,7 +60,7 @@ function TripFormik({ cardId, cardReady, toggleForm, theme }) {
     }
 
     const loadTripToEdit = (id) => {
-        if (toggleForm == false) {
+        if (toggleForm === false) {
             console.log("Toggle form first")
         } else {
             setEditMode(true);
