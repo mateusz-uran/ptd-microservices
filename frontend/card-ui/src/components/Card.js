@@ -209,7 +209,8 @@ function Card() {
                 theme={darkMode ? 'dark' : 'light'}
             />
             <Alert
-                title={"Delete card with " + cardNumber}
+                title={"Are you sure?"}
+                description={"All data from card " + cardNumber + " will be erased and cannot be restored."}
                 id={id}
                 open={confirmOpen}
                 setOpen={setConfirmOpen}

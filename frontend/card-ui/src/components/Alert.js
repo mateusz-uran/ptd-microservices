@@ -1,56 +1,45 @@
 import React, { useState, useEffect } from 'react';
+import { SlClose } from 'react-icons/sl';
 
 function Alert(props) {
-    const { title, id, open, setOpen, onConfirm, modalTheme } = props;
+    const { title, description, id, open, setOpen, onConfirm, modalTheme } = props;
 
     return (
         <div className={modalTheme ? 'dark' : ''}>
             {open ? (
                 <>
-                    <div
-                        className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-                    >
-                        <div className="relative w-auto my-6 mx-auto max-w-3xl">
-                            {/*content*/}
-                            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white dark:bg-slate-800 outline-none focus:outline-none">
-                                {/*header*/}
-                                <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-                                    <h3 className="text-3xl font-semibold">
-                                        Modal Title
-                                    </h3>
-                                    <button
-                                        className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                                        onClick={() => setOpen(false)}
-                                    >
-                                        <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                                            ×
-                                        </span>
-                                    </button>
+                    <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                        <div className="relative w-auto my-6 mx-auto max-w-1xl">
+                            <div className="rounded relative flex flex-col bg-white dark:bg-slate-800">
+                                <div className='flex justify-end p-2 items-center'>
+                                    <button onClick={() => setOpen(false)} className='dark:text-slate-300'>×</button>
+                                </div>
+                                <div className='flex justify-center text-red-400'>
+                                    <SlClose size='3.5rem' />
                                 </div>
                                 {/*body*/}
-                                <div className="relative p-6 flex-auto">
-                                    <p className="my-4 text-slate-500 text-lg leading-relaxed">
-                                        {title}
-                                    </p>
+                                <div className="dark:text-slate-400 p-2 flex-auto">
+                                    <h3 className='my-4'>{title}</h3>
+                                    <p className="text-sm mx-4">{description}</p>
                                 </div>
                                 {/*footer*/}
-                                <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+                                <div className="flex items-center justify-end mx-4 p-6">
                                     <button
-                                        className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        className="dark:bg-slate-200 dark:text-slate-400 font-bold uppercase text-sm mr-1 mb-1 px-6 py-2 rounded shadow outline-none dark:hover:bg-slate-500 dark:hover:text-slate-200 ease-linear transition-all duration-150"
                                         type="button"
                                         onClick={() => setOpen(false)}
                                     >
                                         Close
                                     </button>
                                     <button
-                                        className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                        className="dark:bg-red-400 dark:text-slate-200 font-bold uppercase text-sm mr-1 mb-1 px-6 py-2 rounded shadow outline-none dark:hover:bg-red-500 dark:hover:text-slate-100 ease-linear transition-all duration-150"
                                         type="button"
                                         onClick={() => {
                                             setOpen(false);
                                             onConfirm(id);
                                         }}
                                     >
-                                        Save Changes
+                                        Delete
                                     </button>
                                 </div>
                             </div>

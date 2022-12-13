@@ -109,7 +109,8 @@ function Fuel(props) {
     return (
         <div className={theme ? 'dark mx-1 py-1 rounded' : 'mx-1 py-1 rounded'}>
             <Alert
-                title={"Delete fuel?"}
+                title={"Are you sure?"}
+                description={"This process cannot be undone."}
                 id={id}
                 open={confirmOpen}
                 setOpen={setConfirmOpen}
