@@ -19,7 +19,6 @@ function Fuel(props) {
             FuelService.editFuel(fuelId, values)
                 .then(
                     (response) => {
-                        console.log(response);
                         retrieveFuelByCardId();
                         actions.resetForm();
                         setEditMode(false);
@@ -32,7 +31,6 @@ function Fuel(props) {
             FuelService.create(cardId, values)
                 .then(
                     (response) => {
-                        console.log(response);
                         retrieveFuelByCardId();
                         actions.resetForm();
                     },
@@ -84,7 +82,6 @@ function Fuel(props) {
     const deleteFuel = (id) => {
         FuelService.deleteFuel(id)
             .then(response => {
-                console.log("deleted");
                 retrieveFuelByCardId();
             })
             .catch(e => {
