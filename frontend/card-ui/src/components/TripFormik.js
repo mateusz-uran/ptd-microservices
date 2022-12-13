@@ -372,51 +372,52 @@ function TripFormik({ cardId, cardReady, toggleForm, theme }) {
                     </Formik>
                 }
                 <div className='flex w-full overflow-x-auto'>
+                    {fetchedTrips && fetchedTrips.length > 0 ?
                     <table className='w-full bg-slate-200 dark:bg-slate-700 rounded text-sm table-auto text-center'>
-                        <thead className='text-gray-400'>
-                            <tr className='uppercase border-b-2 border-white dark:border-zinc-500'>
-                                <th colSpan={5} className='border-r-4 border-blue-300 dark:border-blue-900'>start</th>
-                                <th colSpan={5} className=''>end</th>
+                    <thead className='text-gray-400'>
+                        <tr className='uppercase border-b-2 border-white dark:border-zinc-500'>
+                            <th colSpan={5} className='border-r-4 border-blue-300 dark:border-blue-900'>start</th>
+                            <th colSpan={5} className=''>end</th>
+                        </tr>
+                        <tr className='text-slate-500 dark:text-slate-400 border-b-2 border-white dark:border-zinc-500 uppercase text-xs'>
+                            <th className='px-2'>day</th>
+                            <th className='px-2'>hour</th>
+                            <th className='px-2'>location</th>
+                            <th className='px-2'>country</th>
+                            <th className='px-2 border-r-4 border-blue-300 dark:border-blue-900'>counter</th>
+                            <th className='px-2'>day</th>
+                            <th className='px-2'>hour</th>
+                            <th className='px-2'>location</th>
+                            <th className='px-2'>country</th>
+                            <th className='px-2'>counter</th>
+                            <th className='px-2 border-l-2 border-gray-300 dark:border-gray-400'>mileage</th>
+                            <th className=''></th>
+                        </tr>
+                    </thead>
+                    <tbody className='text-slate-600 dark:text-slate-300'>
+                        {fetchedTrips.map((trip, index) => (
+                            <tr key={index} className='border-t-2 border-white dark:border-zinc-500 hover:bg-blue-400 dark:hover:bg-slate-900 hover:text-white dark:hover:text-gray-200'>
+                                <td className=''>{trip.dayStart}</td>
+                                <td className=''>{trip.hourStart}</td>
+                                <td className=''>{trip.locationStart}</td>
+                                <td className=''>{trip.countryStart}</td>
+                                <td className='border-r-4 border-blue-300 dark:border-blue-900'>{trip.counterStart}</td>
+                                <td className=''>{trip.dayEnd}</td>
+                                <td className=''>{trip.hourEnd}</td>
+                                <td className=''>{trip.locationEnd}</td>
+                                <td className=''>{trip.countryEnd}</td>
+                                <td className=''>{trip.counterEnd}</td>
+                                <td className='border-l-2 border-gray-300 dark:border-gray-400'>{trip.carMileage}</td>
+                                <td className='bg-slate-300 dark:bg-slate-800 text-slate-600 dark:text-slate-300'>
+                                    <div className={`flex flex-col md:flex-row space-between md:justify-center rounded cursor-pointer py-1 ${cardReady ? 'invisible' : ''}`}>
+                                        <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-blue-600 dark:hover:text-blue-800' onClick={() => loadTripToEdit(trip.id)}><AiOutlineEdit /></i>
+                                        <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-red-600' onClick={() => deleteTrip(trip.id)}><AiOutlineClose /></i>
+                                    </div>
+                                </td>
                             </tr>
-                            <tr className='text-slate-500 dark:text-slate-400 border-b-2 border-white dark:border-zinc-500 uppercase text-xs'>
-                                <th className='px-2'>day</th>
-                                <th className='px-2'>hour</th>
-                                <th className='px-2'>location</th>
-                                <th className='px-2'>country</th>
-                                <th className='px-2 border-r-4 border-blue-300 dark:border-blue-900'>counter</th>
-                                <th className='px-2'>day</th>
-                                <th className='px-2'>hour</th>
-                                <th className='px-2'>location</th>
-                                <th className='px-2'>country</th>
-                                <th className='px-2'>counter</th>
-                                <th className='px-2 border-l-2 border-gray-300 dark:border-gray-400'>mileage</th>
-                                <th className=''></th>
-                            </tr>
-                        </thead>
-                        <tbody className='text-slate-600 dark:text-slate-300'>
-                            {fetchedTrips.map((trip, index) => (
-                                <tr key={index} className='border-t-2 border-white dark:border-zinc-500 hover:bg-blue-400 dark:hover:bg-slate-900 hover:text-white dark:hover:text-gray-200'>
-                                    <td className=''>{trip.dayStart}</td>
-                                    <td className=''>{trip.hourStart}</td>
-                                    <td className=''>{trip.locationStart}</td>
-                                    <td className=''>{trip.countryStart}</td>
-                                    <td className='border-r-4 border-blue-300 dark:border-blue-900'>{trip.counterStart}</td>
-                                    <td className=''>{trip.dayEnd}</td>
-                                    <td className=''>{trip.hourEnd}</td>
-                                    <td className=''>{trip.locationEnd}</td>
-                                    <td className=''>{trip.countryEnd}</td>
-                                    <td className=''>{trip.counterEnd}</td>
-                                    <td className='border-l-2 border-gray-300 dark:border-gray-400'>{trip.carMileage}</td>
-                                    <td className='bg-slate-300 dark:bg-slate-800 text-slate-600 dark:text-slate-300'>
-                                        <div className={`flex flex-col md:flex-row space-between md:justify-center rounded cursor-pointer py-1 ${cardReady ? 'invisible' : ''}`}>
-                                            <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-blue-600 dark:hover:text-blue-800' onClick={() => loadTripToEdit(trip.id)}><AiOutlineEdit /></i>
-                                            <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-red-600' onClick={() => deleteTrip(trip.id)}><AiOutlineClose /></i>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                        ))}
+                    </tbody>
+                </table> : <div className='flex justify-center w-full'><p className='text-slate-500 text-sm'>There is no trips information.</p></div>}
                 </div>
             </div>
         </div>
