@@ -6,9 +6,10 @@ import io.github.mateuszuran.card.event.CardToggledEvent;
 import io.github.mateuszuran.card.exception.card.CardEmptyException;
 import io.github.mateuszuran.card.exception.card.CardExistsException;
 import io.github.mateuszuran.card.exception.card.CardNotFoundException;
+import io.github.mateuszuran.card.mapper.CardMapper;
+import io.github.mateuszuran.card.mapper.FuelMapper;
+import io.github.mateuszuran.card.mapper.TripMapper;
 import io.github.mateuszuran.card.model.Card;
-import io.github.mateuszuran.card.model.Fuel;
-import io.github.mateuszuran.card.model.Trip;
 import io.github.mateuszuran.card.repository.CardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,9 @@ public class CardService {
     private final CardRepository repository;
     private final WebClient.Builder webClientBuilder;
     private final KafkaTemplate<String, CardToggledEvent> kafkaTemplate;
+    private final TripMapper tripMapper;
+    private final FuelMapper fuelMapper;
+    private final CardMapper cardMapper;
 
     private UserResponse getUsername(String username) {
         return webClientBuilder.build().get()
@@ -61,7 +65,7 @@ public class CardService {
         var user = getUsername(username);
         var cards = repository.findAllByUserId(user.getId());
         return cards.stream()
-                .map(this::mapToCardResponse)
+                .map(cardMapper::mapToCardResponseWithModelMapper)
                 .collect(Collectors.toList());
     }
 
@@ -69,7 +73,7 @@ public class CardService {
         return repository.findById(id)
                 .orElseThrow(CardNotFoundException::new)
                 .getFuels().stream()
-                .map(this::mapToFuelResponse)
+                .map(fuelMapper::mapToFuelResponseWithModelMapper)
                 .sorted(Comparator.comparing(FuelResponse::getVehicleCounter))
                 .collect(Collectors.toList());
     }
@@ -78,7 +82,7 @@ public class CardService {
         return repository.findById(id)
                 .orElseThrow(CardNotFoundException::new)
                 .getTrips().stream()
-                .map(this::mapToTripResponse)
+                .map(tripMapper::mapToTripResponseWithModelMapper)
                 .sorted(Comparator.comparing(TripResponse::getCounterEnd))
                 .collect(Collectors.toList());
     }
@@ -117,11 +121,11 @@ public class CardService {
                 .number(card.getNumber())
                 .done(card.isDone()).build();
         var trips = card.getTrips().stream()
-                .map(this::mapToTripResponse)
+                .map(tripMapper::mapToTripResponseWithModelMapper)
                 .sorted(Comparator.comparing(TripResponse::getCounterEnd))
                 .toList();
         var fuels = card.getFuels().stream()
-                .map(this::mapToFuelResponse)
+                .map(fuelMapper::mapToFuelResponseWithModelMapper)
                 .sorted(Comparator.comparing(FuelResponse::getVehicleCounter))
                 .toList();
         return CardPDFResponse.builder()
@@ -130,40 +134,5 @@ public class CardService {
                 .fuels(fuels)
                 .build();
 
-    }
-
-    private TripResponse mapToTripResponse(Trip trip) {
-        return TripResponse.builder()
-                .id(trip.getId())
-                .dayStart(trip.getDayStart())
-                .dayEnd(trip.getDayEnd())
-                .hourStart(trip.getHourStart())
-                .hourEnd(trip.getHourEnd())
-                .locationStart(trip.getLocationStart())
-                .locationEnd(trip.getLocationEnd())
-                .countryStart(trip.getCountryStart())
-                .countryEnd(trip.getCountryEnd())
-                .counterStart(trip.getCounterStart())
-                .counterEnd(trip.getCounterEnd())
-                .carMileage(trip.getCarMileage())
-                .build();
-    }
-
-    private FuelResponse mapToFuelResponse(Fuel fuel) {
-        return FuelResponse.builder()
-                .id(fuel.getId())
-                .refuelingDate(fuel.getRefuelingDate())
-                .refuelingLocation(fuel.getRefuelingLocation())
-                .vehicleCounter(fuel.getVehicleCounter())
-                .refuelingAmount(fuel.getRefuelingAmount())
-                .build();
-    }
-
-    private CardResponse mapToCardResponse(Card card) {
-        return CardResponse.builder()
-                .id(card.getId())
-                .number(card.getNumber())
-                .done(card.isDone())
-                .build();
     }
 }

@@ -91,6 +91,7 @@ function Card() {
                 })
                 .catch(e => {
                     console.log(e);
+                    setCards([]);
                 })
         }
     }
@@ -100,7 +101,6 @@ function Card() {
     const [cardNumber, setCardNumber] = useState();
 
     const handleModal = (id, number) => {
-        console.log(id);
         setConfirmOpen(true);
         setId(id);
         setCardNumber(number);
@@ -125,7 +125,7 @@ function Card() {
                 (response) => {
                     console.log(response);
                     retrieveCardsByUser();
-                    setToggleFetch(false);
+                    setCardReady(!cardReady);
                 },
                 (error) => {
                     console.log(error);
@@ -167,8 +167,9 @@ function Card() {
     const onToggleTripForm = () => {
         if (cardReady) {
             toast.error("Card is ready, cant edit");
+        } else {
+            setAddTripToggle(!addTripToggle);
         }
-        setAddTripToggle(!addTripToggle);
     }
 
     const onToggleFuelForm = () => {
@@ -212,7 +213,7 @@ function Card() {
                 id={id}
                 open={confirmOpen}
                 setOpen={setConfirmOpen}
-                onConfirm={deleteCardById} 
+                onConfirm={deleteCardById}
             />
             <div className='flex w-full px-2 py-4 bg-blue-200 justify-between dark:bg-gray-600 items-center w-100'>
                 <div className='flex items-center'>

@@ -37,6 +37,7 @@ function TripFormik({ cardId, cardReady, toggleForm, theme }) {
         TripService.create(cardId, values.inputFields).then(
             (response) => {
                 console.log(response);
+                retrieveTripByCardId();
                 actions.resetForm();
             },
             (error) => {

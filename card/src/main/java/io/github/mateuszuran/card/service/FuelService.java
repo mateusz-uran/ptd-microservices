@@ -3,7 +3,7 @@ package io.github.mateuszuran.card.service;
 import io.github.mateuszuran.card.config.ModelMapperConfig;
 import io.github.mateuszuran.card.dto.request.FuelRequest;
 import io.github.mateuszuran.card.dto.response.FuelResponse;
-import io.github.mateuszuran.card.model.Fuel;
+import io.github.mateuszuran.card.mapper.FuelMapper;
 import io.github.mateuszuran.card.repository.FuelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,10 +14,11 @@ public class FuelService {
     private final FuelRepository repository;
     private final CardService service;
     private final ModelMapperConfig mapper;
+    private final FuelMapper fuelMapper;
 
     public void addRefuelling(FuelRequest fuelDto, Long id) {
         var card = service.checkIfCardExists(id);
-        var fuel = mapToFuelRequest(fuelDto);
+        var fuel = fuelMapper.mapToFuelRequest(fuelDto);
         fuel.setCard(card);
         repository.save(fuel);
     }
@@ -26,7 +27,7 @@ public class FuelService {
         return repository.findById(id)
                 .stream()
                 .findFirst()
-                .map(this::mapToFuelResponse)
+                .map(fuelMapper::mapToFuelResponseWithModelMapper)
                 .orElseThrow(() -> new IllegalArgumentException("Fuel not found"));
     }
 
@@ -38,7 +39,7 @@ public class FuelService {
                 }
         ).stream()
                 .findFirst()
-                .map(this::mapToFuelResponse)
+                .map(fuelMapper::mapToFuelResponseWithModelMapper)
                 .orElseThrow(() -> new IllegalArgumentException("Fuel not found"));
     }
 
@@ -47,13 +48,5 @@ public class FuelService {
                 .ifPresent(fuel -> {
                     repository.deleteById(fuel.getId());
                 });
-    }
-
-    private FuelResponse mapToFuelResponse(Fuel fuel) {
-        return mapper.modelMapper().map(fuel, FuelResponse.class);
-    }
-
-    private Fuel mapToFuelRequest(FuelRequest fuelRequest) {
-        return mapper.modelMapper().map(fuelRequest, Fuel.class);
     }
 }
