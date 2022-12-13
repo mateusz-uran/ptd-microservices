@@ -3,10 +3,12 @@ import FuelService from '../services/FuelService';
 import CardService from '../services/CardService';
 import { AiOutlineEdit, AiOutlineClose } from 'react-icons/ai';
 import { useFormik } from 'formik';
-import { cardSchema } from '../validation/schema';
 import { fuelSchema } from '../validation/schema';
+import Alert from './Alert';
 
-function Fuel({ cardId, cardReady, toggleForm, theme }) {
+function Fuel(props) {
+    const { cardId, cardReady, toggleForm, theme } = props;
+
     const [fuels, setFuels] = useState([]);
     const [fetch, setFetch] = useState(true);
     const [fuelId, setFuelId] = useState();
@@ -20,6 +22,7 @@ function Fuel({ cardId, cardReady, toggleForm, theme }) {
                         console.log(response);
                         retrieveFuelByCardId();
                         actions.resetForm();
+                        setEditMode(false);
                     },
                     (error) => {
                         console.log(error);
@@ -56,7 +59,6 @@ function Fuel({ cardId, cardReady, toggleForm, theme }) {
         if (toggleForm == false) {
             console.log("Toggle form first")
         } else {
-            setEditMode(true);
             FuelService.singleFuel(id)
                 .then(response => {
                     setFieldValue('refuelingDate', response.data.refuelingDate)
@@ -69,6 +71,14 @@ function Fuel({ cardId, cardReady, toggleForm, theme }) {
                     console.log(e);
                 })
         }
+    }
+
+    const [confirmOpen, setConfirmOpen] = useState();
+    const [id, setId] = useState();
+
+    const handleModal = (id) => {
+        setConfirmOpen(true);
+        setId(id);
     }
 
     const deleteFuel = (id) => {
@@ -94,10 +104,19 @@ function Fuel({ cardId, cardReady, toggleForm, theme }) {
 
     useEffect(() => {
         fetch && retrieveFuelByCardId();
-    }, [editMode]);
+    }, []);
 
     return (
         <div className={theme ? 'dark mx-1 py-1 rounded' : 'mx-1 py-1 rounded'}>
+            <Alert
+                title={"Are you sure?"}
+                description={"This process cannot be undone."}
+                id={id}
+                open={confirmOpen}
+                setOpen={setConfirmOpen}
+                onConfirm={deleteFuel}
+                modalTheme={theme}
+            />
             <div className={cardReady ? 'flex flex-col items-center opacity-60' : 'flex flex-col items-center'}>
                 {toggleForm && !cardReady &&
                     <div className='md:w-1/2'>
@@ -173,8 +192,8 @@ function Fuel({ cardId, cardReady, toggleForm, theme }) {
                                     <td>{fuel.refuelingAmount}</td>
                                     <td className='bg-slate-300 dark:bg-slate-800 text-slate-600 dark:text-slate-300'>
                                         <div className={`flex flex-col md:flex-row items-center md:justify-center rounded cursor-pointer py-1 ${cardReady ? 'invisible' : ''}`}>
-                                            <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-blue-600 dark:hover:text-blue-800' onClick={() => loadFuelToEdit(fuel.id)}><AiOutlineEdit /></i>
-                                            <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-red-600' onClick={() => deleteFuel(fuel.id)}><AiOutlineClose /></i>
+                                            <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-blue-600 dark:hover:text-blue-800' onClick={() => {loadFuelToEdit(fuel.id); setEditMode(true);}}><AiOutlineEdit /></i>
+                                            <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-red-600' onClick={() => handleModal(fuel.id)}><AiOutlineClose /></i>
                                         </div>
                                     </td>
                                 </tr>
