@@ -10,9 +10,9 @@ function Alert(props) {
                 <>
                     <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
                         <div className="relative w-auto my-6 mx-auto max-w-1xl">
-                            <div className="rounded relative flex flex-col bg-white dark:bg-slate-800">
+                            <div className="rounded relative flex flex-col bg-white bg-gray-100 dark:bg-slate-800">
                                 <div className='flex justify-end p-2 items-center'>
-                                    <button onClick={() => setOpen(false)} className='dark:text-slate-300'>×</button>
+                                    <button onClick={() => setOpen(false)} className='text-black dark:text-slate-300'>×</button>
                                 </div>
                                 <div className='flex justify-center text-red-400'>
                                     <SlClose size='3.5rem' />
@@ -25,14 +25,14 @@ function Alert(props) {
                                 {/*footer*/}
                                 <div className="flex items-center justify-end mx-4 p-6">
                                     <button
-                                        className="dark:bg-slate-200 dark:text-slate-400 font-bold uppercase text-sm mr-1 mb-1 px-6 py-2 rounded shadow outline-none dark:hover:bg-slate-500 dark:hover:text-slate-200 ease-linear transition-all duration-150"
+                                        className="dark:bg-slate-200 text-slate-400 dark:text-slate-400 font-bold uppercase text-sm mr-1 mb-1 px-6 py-2 rounded shadow outline-none hover:bg-slate-200 dark:hover:bg-slate-500 hover:text-slate-500 dark:hover:text-slate-200 ease-linear transition-all duration-150"
                                         type="button"
                                         onClick={() => setOpen(false)}
                                     >
                                         Close
                                     </button>
                                     <button
-                                        className="dark:bg-red-400 dark:text-slate-200 font-bold uppercase text-sm mr-1 mb-1 px-6 py-2 rounded shadow outline-none dark:hover:bg-red-500 dark:hover:text-slate-100 ease-linear transition-all duration-150"
+                                        className="bg-red-400 text-white dark:text-slate-200 font-bold uppercase text-sm mr-1 mb-1 px-6 py-2 rounded shadow outline-none hover:bg-red-500 hover:text-slate-200 dark:hover:text-slate-100 ease-linear transition-all duration-150"
                                         type="button"
                                         onClick={() => {
                                             setOpen(false);
