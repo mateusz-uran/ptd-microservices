@@ -43,7 +43,6 @@ public class CardService {
 
     public void saveCard(CardRequest cardDto) {
         if (repository.existsByNumber(cardDto.getNumber())) {
-            log.info("Card {} with given number already exists.", cardDto.getNumber());
             throw new CardExistsException(cardDto.getNumber());
         } else {
             var username = getUsername(cardDto.getAuthorUsername());
@@ -87,7 +86,7 @@ public class CardService {
                 .collect(Collectors.toList());
     }
 
-    public void toggleCard(Long id) {
+    public boolean toggleCard(Long id) {
         var result = repository.findById(id).orElseThrow();
         if (result.getTrips().isEmpty() && result.getFuels().isEmpty()) {
             throw new CardEmptyException();
@@ -99,6 +98,7 @@ public class CardService {
             } else {
                 kafkaTemplate.send("notificationTopic", new CardToggledEvent(result.getNumber(), "Card is not ready yet."));
             }
+            return result.isDone();
         }
     }
 
