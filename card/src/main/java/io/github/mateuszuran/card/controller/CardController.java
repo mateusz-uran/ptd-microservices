@@ -30,10 +30,16 @@ public class CardController {
         return ResponseEntity.ok().body("Card added");
     }
 
+//    @GetMapping
+//    @CircuitBreaker(name = "user")
+//    public ResponseEntity<List<CardResponse>> getCards(@RequestParam String username) {
+//        return ResponseEntity.ok().body(service.getAllCardsByUser(username));
+//    }
+
     @GetMapping
     @CircuitBreaker(name = "user")
-    public ResponseEntity<List<CardResponse>> getCards(@RequestParam String username) {
-        return ResponseEntity.ok().body(service.getAllCardsByUser(username));
+    public ResponseEntity<List<CardResponse>> getCardsByMonth(@RequestParam String username, @RequestParam String month) {
+        return ResponseEntity.ok().body(service.getAllCardByUserAndDate(username, month));
     }
 
     @GetMapping("/fuel")
