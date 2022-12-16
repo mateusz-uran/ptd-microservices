@@ -81,11 +81,33 @@ function Card() {
         localStorage.setItem('themeMode', JSON.stringify(darkMode));
     }
 
+    function getCurrentDate() {
+        const current = new Date();
+        const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        return month[current.getMonth()];
+    }
+
     const retrieveCardsByUser = () => {
         if (!localStorage.getItem('user')) {
             console.log("Cant find any user")
         } else {
             CardService.getCardByUser(JSON.parse(localStorage.getItem('user')))
+                .then(response => {
+                    setCards(response.data);
+                })
+                .catch(e => {
+                    console.log(e);
+                    setCards([]);
+                })
+        }
+    }
+
+    const retrieveCardByUserAndMonth = () => {
+        let month = getCurrentDate();
+        if (!localStorage.getItem('user')) {
+            console.log("Cant find any user")
+        } else {
+            CardService.getCardByUserAndMonth(JSON.parse(localStorage.getItem('user')), month)
                 .then(response => {
                     setCards(response.data);
                 })
@@ -189,7 +211,7 @@ function Card() {
 
     useEffect(() => {
         retrieveUser();
-        fetchedCards && retrieveCardsByUser();
+        fetchedCards && retrieveCardByUserAndMonth();
         setFetchedCards(false);
         retrieveDarkMode();
     }, [user, cardId, fetchedCards]);
