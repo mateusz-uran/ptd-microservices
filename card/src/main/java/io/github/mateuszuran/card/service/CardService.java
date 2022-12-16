@@ -78,7 +78,7 @@ public class CardService {
         var user = getUsername(username);
         var cards = repository.findAllByUserId(user.getId());
         return cards.stream()
-                .filter(card -> card.getCreationTime().getMonth().toString().equals(month))
+                .filter(card -> card.getCreationTime().getMonth().toString().equals(month.toUpperCase()))
                 .toList()
                 .stream().map(cardMapper::mapToCardResponseWithFormattedCreationTime)
                 .sorted(Comparator.comparing(CardResponse::getCreationTime).reversed())
