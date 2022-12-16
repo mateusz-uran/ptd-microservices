@@ -33,7 +33,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - postgres-user
+      - postgres-card
     restart: unless-stopped
 
   postgres-vehicle:
