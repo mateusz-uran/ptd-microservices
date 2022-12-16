@@ -46,16 +46,11 @@ public class TripService {
     }
 
     public TripResponse updateTrip(Long id, TripValues tripValues) {
-        return repository.findById(id)
-                .map(trip -> {
-                            mapper.modelMapper().map(tripValues, trip);
-                            trip.setCarMileage(calculateCarMileage(trip.getCounterStart(), trip.getCounterEnd()));
-                            return repository.save(trip);
-                        }
-                ).stream()
-                .findFirst()
-                .map(tripMapper::mapToTripResponseWithModelMapper)
-                .orElseThrow(() -> new IllegalArgumentException("Trip not found"));
+        var tripToUpdate = repository.findById(id).orElseThrow();
+        mapper.modelMapper().map(tripValues, tripToUpdate);
+        tripToUpdate.setCarMileage(calculateCarMileage(tripToUpdate.getCounterStart(), tripToUpdate.getCounterEnd()));
+        repository.save(tripToUpdate);
+        return tripMapper.mapToTripResponseWithModelMapper(tripToUpdate);
     }
 
     public void delete(Long id) {

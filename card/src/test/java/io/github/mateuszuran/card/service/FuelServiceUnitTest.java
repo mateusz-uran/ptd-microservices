@@ -25,7 +25,6 @@ import static org.mockito.Mockito.*;
 @Slf4j
 @ExtendWith(MockitoExtension.class)
 class FuelServiceUnitTest {
-    @InjectMocks
     private FuelService service;
     @Mock
     private CardService cardService;
