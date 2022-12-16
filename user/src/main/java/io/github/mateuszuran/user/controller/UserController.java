@@ -32,6 +32,6 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<UserResponse> getSingleUser(@RequestParam String username) {
-        return ResponseEntity.ok().body(service.getUserByIdFromDB(username));
+        return ResponseEntity.ok().body(service.getUserByUsernameFromDB(username));
     }
 }

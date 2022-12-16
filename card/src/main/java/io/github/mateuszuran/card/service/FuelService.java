@@ -24,23 +24,15 @@ public class FuelService {
     }
 
     public FuelResponse getSingleFuel(Long id) {
-        return repository.findById(id)
-                .stream()
-                .findFirst()
-                .map(fuelMapper::mapToFuelResponseWithModelMapper)
-                .orElseThrow(() -> new IllegalArgumentException("Fuel not found"));
+        var fuel = repository.findById(id).orElseThrow();
+        return fuelMapper.mapToFuelResponseWithModelMapper(fuel);
     }
 
     public FuelResponse update(Long id, FuelRequest fuelRequest) {
-        return repository.findById(id).map(
-                fuel -> {
-                    mapper.modelMapper().map(fuelRequest, fuel);
-                    return repository.save(fuel);
-                }
-        ).stream()
-                .findFirst()
-                .map(fuelMapper::mapToFuelResponseWithModelMapper)
-                .orElseThrow(() -> new IllegalArgumentException("Fuel not found"));
+        var fuel = repository.findById(id).orElseThrow();
+        mapper.modelMapper().map(fuelRequest, fuel);
+        repository.save(fuel);
+        return fuelMapper.mapToFuelResponseWithModelMapper(fuel);
     }
 
     public void delete(Long id) {

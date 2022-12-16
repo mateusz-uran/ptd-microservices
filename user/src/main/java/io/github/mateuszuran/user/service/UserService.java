@@ -35,7 +35,7 @@ public class UserService {
         }
     }
 
-    public UserResponse getUserByIdFromDB(String username) {
+    public UserResponse getUserByUsernameFromDB(String username) {
         var user = repository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
         return UserResponse.builder()
