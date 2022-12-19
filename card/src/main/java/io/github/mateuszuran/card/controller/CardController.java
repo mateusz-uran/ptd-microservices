@@ -9,10 +9,12 @@ import io.github.mateuszuran.card.service.CardService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -30,16 +32,11 @@ public class CardController {
         return ResponseEntity.ok().body("Card added");
     }
 
-//    @GetMapping
-//    @CircuitBreaker(name = "user")
-//    public ResponseEntity<List<CardResponse>> getCards(@RequestParam String username) {
-//        return ResponseEntity.ok().body(service.getAllCardsByUser(username));
-//    }
-
     @GetMapping
     @CircuitBreaker(name = "user")
-    public ResponseEntity<List<CardResponse>> getCardsByMonth(@RequestParam String username, @RequestParam String month) {
-        return ResponseEntity.ok().body(service.getAllCardByUserAndDate(username, month));
+    public ResponseEntity<List<CardResponse>> getCardsByMonth(
+            @RequestParam String username, @RequestParam int year, @RequestParam int month) {
+        return ResponseEntity.ok().body(service.getAllCardByUserAndDate(username, year, month));
     }
 
     @GetMapping("/fuel")

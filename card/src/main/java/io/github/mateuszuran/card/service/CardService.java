@@ -13,8 +13,6 @@ import io.github.mateuszuran.card.model.Card;
 import io.github.mateuszuran.card.repository.CardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Sort;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -22,10 +20,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
+import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
 @Slf4j
 @Service
@@ -66,21 +66,15 @@ public class CardService {
                 .orElseThrow(CardNotFoundException::new);
     }
 
-    public List<CardResponse> getAllCardsByUser(String username) {
+    public List<CardResponse> getAllCardByUserAndDate(String username, int year, int month) {
         var user = getUsername(username);
-        var cards = repository.findAllByUserId(user.getId());
-        return cards.stream()
-                .map(cardMapper::mapToCardResponseWithModelMapper)
-                .collect(Collectors.toList());
-    }
+        var actualDate = LocalDate.of(year, month, 1);
 
-    public List<CardResponse> getAllCardByUserAndDate(String username, String month) {
-        var user = getUsername(username);
-        var cards = repository.findAllByUserId(user.getId());
-        return cards.stream()
-                .filter(card -> card.getCreationTime().getMonth().toString().equals(month.toUpperCase()))
-                .toList()
-                .stream().map(cardMapper::mapToCardResponseWithFormattedCreationTime)
+        LocalDateTime startDate = actualDate.with(firstDayOfMonth()).atStartOfDay();
+        LocalDateTime endDate = actualDate.with(lastDayOfMonth()).atStartOfDay();
+
+        var result = repository.findAllByUserIdAndCreationTimeBetween(user.getId(), startDate, endDate);
+        return result.stream().map(cardMapper::mapToCardResponseWithFormattedCreationTime)
                 .sorted(Comparator.comparing(CardResponse::getCreationTime).reversed())
                 .toList();
     }
