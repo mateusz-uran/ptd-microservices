@@ -11,8 +11,15 @@ const getCardByUser = username => {
     return http.get('/', { params: { username: username } })
 };
 
-const getCardByUserAndMonth = (username, month) => {
-    return http.get('/', { params: { username: username, month: month } })
+const getCardByUserAndMonth = (username, year, month) => {
+    return http.get('/', {
+        params:
+        {
+            username: username,
+            year: year,
+            month: month
+        }
+    })
 }
 
 const create = card => {

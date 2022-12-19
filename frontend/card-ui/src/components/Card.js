@@ -8,7 +8,9 @@ import {
     AiOutlinePlus, AiOutlineEye, AiOutlineEyeInvisible
 } from 'react-icons/ai'
 import { BsFillSunFill } from 'react-icons/bs';
-import { MdDarkMode } from 'react-icons/md';
+import { FiRefreshCcw } from 'react-icons/fi';
+import { IoMdArrowDropdown } from 'react-icons/io';
+import { MdDarkMode, MdOutlineRefresh } from 'react-icons/md';
 import { useFormik } from 'formik';
 import { cardSchema } from '../validation/schema';
 import { ToastContainer, toast } from 'react-toastify';
@@ -81,33 +83,66 @@ function Card() {
         localStorage.setItem('themeMode', JSON.stringify(darkMode));
     }
 
-    function getCurrentDate() {
+    function getCurrentMonth() {
         const current = new Date();
-        const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        return month[current.getMonth()];
+        return current.getMonth() + 1;
     }
 
-    const retrieveCardsByUser = () => {
-        if (!localStorage.getItem('user')) {
-            console.log("Cant find any user")
-        } else {
-            CardService.getCardByUser(JSON.parse(localStorage.getItem('user')))
-                .then(response => {
-                    setCards(response.data);
-                })
-                .catch(e => {
-                    console.log(e);
-                    setCards([]);
-                })
+    function getCurrentYear() {
+        const current = new Date();
+        return current.getFullYear();
+    }
+
+    const [years, setYearsDates] = useState([]);
+
+    const [months, setMonths] = useState([
+        { number: 1, name: 'jan' },
+        { number: 2, name: 'feb' },
+        { number: 3, name: 'mar' },
+        { number: 4, name: 'apr' },
+        { number: 5, name: 'may' },
+        { number: 6, name: 'june' },
+        { number: 7, name: 'july' },
+        { number: 8, name: 'aug' },
+        { number: 9, name: 'sept' },
+        { number: 10, name: 'oct' },
+        { number: 11, name: 'nov' },
+        { number: 12, name: 'dec' },
+    ])
+
+    function fillArray(currentYear) {
+        let defaultYear = 2022;
+        let arrRange = currentYear - defaultYear;
+        while (defaultYear <= currentYear && years.length < arrRange + 1) {
+            years.push(defaultYear);
+            defaultYear = defaultYear + 1;
         }
+        return years;
     }
 
-    const retrieveCardByUserAndMonth = () => {
-        let month = getCurrentDate();
+    const [calendar, setCalendar] = useState(false);
+    const [tempYear, setTempYear] = useState();
+
+    const toggleCalendar = (year) => {
+        setTempYear(year);
+        setCalendar(!calendar);
+    }
+
+    const changeYear = (year, month) => {
+        setCurrentYear(year);
+        setCurrentMonth(month);
+        setCalendar(false);
+    }
+
+    const [currentYear, setCurrentYear] = useState(getCurrentYear());
+    const [currentMonth, setCurrentMonth] = useState(getCurrentMonth());
+
+    const retrieveCardByUserAndDate = () => {
         if (!localStorage.getItem('user')) {
             console.log("Cant find any user")
         } else {
-            CardService.getCardByUserAndMonth(JSON.parse(localStorage.getItem('user')), month)
+            CardService.getCardByUserAndMonth(
+                JSON.parse(localStorage.getItem('user')), currentYear, currentMonth)
                 .then(response => {
                     setCards(response.data);
                 })
@@ -132,7 +167,7 @@ function Card() {
         CardService.deleteCard(id)
             .then(response => {
                 console.log(response)
-                retrieveCardsByUser();
+                retrieveCardByUserAndDate();
                 setToggleFetch(false);
             })
             .catch(e => {
@@ -146,7 +181,7 @@ function Card() {
             .then(
                 (response) => {
                     console.log(response);
-                    retrieveCardsByUser();
+                    retrieveCardByUserAndDate();
                     setCardReady(!cardReady);
                 },
                 (error) => {
@@ -210,11 +245,12 @@ function Card() {
     }
 
     useEffect(() => {
+        fillArray(currentYear);
         retrieveUser();
-        fetchedCards && retrieveCardByUserAndMonth();
+        fetchedCards && retrieveCardByUserAndDate();
         setFetchedCards(false);
         retrieveDarkMode();
-    }, [user, cardId, fetchedCards]);
+    }, [user, cardId, fetchedCards, tempYear]);
 
     return (
         <div className={`flex flex-col h-screen ${darkMode ? 'dark bg-slate-900' : ''}`}>
@@ -259,8 +295,8 @@ function Card() {
                     <div onClick={darkMode ? toggleDarkMode : undefined} className={darkMode ? 'text-white p-1 rounded-b-lg cursor-pointer' : 'text-white p-1 bg-blue-400 rounded-b-lg'}><BsFillSunFill /></div>
                 </div>
             </div>
-            <div className='flex flex-col md:flex-row md:h-screen overflow-x-auto'>
-                <div className='flex md:flex-col bg-gray-100 dark:bg-gray-700 pb-2 md:min-w-min'>
+            <div className='flex flex-col md:flex-row md:h-screen'>
+                <div className='flex flex-col items-center bg-gray-100 dark:bg-gray-700 pb-2 md:min-w-min'>
                     <div className={addCardToggle ? 'flex hidden' : 'flex'}>
                         <form onSubmit={handleSubmit} className='flex justify-between flex-col p-1 mr-1'>
                             <div className='flex flex'>
@@ -282,13 +318,41 @@ function Card() {
                             </div>
                         </form>
                     </div>
-                    <div className='flex md:flex-col items-center w-full overflow-x-auto'>
+                    <div className='flex flex-col p-4 w-max'>
+                        <p className='m-1 p-1 text-xs font-bold bg-blue-200 text-slate-500 dark:bg-slate-800 dark:text-slate-300 rounded'>Cards from: {currentYear}-{currentMonth}</p>
+                        <div className='grid grid-cols-3 sm:grid-cols-5 md:grid-cols-3 gap-2 mx-2 border border-blue-300 dark:border-transparent rounded'>
+                            {years && years.length > 0 && years.map((year, index) => (
+                                <div key={index} className='flex p-1 text-sm'>
+                                    <div className='relative flex justify-center w-max items-center'>
+                                        <p className={`${tempYear === year ? 'bg-slate-300 dark:bg-slate-800' : 'dark:bg-slate-600'} flex items-center z-10 dark:text-slate-300 p-1 rounded`}>
+                                            {year}
+                                            <i onClick={() => toggleCalendar(year)}><IoMdArrowDropdown /></i>
+                                        </p>
+                                        <div className='absolute w-24 z-50 top-7 md:left-2 grid grid-cols-3 bg-blue-300 dark:bg-slate-900'>
+                                            {tempYear === year && calendar && months.map((month, index) => (
+                                                <div className='' key={index}>
+                                                    <div className='flex justify-center border dark:border-slate-500 dark:text-slate-300 uppercase'>
+                                                        <p className='text-xs p-0.5 hover:bg-slate-300 dark:hover:bg-slate-500 hover:cursor-pointer' onClick={() => changeYear(year, month.number)}>{month.name}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className='flex flex-row items-center justify-center m-1 p-1 text-xs font-bold bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300 rounded'>
+                            <i className='mx-1 p-1 hover:bg-blue-400 dark:hover:bg-slate-900 dark:bg-slate-600 hover:cursor-pointer rounded' onClick={() => retrieveCardByUserAndDate()}><FiRefreshCcw /></i>
+                            <p className='mx-1'>Refresh cards</p>
+                        </div>
+                    </div>
+                    <div className='flex md:flex-col items-center w-full overflow-x-auto border-t-2 border-slate-300 dark:border-slate-800'>
                         {cards && cards.length > 0 ?
                             cards.map((card, index) => (
                                 <div key={index} className='flex content-center md:w-full justify-center'>
                                     <div className={`flex w-full m-1 rounded border-2 border-transparent ${card.done ? 'border-green-600' : ''}`}>
                                         <div className={toggleFetch && card.id === cardId ? 'flex flex-col md:flex-row md:w-full md:justify-between rounded bg-slate-200 dark:bg-slate-600 p-2 flex dark:text-gray-300 text-center items-center' : 'flex flex-col md:flex-row md:w-full md:justify-between bg-transparent rounded p-2 flex dark:text-gray-300 text-center items-center'}>
-                                            <p>{card.number}</p>
+                                            <p className='w-full'>{card.number}</p>
                                             <span className='flex md:ml-1'>
                                                 <i onClick={() => handleToggleCardContent(card.id, card.done)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black cursor-pointer'><AiOutlineArrowRight className={toggleFetch && card.id === cardId ? '-rotate-90 md:rotate-180' : 'rotate-90 md:rotate-0'} /></i>
                                                 <i onClick={card.done ? () => generatePdf(card.id) : undefined} className={`px-1 rounded ${card.done ? 'cursor-pointer hover:bg-blue-200 active:bg-blue-200 dark:active:bg-slate-400 hover:text-black active:text-black dark:hover:bg-slate-400' : 'cursor-not-allowed'}`}><AiFillFilePdf /></i>
