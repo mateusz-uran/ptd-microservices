@@ -20,6 +20,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,15 +48,17 @@ public class CardService {
                 .block();
     }
 
-    public void saveCard(CardRequest cardDto) {
+    public void saveCard(CardRequest cardDto, int year, int month, int dayOfMonth) {
         if (repository.existsByNumber(cardDto.getNumber())) {
             throw new CardExistsException(cardDto.getNumber());
         } else {
             var username = getUsername(cardDto.getAuthorUsername());
+            var actualDate = LocalDateTime.now();
+            var date = LocalDateTime.of(year, month, dayOfMonth, actualDate.getHour(), actualDate.getMinute(), actualDate.getSecond());
             Card card = Card.builder()
                     .number(cardDto.getNumber())
                     .userId(username.getId())
-                    .creationTime(LocalDateTime.now())
+                    .creationTime(date)
                     .build();
             repository.save(card);
         }
@@ -99,7 +102,10 @@ public class CardService {
 
     public boolean toggleCard(Long id) {
         var result = repository.findById(id).orElseThrow();
-        if (result.getTrips().isEmpty() && result.getFuels().isEmpty()) {
+
+        if (result.getFuels().isEmpty()) {
+            throw new CardEmptyException();
+        } else if (result.getTrips().isEmpty()) {
             throw new CardEmptyException();
         } else {
             result.setDone(!result.isDone());
@@ -109,8 +115,8 @@ public class CardService {
             } else {
                 kafkaTemplate.send("notificationTopic", new CardToggledEvent(result.getNumber(), "Card is not ready yet."));
             }
-            return result.isDone();
         }
+        return result.isDone();
     }
 
     public CardPDFResponse sendCardToPDF(Long id) {

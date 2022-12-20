@@ -1,9 +1,6 @@
 package io.github.mateuszuran.card.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -11,7 +8,8 @@ import javax.persistence.*;
 @Table(name = "card_fuels")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 public class Fuel {
     @Id
