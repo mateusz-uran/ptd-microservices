@@ -89,6 +89,14 @@
     border: 1px solid;
 }
 
+#fuel_table tr:nth-child(+n+11) {
+    display: none;
+}
+
+#fuel_table tr:last-child {
+    display: visible;
+}
+
 #fuel_final_table {
     width: 100%;
     border-collapse: collapse;

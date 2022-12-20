@@ -271,7 +271,7 @@ function TripFormik(props) {
                                                                             component='span'
                                                                             className='text-red-600 text-xs font-light' />
                                                                     </div>
-                                                                    <label className='text-sm text-gray-400 uppercase'>start</label>
+                                                                    <label className='text-sm text-gray-400 uppercase'>end</label>
                                                                     <div className='grid grid-cols-2 gap-2 items-center px-1 sm:grid-cols-5'>
                                                                         <Field
                                                                             placeholder='day'
