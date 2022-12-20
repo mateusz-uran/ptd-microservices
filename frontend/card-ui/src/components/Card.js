@@ -34,6 +34,28 @@ function Card() {
 
     const [darkMode, setDarkMode] = useState(JSON.parse(localStorage.getItem('themeMode')));
 
+    const [currentYear, setCurrentYear] = useState(getCurrentYear());
+    const [currentMonth, setCurrentMonth] = useState(getCurrentMonth());
+    const [calendar, setCalendar] = useState(false);
+    const [tempYear, setTempYear] = useState();
+
+    const [years, setYearsDates] = useState([]);
+
+    const [months, setMonths] = useState([
+        { number: 1, name: 'jan' },
+        { number: 2, name: 'feb' },
+        { number: 3, name: 'mar' },
+        { number: 4, name: 'apr' },
+        { number: 5, name: 'may' },
+        { number: 6, name: 'june' },
+        { number: 7, name: 'july' },
+        { number: 8, name: 'aug' },
+        { number: 9, name: 'sept' },
+        { number: 10, name: 'oct' },
+        { number: 11, name: 'nov' },
+        { number: 12, name: 'dec' },
+    ])
+
     const handleUsernameInLocalStorage = (e) => {
         e.preventDefault();
         localStorage.setItem('user', JSON.stringify(user));
@@ -52,8 +74,9 @@ function Card() {
 
     const onSubmit = (values, actions) => {
         if (storedUser != null) {
+            let day = getCurrentDay();
             values.authorUsername = storedUser;
-            CardService.create(values).then(
+            CardService.create(values, currentYear, currentMonth, day).then(
                 (response) => {
                     console.log(response);
                     setFetchedCards(true);
@@ -93,22 +116,10 @@ function Card() {
         return current.getFullYear();
     }
 
-    const [years, setYearsDates] = useState([]);
-
-    const [months, setMonths] = useState([
-        { number: 1, name: 'jan' },
-        { number: 2, name: 'feb' },
-        { number: 3, name: 'mar' },
-        { number: 4, name: 'apr' },
-        { number: 5, name: 'may' },
-        { number: 6, name: 'june' },
-        { number: 7, name: 'july' },
-        { number: 8, name: 'aug' },
-        { number: 9, name: 'sept' },
-        { number: 10, name: 'oct' },
-        { number: 11, name: 'nov' },
-        { number: 12, name: 'dec' },
-    ])
+    function getCurrentDay() {
+        const current = new Date();
+        return current.getDate();
+    }
 
     function fillArray(currentYear) {
         let defaultYear = 2022;
@@ -120,9 +131,6 @@ function Card() {
         return years;
     }
 
-    const [calendar, setCalendar] = useState(false);
-    const [tempYear, setTempYear] = useState();
-
     const toggleCalendar = (year) => {
         setTempYear(year);
         setCalendar(!calendar);
@@ -133,9 +141,6 @@ function Card() {
         setCurrentMonth(month);
         setCalendar(false);
     }
-
-    const [currentYear, setCurrentYear] = useState(getCurrentYear());
-    const [currentMonth, setCurrentMonth] = useState(getCurrentMonth());
 
     const retrieveCardByUserAndDate = () => {
         if (!localStorage.getItem('user')) {
@@ -177,10 +182,10 @@ function Card() {
     }
 
     const toggleCard = (id) => {
+        console.log(id);
         CardService.toggleCard(id)
             .then(
                 (response) => {
-                    console.log(response);
                     retrieveCardByUserAndDate();
                     setCardReady(!cardReady);
                 },
@@ -250,7 +255,7 @@ function Card() {
         fetchedCards && retrieveCardByUserAndDate();
         setFetchedCards(false);
         retrieveDarkMode();
-    }, [user, cardId, fetchedCards, tempYear]);
+    }, [user, cardId, fetchedCards]);
 
     return (
         <div className={`flex flex-col h-screen ${darkMode ? 'dark bg-slate-900' : ''}`}>
@@ -295,7 +300,7 @@ function Card() {
                     <div onClick={darkMode ? toggleDarkMode : undefined} className={darkMode ? 'text-white p-1 rounded-b-lg cursor-pointer' : 'text-white p-1 bg-blue-400 rounded-b-lg'}><BsFillSunFill /></div>
                 </div>
             </div>
-            <div className='flex flex-col md:flex-row md:h-screen'>
+            <div className='flex flex-col md:flex-row md:h-screen overflow-x-auto'>
                 <div className='flex flex-col items-center bg-gray-100 dark:bg-gray-700 pb-2 md:min-w-min'>
                     <div className={addCardToggle ? 'flex hidden' : 'flex'}>
                         <form onSubmit={handleSubmit} className='flex justify-between flex-col p-1 mr-1'>
