@@ -122,7 +122,7 @@ function Card() {
     }
 
     function fillArray(currentYear) {
-        let defaultYear = 2019;
+        let defaultYear = 2022;
         let arrRange = currentYear - defaultYear;
         while (defaultYear <= currentYear && years.length < arrRange + 1) {
             years.push(defaultYear);
