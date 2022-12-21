@@ -140,6 +140,14 @@
     border-style: hidden;
 }
 
+#trip_table tr:nth-child(+n+20) {
+    display: none;
+}
+
+#trip_table tr:last-child {
+    display: visible;
+}
+
 #trip_table tr th {
     border: 1px solid;
 }
