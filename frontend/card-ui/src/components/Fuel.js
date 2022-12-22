@@ -88,14 +88,11 @@ function Fuel(props) {
                 console.log(e);
             })
     }
-    let unsubscribed = false;
 
     const retrieveFuelByCardId = () => {
         CardService.getFuelFromCard(cardId)
             .then(response => {
-                if (!unsubscribed) {
-                    setFuels(response.data);
-                }
+                setFuels(response.data);
             })
             .catch(e => {
                 console.log(e);
@@ -104,9 +101,6 @@ function Fuel(props) {
 
     useEffect(() => {
         fetch && retrieveFuelByCardId();
-        return () => {
-            unsubscribed = true;
-        }
     }, []);
 
     return (
