@@ -12,7 +12,7 @@ const getCardByUser = username => {
 };
 
 const getCardByUserAndMonth = (username, year, month) => {
-    return http.get('/', {
+    return http.get('/all', {
         params:
         {
             username: username,

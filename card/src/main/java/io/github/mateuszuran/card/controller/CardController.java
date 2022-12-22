@@ -30,7 +30,7 @@ public class CardController {
         return ResponseEntity.ok().body("Card added");
     }
 
-    @GetMapping
+    @GetMapping("/all")
     @CircuitBreaker(name = "user")
     public ResponseEntity<List<CardResponse>> getCardsByMonth(
             @RequestParam String username, @RequestParam int year, @RequestParam int month) {
