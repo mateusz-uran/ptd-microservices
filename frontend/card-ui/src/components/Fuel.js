@@ -88,11 +88,14 @@ function Fuel(props) {
                 console.log(e);
             })
     }
+    let unsubscribed = false;
 
     const retrieveFuelByCardId = () => {
         CardService.getFuelFromCard(cardId)
             .then(response => {
-                setFuels(response.data);
+                if (!unsubscribed) {
+                    setFuels(response.data);
+                }
             })
             .catch(e => {
                 console.log(e);
@@ -101,6 +104,9 @@ function Fuel(props) {
 
     useEffect(() => {
         fetch && retrieveFuelByCardId();
+        return () => {
+            unsubscribed = true;
+        }
     }, []);
 
     return (
@@ -171,33 +177,33 @@ function Fuel(props) {
                 }
                 <div className='flex w-full overflow-x-auto justify-center'>
                     {fuels && fuels.length > 0 ?
-                    <table className='w-full md:w-1/2 bg-slate-200 dark:bg-slate-700 rounded text-sm table-auto text-center'>
-                    <thead className='text-gray-400'>
-                        <tr className='text-slate-500 dark:text-slate-400 border-b-2 border-white dark:border-zinc-500 uppercase text-xs'>
-                            <th className='px-2'>date</th>
-                            <th className='px-2'>location</th>
-                            <th className='px-2'>counter</th>
-                            <th className='px-2'>amount</th>
-                            <th className=''></th>
-                        </tr>
-                    </thead>
-                    <tbody className='text-slate-600 dark:text-slate-300'>
-                        { fuels.map((fuel, index) => (
-                            <tr key={index} className='border-t-2 border-white dark:border-zinc-500 hover:bg-blue-400 dark:hover:bg-slate-900 hover:text-white dark:hover:text-gray-200'>
-                                <td>{fuel.refuelingDate}</td>
-                                <td>{fuel.refuelingLocation}</td>
-                                <td>{fuel.vehicleCounter}</td>
-                                <td>{fuel.refuelingAmount}</td>
-                                <td className='bg-slate-300 dark:bg-slate-800 text-slate-600 dark:text-slate-300'>
-                                    <div className={`flex flex-col md:flex-row items-center md:justify-center rounded cursor-pointer py-1 ${cardReady ? 'invisible' : ''}`}>
-                                        <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-blue-600 dark:hover:text-blue-800' onClick={() => {loadFuelToEdit(fuel.id); setEditMode(true);}}><AiOutlineEdit /></i>
-                                        <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-red-600' onClick={() => handleModal(fuel.id)}><AiOutlineClose /></i>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table> : <div className='flex'><p className='text-slate-500 text-sm'>There is no refueling information.</p></div>}
+                        <table className='w-full md:w-1/2 bg-slate-200 dark:bg-slate-700 rounded text-sm table-auto text-center'>
+                            <thead className='text-gray-400'>
+                                <tr className='text-slate-500 dark:text-slate-400 border-b-2 border-white dark:border-zinc-500 uppercase text-xs'>
+                                    <th className='px-2'>date</th>
+                                    <th className='px-2'>location</th>
+                                    <th className='px-2'>counter</th>
+                                    <th className='px-2'>amount</th>
+                                    <th className=''></th>
+                                </tr>
+                            </thead>
+                            <tbody className='text-slate-600 dark:text-slate-300'>
+                                {fuels.map((fuel, index) => (
+                                    <tr key={index} className='border-t-2 border-white dark:border-zinc-500 hover:bg-blue-400 dark:hover:bg-slate-900 hover:text-white dark:hover:text-gray-200'>
+                                        <td>{fuel.refuelingDate}</td>
+                                        <td>{fuel.refuelingLocation}</td>
+                                        <td>{fuel.vehicleCounter}</td>
+                                        <td>{fuel.refuelingAmount}</td>
+                                        <td className='bg-slate-300 dark:bg-slate-800 text-slate-600 dark:text-slate-300'>
+                                            <div className={`flex flex-col md:flex-row items-center md:justify-center rounded cursor-pointer py-1 ${cardReady ? 'invisible' : ''}`}>
+                                                <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-blue-600 dark:hover:text-blue-800' onClick={() => { loadFuelToEdit(fuel.id); setEditMode(true); }}><AiOutlineEdit /></i>
+                                                <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-red-600' onClick={() => handleModal(fuel.id)}><AiOutlineClose /></i>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table> : <div className='flex'><p className='text-slate-500 text-sm'>There is no refueling information.</p></div>}
                 </div>
             </div>
         </div>

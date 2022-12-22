@@ -100,7 +100,7 @@ function TripFormik(props) {
     const retrieveTripByCardId = () => {
         CardService.getTripFromCard(cardId)
             .then(response => {
-                if(!unsubscribed) {
+                if (!unsubscribed) {
                     setFetchedTrips(response.data);
                 }
             })
