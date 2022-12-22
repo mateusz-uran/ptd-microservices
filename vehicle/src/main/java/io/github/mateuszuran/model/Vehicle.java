@@ -22,6 +22,7 @@ public class Vehicle {
     private String licensePlate;
     private Integer leftTankFuelCapacity;
     private Integer rightTankFuelCapacity;
+    private Integer fullTankCapacity;
     private Integer adBlueCapacity;
     private Long userId;
     @OneToOne(cascade = CascadeType.ALL)

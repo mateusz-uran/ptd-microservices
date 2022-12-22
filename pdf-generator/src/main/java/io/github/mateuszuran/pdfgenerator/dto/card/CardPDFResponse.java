@@ -1,15 +1,13 @@
-package io.github.mateuszuran.pdfgenerator.dto;
+package io.github.mateuszuran.pdfgenerator.dto.card;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 public class CardPDFResponse {
     private CardResponse cardInfo;

@@ -18,8 +18,8 @@
                 <table id="card_image">
                     <tr>
                         <td>
-                            <!--                        <img th:src="@{${card.vehicle.vehicleImagePath}}" alt="volvo"-->
-                            <!--                             style="width: 226px;height: 115px;"/>-->
+                                                    <img th:src="@{${pdf.vehiclePdf.image.link}}" alt="volvo"
+                                                         style="width: 226px;height: 115px;"/>
                         </td>
                     </tr>
                     <tr>
@@ -31,7 +31,7 @@
             <td style="border-right: 1px solid; border-color: rgba(0,0,0,0.25);">
                 <table id="card_main">
                     <tr>
-                        <td class="card_info" th:text="'Karta Drogowa nr: ' + ${card.cardInfo.number}">Karta Drogowa
+                        <td class="card_info" th:text="'Karta Drogowa nr: ' + ${pdf.card.cardInfo.number}">Karta Drogowa
                             nr
                         </td>
                     </tr>
@@ -41,7 +41,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="card_info" style="font-size: 25px;text-transform:uppercase; padding: 0;">MODEL
+                        <td class="card_info" th:text="${pdf.vehiclePdf.vehicle.model}" style="font-size: 25px;text-transform:uppercase; padding: 0;">MODEL
                             AUTA
                         </td>
                     </tr>
@@ -81,30 +81,30 @@
                     <tr>
                         <td>Samochód</td>
                         <td>
-                            <p class="car_info registration">LLL 111</p>
+                            <p class="car_info registration" th:text="${pdf.vehiclePdf.vehicle.licensePlate}">LLL 111</p>
                             <p class="car_info" style="font-size: 10px;">Nr rejestracyjny</p>
                         </td>
                         <td>
-                            <p class="car_info">Ciagnik siodłowy</p>
+                            <p class="car_info" th:text="${pdf.vehiclePdf.vehicle.type}">Ciagnik siodłowy</p>
                             <p class="car_info" style="font-size: 10px;">Typ</p>
                         </td>
                         <td>
-                            <p class="car_info">1111 litrów</p>
+                            <p class="car_info" th:text="${pdf.vehiclePdf.vehicle.fullTankCapacity}">1111 litrów</p>
                             <p class="car_info" style="font-size: 10px;">Poj zbiornika</p>
                         </td>
                     </tr>
                     <tr>
                         <td>Naczepa</td>
                         <td>
-                            <p class="car_info registration">LLL 111</p>
+                            <p class="car_info registration" th:text="${pdf.vehiclePdf.trailer.licensePlate}">LLL 111</p>
                             <p class="car_info" style="font-size: 10px;">Nr rejestracyjny</p>
                         </td>
                         <td>
-                            <p class="car_info">Naczepa chłodnia</p>
+                            <p class="car_info" th:text="${pdf.vehiclePdf.trailer.type}">Naczepa chłodnia</p>
                             <p class="car_info" style="font-size: 10px;">Typ</p>
                         </td>
                         <td>
-                            <p class="car_info">240 litrów</p>
+                            <p class="car_info" th:text="${pdf.vehiclePdf.trailer.licensePlate}">240 litrów</p>
                             <p class="car_info" style="font-size: 10px;">Poj zbiornika</p>
                         </td>
                     </tr>
@@ -124,19 +124,19 @@
                     </tr>
                     <tr>
                         <td>Powrót:</td>
-                        <td th:text="${card.counter.lastCounter}">.................</td>
+                        <td th:text="${pdf.card.counter.lastCounter}">.................</td>
                         <td>Powrót:</td>
                         <td>.................mtg</td>
                     </tr>
                     <tr>
                         <td>Wyjazd:</td>
-                        <td th:text="${card.counter.firstCounter}">.................</td>
+                        <td th:text="${pdf.card.counter.firstCounter}">.................</td>
                         <td>Wyjazd:</td>
                         <td> .................mtg</td>
                     </tr>
                     <tr>
                         <td>Przebieg:</td>
-                        <td th:text="${card.counter.mileage}">.................</td>
+                        <td th:text="${pdf.card.counter.mileage}">.................</td>
                         <td>Przebieg:</td>
                         <td> .................mtg</td>
                     </tr>
@@ -161,7 +161,7 @@
                         <td>Forma płatności</td>
                         <td>Inne</td>
                     </tr>
-                    <tr th:each="fuel,iterator : ${card.fuels}">
+                    <tr th:each="fuel,iterator : ${pdf.card.fuels}">
                         <td th:text="${iterator.index+1}"></td>
                         <td th:text="${fuel.refuelingDate}">&nbsp;</td>
                         <td th:text="${fuel.refuelingLocation}">&nbsp;</td>
@@ -244,7 +244,7 @@
                     </tr>
                     <tr>
                         <td colspan="5" style="text-align: right;">Razem: Paliwa</td>
-                        <td th:text="${card.counter.refuelingSum}" class="bold_border">paliwo</td>
+                        <td th:text="${pdf.card.counter.refuelingSum}" class="bold_border">paliwo</td>
                         <td colspan="2" style="font-size: 10px; text-align: left;">*Gotówka / Przelew</td>
                     </tr>
                 </table>
@@ -341,7 +341,7 @@
             <td class="end">Państwo</td>
             <td class="end middle">Licznik</td>
         </tr>
-        <tr th:each="trip : ${card.trips}">
+        <tr th:each="trip : ${pdf.card.trips}">
             <td th:text="${trip.dayStart}"></td>
             <td th:text="${trip.hourStart}"></td>
             <td th:text="${trip.locationStart}"></td>
@@ -583,7 +583,7 @@
         </tr>
         <tr>
             <td colspan="10" style="border: 0;"></td>
-            <td style="border: 0; font-weight: bold;" th:text="'Razem ' + ${card.counter.mileage} + ' km'">Razem 12345
+            <td style="border: 0; font-weight: bold;" th:text="'Razem ' + ${pdf.card.counter.mileage} + ' km'">Razem 12345
                 km
             </td>
             <td colspan="4" style="border: 0;"></td>
