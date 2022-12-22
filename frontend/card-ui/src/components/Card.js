@@ -23,6 +23,7 @@ function Card() {
     const [user, setUser] = useState('');
     const [fetchedCards, setFetchedCards] = useState(true);
     const [storedUser, setStoredUser] = useState('');
+    const [storedUserId, setStoredUserId] = useState('');
 
     const [cards, setCards] = useState([]);
     const [toggleFetch, setToggleFetch] = useState(false);
@@ -197,8 +198,6 @@ function Card() {
             )
     }
 
-    const [storedUserId, setStoredUserId] = useState('');
-
     const retrieveUserInfo = () => {
         UserService.getUserByUsername(JSON.parse(localStorage.getItem('user')))
         .then(response => {
@@ -207,7 +206,6 @@ function Card() {
     }
 
     const generatePdf = (id) => {
-        console.log(storedUserId);
         try {
             PdfService.getPdf(id, storedUserId)
                 .then(response => {
