@@ -2,11 +2,18 @@
     size: A4 landscape;
 }
 
+.wrapper {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+}
+
 #first_table {
-    border: 1px solid;
     width: 100%;
     text-align: center;
     border-collapse: collapse;
+    border: 1px solid;
+    border-color: rgba(0,0,0,0.25);
 }
 
 #card_image {
@@ -27,66 +34,101 @@
 
 .address {
     font-size: 13px;
-    color: #4600B7;
+    font-weight: bold;
+    color: #4700b8;
 }
 
 #second_table {
-    border: 1px solid;
     width: 100%;
     text-align: center;
+    border-collapse: collapse;
+    border-bottom: 1px solid;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-color: rgba(0,0,0,0.25);
+}
+
+#second_table td {
+    padding: 0;
 }
 
 #car_info_table {
     width: 100%;
     border-collapse: collapse;
-    margin: 0;
+}
+
+#car_info_table td {
+    padding: 10px;
 }
 
 #counters_info_table {
     width: 100%;
     border-collapse: collapse;
+    border-style: hidden;
     margin: 0;
+}
+
+#counters_info_table td {
+    padding: 10px;
 }
 
 #counters_info_table th {
     text-align: center;
     border-right: 1px solid;
-}
-
-#counters_info_table th:last-child {
-    text-align: center;
-    border-right: none;
+    padding: 0;
+    border-color: rgba(0,0,0,0.25);
 }
 
 #counters_info_table td:nth-child(2) {
     border-right: 1px solid;
+    border-color: rgba(0,0,0,0.25);
 }
 
 .car_info {
     margin: 0;
 }
 
+.registration {
+    font-weight: bold;
+}
+
 #third_table {
     width: 100%;
+    border-collapse: collapse;
+    border-bottom: 1px solid;
     border-left: 1px solid;
     border-right: 1px solid;
-    border-bottom: 1px solid;
-    border-collapse: collapse;
+    border-color: rgba(0,0,0,0.25);
+}
+
+#third_table td {
+    padding: 0;
 }
 
 #fuel_table {
     width: 100%;
-    border-collapse: collapse;
+    border-style: hidden;
     text-align: center;
+    border-collapse: collapse;
+    border-right: 1px solid rgba(0,0,0,0.25);
+}
+
+#fuel_table tr > td {
+    padding: 5px;
 }
 
 #fuel_table th {
     border-bottom: 1px solid;
-    padding: 0;
+    border-color: rgba(0,0,0,0.25);
 }
 
-#fuel_table tr td {
+#fuel_table td {
     border: 1px solid;
+    border-color: rgba(0,0,0,0.25);
+}
+
+#fuel_table td {
+    padding: 4px;
 }
 
 #fuel_table tr:nth-child(+n+11) {
@@ -97,27 +139,31 @@
     display: visible;
 }
 
+#fuel_table .bold_border {
+    border-left: 2px solid rgba(0,0,0, 1);
+    border-right: 2px solid rgba(0,0,0, 1);
+    border-collapse: collapse;
+}
+
 #fuel_final_table {
     width: 100%;
     border-collapse: collapse;
     text-align: center;
     border-style: hidden;
-    border-left: 1px solid;
+}
+
+#fuel_final_table tr > td {
+    padding: 5px;
 }
 
 #fuel_final_table th {
-    border-bottom: 1px solid;
     border-left: 1px solid;
-    padding: 0;
+    border-color: rgba(0,0,0,0.25);
 }
 
-#fuel_final_table tr td {
+#fuel_final_table td {
     border: 1px solid;
-}
-
-#fuel_final_table th:last-child {
-    text-align: center;
-    border-right: none;
+    border-color: rgba(0,0,0,0.25);
 }
 
 #fuel_final_table p {
@@ -129,7 +175,9 @@
 #bottom_table {
     width: 100%;
     font-weight: bold;
-    text-align: center;
+    text-align: left;
+    border-style: hidden;
+    border: 0;
 }
 
 #trip_table {
@@ -138,9 +186,13 @@
     border-collapse: collapse;
     text-align: center;
     border-style: hidden;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-top: 1px solid;
+    border-color: rgba(0,0,0,0.25);
 }
 
-#trip_table tr:nth-child(+n+20) {
+#trip_table tr:nth-child(+n+22) {
     display: none;
 }
 
@@ -149,9 +201,37 @@
 }
 
 #trip_table tr th {
-    border: 1px solid;
+    border: 1px solid black;
+    border-color: rgba(0,0,0,0.25);
 }
 
 #trip_table tr td {
-    border: 1px solid;
+    border: 1px solid black;
+    border-color: rgba(0,0,0,0.25);
+}
+
+#trip_table .start {
+    color:#2323DC;
+}
+
+#trip_table .end {
+    color:#DC2300;
+}
+
+#trip_table .misc {
+    color:#008000;
+}
+
+#trip_table .middle {
+    border-right: 2px solid black;
+}
+
+#end_table {
+    width: 100%;
+    border-collapse: collapse;
+    border-style: hidden;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: rgba(0,0,0,0.25);
 }
