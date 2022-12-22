@@ -2,6 +2,7 @@ package io.github.mateuszuran.pdfgenerator.controller;
 
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
+import io.github.mateuszuran.pdfgenerator.dto.PdfResponse;
 import io.github.mateuszuran.pdfgenerator.service.PdfService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.*;
@@ -31,13 +32,16 @@ public class PdfController {
 
     @CircuitBreaker(name = "card")
     @GetMapping
-    public ResponseEntity<?> getPDF(@RequestParam Long id, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> getPDF(@RequestParam Long id, @RequestParam Long userId, HttpServletRequest request, HttpServletResponse response) {
         var card = service.calculateCardDataForPdf(id);
+        var vehicle = service.retrieveVehicleDataForPdf(userId);
+
+        var pdf = service.buildResponse(card, vehicle);
 
         WebContext context = new WebContext(request, response, servletContext);
-        context.setVariable("card", card);
-        String orderHtml = templateEngine.process("card", context);
+        context.setVariable("pdf", pdf);
 
+        String orderHtml = templateEngine.process("card", context);
         ByteArrayOutputStream target = new ByteArrayOutputStream();
 
         ConverterProperties converterProperties = new ConverterProperties();

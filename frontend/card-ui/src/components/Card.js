@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CardService from '../services/CardService';
 import PdfService from '../services/PdfService';
+import UserService from '../services/UserService';
 import Fuel from './Fuel';
 import TripFormik from './TripFormik';
 import {
@@ -196,9 +197,19 @@ function Card() {
             )
     }
 
+    const [storedUserId, setStoredUserId] = useState('');
+
+    const retrieveUserInfo = () => {
+        UserService.getUserByUsername(JSON.parse(localStorage.getItem('user')))
+        .then(response => {
+            setStoredUserId(response.data.id);
+        })
+    }
+
     const generatePdf = (id) => {
+        console.log(storedUserId);
         try {
-            PdfService.getPdf(id)
+            PdfService.getPdf(id, storedUserId)
                 .then(response => {
                     console.log(response);
                     //Create a Blob from the PDF Stream
@@ -250,6 +261,7 @@ function Card() {
     }
 
     useEffect(() => {
+        retrieveUserInfo();
         fillArray(currentYear);
         retrieveUser();
         fetchedCards && retrieveCardByUserAndDate();

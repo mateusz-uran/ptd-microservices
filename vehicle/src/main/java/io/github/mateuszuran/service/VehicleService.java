@@ -2,8 +2,10 @@ package io.github.mateuszuran.service;
 
 import io.github.mateuszuran.dto.request.VehicleRequest;
 import io.github.mateuszuran.dto.response.UserResponse;
+import io.github.mateuszuran.dto.response.VehiclePDFResponse;
 import io.github.mateuszuran.dto.response.VehicleResponse;
 import io.github.mateuszuran.filestore.CloudinaryManager;
+import io.github.mateuszuran.mapper.VehicleMapper;
 import io.github.mateuszuran.model.Trailer;
 import io.github.mateuszuran.model.Vehicle;
 import io.github.mateuszuran.model.VehicleImage;
@@ -20,6 +22,7 @@ public class VehicleService {
     private final VehicleRepository repository;
     private final CloudinaryManager cloudinary;
     private final WebClient.Builder webClientBuilder;
+    private final VehicleMapper mapper;
 
     private UserResponse getUsername(String username) {
         return webClientBuilder.build().get()
@@ -38,6 +41,7 @@ public class VehicleService {
                 .licensePlate(vehicleDto.getLicensePlate())
                 .leftTankFuelCapacity(vehicleDto.getLeftTankFuelCapacity())
                 .rightTankFuelCapacity(vehicleDto.getRightTankFuelCapacity())
+                .fullTankCapacity(vehicleDto.getLeftTankFuelCapacity() + vehicleDto.getRightTankFuelCapacity())
                 .adBlueCapacity(vehicleDto.getAdBlueCapacity())
                 .userId(username.getId())
                 .build();
@@ -79,6 +83,18 @@ public class VehicleService {
                     }
                     return repository.save(vehicle);
                 }).orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
+    }
+
+    public VehiclePDFResponse sendToPdf(Long id) {
+        var vehicle = repository.findByUserId(id).orElseThrow();
+        var mappedVehicle = mapper.mapToVehicleResponse(vehicle);
+        var mappedTrailer = mapper.mapToTrailerResponse(vehicle.getTrailer());
+        var mappedImage = mapper.mapToImageResponse(vehicle.getImage());
+        return VehiclePDFResponse.builder()
+                .vehicle(mappedVehicle)
+                .trailer(mappedTrailer)
+                .image(mappedImage)
+                .build();
     }
 
     public void delete(Long id) {

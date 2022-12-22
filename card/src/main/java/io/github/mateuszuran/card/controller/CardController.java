@@ -9,12 +9,10 @@ import io.github.mateuszuran.card.service.CardService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -62,7 +60,7 @@ public class CardController {
         return ResponseEntity.ok().body("single card" + id);
     }
 
-    @GetMapping(params = "id")
+    @GetMapping
     public ResponseEntity<CardPDFResponse> sendCard(@RequestParam Long id) {
         return ResponseEntity.ok()
                 .body(service.sendCardToPDF(id));
