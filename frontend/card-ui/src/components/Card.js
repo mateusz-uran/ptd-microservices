@@ -255,7 +255,7 @@ function Card() {
         fetchedCards && retrieveCardByUserAndDate();
         setFetchedCards(false);
         retrieveDarkMode();
-    }, [user, cardId, fetchedCards]);
+    }, [user, fetchedCards]);
 
     return (
         <div className={`flex flex-col h-screen ${darkMode ? 'dark bg-slate-900' : ''}`}>

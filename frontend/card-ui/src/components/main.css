@@ -131,7 +131,7 @@
     padding: 4px;
 }
 
-#fuel_table tr:nth-child(+n+11) {
+#fuel_table tr:nth-child(+n+12) {
     display: none;
 }
 

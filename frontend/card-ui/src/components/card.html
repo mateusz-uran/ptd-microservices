@@ -7,7 +7,7 @@
           name="viewport">
     <meta content="ie=edge" http-equiv="X-UA-Compatible">
     <title>Card</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}" href="main.css"/>
 </head>
 
 <body>
@@ -163,7 +163,7 @@
                     </tr>
                     <tr th:each="fuel,iterator : ${card.fuels}">
                         <td th:text="${iterator.index+1}"></td>
-                        <td th:text="${fuel.refuelingDate}">&nbsp;</td>
+                        <td th:text="${fuel.currentDate}">&nbsp;</td>
                         <td th:text="${fuel.refuelingLocation}">&nbsp;</td>
                         <td th:text="${fuel.vehicleCounter}">&nbsp;</td>
                         <td>&nbsp;</td>
@@ -282,7 +282,7 @@
                         <td>..............</td>
                     </tr>
                     <tr>
-                        <td colspan="3" style="text-align: left;">Ad Blue/miejscowosc</td>
+                        <td colspan="3">Ad Blue/miejscowosc</td>
                         <td>Ilosc / litry</td>
                     </tr>
                     <tr>
