@@ -96,10 +96,13 @@ function TripFormik(props) {
             })
     }
 
+    let unsubscribed = false;
     const retrieveTripByCardId = () => {
         CardService.getTripFromCard(cardId)
             .then(response => {
-                setFetchedTrips(response.data);
+                if (!unsubscribed) {
+                    setFetchedTrips(response.data);
+                }
             })
             .catch(e => {
                 console.log(e);
@@ -108,6 +111,9 @@ function TripFormik(props) {
 
     useEffect(() => {
         fetch && retrieveTripByCardId();
+        return () => {
+            unsubscribed = true;
+        }
     }, [editMode]);
 
     return (

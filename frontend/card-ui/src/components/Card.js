@@ -17,6 +17,7 @@ import { cardSchema } from '../validation/schema';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Alert from './Alert';
+import Warning from './Warning';
 
 
 function Card() {
@@ -200,15 +201,19 @@ function Card() {
 
     const retrieveUserInfo = () => {
         UserService.getUserByUsername(JSON.parse(localStorage.getItem('user')))
-        .then(response => {
-            setStoredUserId(response.data.id);
-        })
+            .then(response => {
+                setStoredUserId(response.data.id);
+            })
     }
+
+    const [loading, setLoading] = useState(false);
 
     const generatePdf = (id) => {
         try {
+            setLoading(true);
             PdfService.getPdf(id, storedUserId)
                 .then(response => {
+                    setLoading(false);
                     console.log(response);
                     //Create a Blob from the PDF Stream
                     const file = new Blob([response.data], { type: "application/pdf" });
@@ -238,9 +243,8 @@ function Card() {
     const onToggleTripForm = () => {
         if (cardReady) {
             toast.error("Card is ready, cant edit");
-        } else {
-            setAddTripToggle(!addTripToggle);
         }
+        setAddTripToggle(!addTripToggle);
     }
 
     const onToggleFuelForm = () => {
@@ -288,6 +292,10 @@ function Card() {
                 open={confirmOpen}
                 setOpen={setConfirmOpen}
                 onConfirm={deleteCardById}
+            />
+            <Warning
+                description={"Generating PDF, please wait..."}
+                open={loading}
             />
             <div className='flex w-full px-2 py-4 bg-blue-200 justify-between dark:bg-gray-600 items-center w-100'>
                 <div className='flex items-center'>
