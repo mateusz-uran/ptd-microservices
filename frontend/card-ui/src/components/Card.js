@@ -11,13 +11,14 @@ import {
 import { BsFillSunFill } from 'react-icons/bs';
 import { FiRefreshCcw } from 'react-icons/fi';
 import { IoMdArrowDropdown } from 'react-icons/io';
-import { MdDarkMode, MdOutlineRefresh } from 'react-icons/md';
+import { MdDarkMode} from 'react-icons/md';
 import { useFormik } from 'formik';
 import { cardSchema } from '../validation/schema';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Alert from './Alert';
 import Warning from './Warning';
+import Loading from './Loading';
 
 
 function Card() {
@@ -25,6 +26,8 @@ function Card() {
     const [fetchedCards, setFetchedCards] = useState(true);
     const [storedUser, setStoredUser] = useState('');
     const [storedUserId, setStoredUserId] = useState('');
+
+    const [loading, setLoading] = useState(false);
 
     const [cards, setCards] = useState([]);
     const [toggleFetch, setToggleFetch] = useState(false);
@@ -77,6 +80,7 @@ function Card() {
 
     const onSubmit = (values, actions) => {
         if (storedUser != null) {
+            setLoading(true);
             let day = getCurrentDay();
             values.authorUsername = storedUser;
             CardService.create(values, currentYear, currentMonth, day).then(
@@ -84,9 +88,11 @@ function Card() {
                     console.log(response);
                     setFetchedCards(true);
                     actions.resetForm();
+                    setLoading(false);
                 },
                 (error) => {
                     console.log(error);
+                    setLoading(false);
                     toast.error(error.response.data.description);
                 }
             )
@@ -149,13 +155,16 @@ function Card() {
         if (!localStorage.getItem('user')) {
             console.log("Cant find any user")
         } else {
+            setLoading(true);
             CardService.getCardByUserAndMonth(
                 JSON.parse(localStorage.getItem('user')), currentYear, currentMonth)
                 .then(response => {
                     setCards(response.data);
+                    setLoading(false);
                 })
                 .catch(e => {
                     console.log(e);
+                    setLoading(false);
                     setCards([]);
                 })
         }
@@ -172,28 +181,33 @@ function Card() {
     }
 
     const deleteCardById = (id) => {
+        setLoading(true);
         CardService.deleteCard(id)
             .then(response => {
                 console.log(response)
                 retrieveCardByUserAndDate();
                 setToggleFetch(false);
+                setLoading(false);
             })
             .catch(e => {
                 console.log(e);
+                setLoading(false);
                 toast.error(e.response.data.description);
             })
     }
 
     const toggleCard = (id) => {
-        console.log(id);
+        setLoading(true);
         CardService.toggleCard(id)
             .then(
                 (response) => {
                     retrieveCardByUserAndDate();
                     setCardReady(!cardReady);
+                    setLoading(false);
                 },
                 (error) => {
                     console.log(error);
+                    setLoading(false);
                     toast.error(error.response.data.description);
                 }
             )
@@ -206,14 +220,14 @@ function Card() {
             })
     }
 
-    const [loading, setLoading] = useState(false);
+    const [generatingPdf, setGeneratingPdf] = useState(false);
 
     const generatePdf = (id) => {
         try {
-            setLoading(true);
+            setGeneratingPdf(true);
             PdfService.getPdf(id, storedUserId)
                 .then(response => {
-                    setLoading(false);
+                    setGeneratingPdf(false);
                     console.log(response);
                     //Create a Blob from the PDF Stream
                     const file = new Blob([response.data], { type: "application/pdf" });
@@ -223,10 +237,12 @@ function Card() {
                     const pdfWindow = window.open();
                     pdfWindow.location.href = fileURL;
                 }, (error) => {
+                    toast.error("Something went wrong, please again later...");
                     console.log(error);
                 })
         } catch (error) {
             console.log(error);
+            setGeneratingPdf(false);
         }
     }
 
@@ -295,6 +311,10 @@ function Card() {
             />
             <Warning
                 description={"Generating PDF, please wait..."}
+                open={generatingPdf}
+            />
+            <Loading
+                description={"Loading, please wait..."}
                 open={loading}
             />
             <div className='flex w-full px-2 py-4 bg-blue-200 justify-between dark:bg-gray-600 items-center w-100'>

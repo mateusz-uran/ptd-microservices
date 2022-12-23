@@ -307,7 +307,10 @@
     </table>
     <table id="bottom_table">
         <tr>
-            <td></td>
+            <td th:text="'Pojemnosci zbiornikow  : Paliwa : Lewy - '
+             + ${pdf.vehiclePdf.vehicle.leftTankFuelCapacity}
+             + 'l, Prawy - ' + ${pdf.vehiclePdf.vehicle.rightTankFuelCapacity}
+             + 'l, Ad Blue - ' + ${pdf.vehiclePdf.vehicle.adBlueCapacity} + 'l'"></td>
             <td>&nbsp;</td>
         </tr>
         <tr>
