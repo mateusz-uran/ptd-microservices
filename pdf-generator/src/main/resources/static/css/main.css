@@ -12,8 +12,7 @@
     width: 100%;
     text-align: center;
     border-collapse: collapse;
-    border: 1px solid;
-    border-color: rgba(0,0,0,0.25);
+    border: 1px solid rgba(0,0,0,0.25);
 }
 
 #card_image {
@@ -42,10 +41,9 @@
     width: 100%;
     text-align: center;
     border-collapse: collapse;
-    border-bottom: 1px solid;
-    border-left: 1px solid;
-    border-right: 1px solid;
-    border-color: rgba(0,0,0,0.25);
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+    border-left: 1px solid rgba(0,0,0,0.25);
+    border-right: 1px solid rgba(0,0,0,0.25);
 }
 
 #second_table td {
@@ -72,16 +70,26 @@
     padding: 10px;
 }
 
-#counters_info_table th {
-    text-align: center;
-    border-right: 1px solid;
+#counters_info_table .right_border {
+    border-right: 1px solid rgba(0,0,0,0.25);
+}
+
+#counters_info_table .head {
+    height: 20px;
+    border-bottom: 1px solid rgba(0,0,0,0.25);
     padding: 0;
-    border-color: rgba(0,0,0,0.25);
+}
+
+#counters_info_table .h_single_border {
+    border-right: 1px solid rgba(0,0,0,0.25);
+}
+
+#counters_info_table .upper_padding {
+    padding-top: 15px;
 }
 
 #counters_info_table td:nth-child(2) {
-    border-right: 1px solid;
-    border-color: rgba(0,0,0,0.25);
+    border-right: 1px solid rgba(0,0,0,0.25);
 }
 
 .car_info {
@@ -95,22 +103,26 @@
 #third_table {
     width: 100%;
     border-collapse: collapse;
-    border-bottom: 1px solid;
-    border-left: 1px solid;
-    border-right: 1px solid;
-    border-color: rgba(0,0,0,0.25);
+    border-style: hidden;
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+    border-left: 1px solid rgba(0,0,0,0.25);
+    border-right: 1px solid rgba(0,0,0,0.25);
 }
 
 #third_table td {
     padding: 0;
 }
 
+#third_table .refueling_table {
+    border-right: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+
 #fuel_table {
     width: 100%;
     border-style: hidden;
     text-align: center;
     border-collapse: collapse;
-    border-right: 1px solid rgba(0,0,0,0.25);
 }
 
 #fuel_table tr > td {
@@ -118,13 +130,11 @@
 }
 
 #fuel_table th {
-    border-bottom: 1px solid;
-    border-color: rgba(0,0,0,0.25);
+    border-bottom: 1px solid rgba(0,0,0,0.25);
 }
 
 #fuel_table td {
-    border: 1px solid;
-    border-color: rgba(0,0,0,0.25);
+    border: 1px solid rgba(0, 0, 0, 0.25);
 }
 
 #fuel_table td {
@@ -139,12 +149,6 @@
     display: visible;
 }
 
-#fuel_table .bold_border {
-    border-left: 2px solid rgba(0,0,0, 1);
-    border-right: 2px solid rgba(0,0,0, 1);
-    border-collapse: collapse;
-}
-
 #fuel_final_table {
     width: 100%;
     border-collapse: collapse;
@@ -157,19 +161,28 @@
 }
 
 #fuel_final_table th {
-    border-left: 1px solid;
-    border-color: rgba(0,0,0,0.25);
+    border-left: 1px solid  rgba(0,0,0,0.25);
 }
 
 #fuel_final_table td {
-    border: 1px solid;
-    border-color: rgba(0,0,0,0.25);
+    border: 1px solid rgba(0,0,0,0.25);
 }
 
-#fuel_final_table p {
-    padding: 0;
-    margin: 0;
-    display: inline
+.small_font {
+    font-size: 10px;
+}
+
+.text_left {
+    text-align: left;
+}
+
+#fuel_final_table .hide_border {
+    border-right: 1px solid transparent;
+}
+
+#fuel_final_table .bold_outline {
+    outline: 1px solid;
+    outline-offset: -1px;
 }
 
 #bottom_table {
@@ -186,10 +199,9 @@
     border-collapse: collapse;
     text-align: center;
     border-style: hidden;
-    border-left: 1px solid;
-    border-right: 1px solid;
-    border-top: 1px solid;
-    border-color: rgba(0,0,0,0.25);
+    border-left: 1px solid rgba(0,0,0,0.25);
+    border-right: 1px solid rgba(0,0,0,0.25);
+    border-top: 1px solid rgba(0,0,0,0.25);
 }
 
 #trip_table tr:nth-child(+n+22) {
@@ -201,13 +213,11 @@
 }
 
 #trip_table tr th {
-    border: 1px solid black;
-    border-color: rgba(0,0,0,0.25);
+    border: 1px solid  rgba(0,0,0,0.25);
 }
 
 #trip_table tr td {
-    border: 1px solid black;
-    border-color: rgba(0,0,0,0.25);
+    border: 1px solid  rgba(0,0,0,0.25);
 }
 
 #trip_table .start {
@@ -230,8 +240,7 @@
     width: 100%;
     border-collapse: collapse;
     border-style: hidden;
-    border-left: 1px solid;
-    border-right: 1px solid;
-    border-bottom: 1px solid;
-    border-color: rgba(0,0,0,0.25);
+    border-left: 1px solid rgba(0,0,0,0.25);
+    border-right: 1px solid rgba(0,0,0,0.25);
+    border-bottom: 1px solid rgba(0,0,0,0.25);
 }

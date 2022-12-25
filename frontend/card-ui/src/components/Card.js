@@ -11,7 +11,7 @@ import {
 import { BsFillSunFill } from 'react-icons/bs';
 import { FiRefreshCcw } from 'react-icons/fi';
 import { IoMdArrowDropdown } from 'react-icons/io';
-import { MdDarkMode} from 'react-icons/md';
+import { MdDarkMode } from 'react-icons/md';
 import { useFormik } from 'formik';
 import { cardSchema } from '../validation/schema';
 import { ToastContainer, toast } from 'react-toastify';
@@ -222,27 +222,28 @@ function Card() {
 
     const [generatingPdf, setGeneratingPdf] = useState(false);
 
-    const generatePdf = (id) => {
-        try {
-            setGeneratingPdf(true);
-            PdfService.getPdf(id, storedUserId)
-                .then(response => {
-                    setGeneratingPdf(false);
-                    console.log(response);
-                    //Create a Blob from the PDF Stream
-                    const file = new Blob([response.data], { type: "application/pdf" });
-                    //Build a URL from the file
-                    const fileURL = URL.createObjectURL(file);
-                    //Open the URL on new Window
-                    const pdfWindow = window.open();
-                    pdfWindow.location.href = fileURL;
-                }, (error) => {
-                    toast.error("Something went wrong, please again later...");
-                    console.log(error);
-                })
-        } catch (error) {
-            console.log(error);
-            setGeneratingPdf(false);
+    const generatePdf = (id, done) => {
+        if (!done) {
+            toast.warn("Toggle card first!");
+        } else {
+            try {
+                setGeneratingPdf(true);
+                PdfService.getPdf(id, storedUserId)
+                    .then(response => {
+                        setGeneratingPdf(false);
+                        const file = new Blob([response.data], { type: "application/pdf" });
+                        const fileURL = URL.createObjectURL(file);
+                        const pdfWindow = window.open();
+                        pdfWindow.location.href = fileURL;
+                    }, (error) => {
+                        setGeneratingPdf(false);
+                        toast.error("Something went wrong, please again later...");
+                        console.log(error);
+                    })
+            } catch (error) {
+                console.log(error);
+                setGeneratingPdf(false);
+            }
         }
     }
 
@@ -398,7 +399,7 @@ function Card() {
                                             <p className='w-full'>{card.number}</p>
                                             <span className='flex md:ml-1'>
                                                 <i onClick={() => handleToggleCardContent(card.id, card.done)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black cursor-pointer'><AiOutlineArrowRight className={toggleFetch && card.id === cardId ? '-rotate-90 md:rotate-180' : 'rotate-90 md:rotate-0'} /></i>
-                                                <i onClick={card.done ? () => generatePdf(card.id) : undefined} className={`px-1 rounded ${card.done ? 'cursor-pointer hover:bg-blue-200 active:bg-blue-200 dark:active:bg-slate-400 hover:text-black active:text-black dark:hover:bg-slate-400' : 'cursor-not-allowed'}`}><AiFillFilePdf /></i>
+                                                <i onClick={() => generatePdf(card.id, card.done)} className={`px-1 rounded cursor-pointer hover:bg-blue-200 active:bg-blue-200 dark:active:bg-slate-400 hover:text-black active:text-black dark:hover:bg-slate-400`}><AiFillFilePdf /></i>
                                                 <i onClick={() => handleModal(card.id, card.number)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black'><AiOutlineDelete /></i>
                                                 <i onClick={() => toggleCard(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black cursor-pointer'>
                                                     {card.done ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}

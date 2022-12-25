@@ -23,7 +23,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="font-size: 15px;text-transform:uppercase">volvo/krone
+                        <td style="font-size: 15px;text-transform:uppercase" th:text="${pdf.vehiclePdf.image.name}">volvo/krone
                         </td>
                     </tr>
                 </table>
@@ -118,27 +118,28 @@
             </td>
             <td style="width: 40%; border-left: 1px solid; border-color: rgba(0,0,0,0.25);">
                 <table id="counters_info_table">
-                    <tr style="border-bottom: 1px solid; border-color: rgba(0,0,0,0.25);">
-                        <th colspan="2">LICZNIK-POJAZD</th>
-                        <th colspan="2">LICZNIK-AGREGAT</th>
+                    <tr class="head">
+                        <th class="h_single_border" colspan="2">LICZNIK - POJAZD</th>
+                        <th colspan="2">LICZNIK - AGREGAT</th>
                     </tr>
                     <tr>
                         <td>Powrót:</td>
-                        <td th:text="${pdf.card.counter.lastCounter}">.................</td>
+                        <td class="right_border" th:text="${pdf.card.counter.lastCounter}">.................</td>
                         <td>Powrót:</td>
                         <td>.................mtg</td>
                     </tr>
                     <tr>
                         <td>Wyjazd:</td>
-                        <td th:text="${pdf.card.counter.firstCounter}">.................</td>
+                        <td class="right_border" th:text="${pdf.card.counter.firstCounter}">.................</td>
                         <td>Wyjazd:</td>
                         <td> .................mtg</td>
                     </tr>
                     <tr>
-                        <td>Przebieg:</td>
-                        <td th:text="${pdf.card.counter.mileage}">.................</td>
-                        <td>Przebieg:</td>
-                        <td> .................mtg</td>
+                        <td class="upper_padding">Przebieg:</td>
+                        <td class="right_border upper_padding" th:text="${pdf.card.counter.mileage}">
+                            .................</td>
+                        <td class="upper_padding">Przebieg:</td>
+                        <td class="upper_padding"> .................mtg</td>
                     </tr>
                 </table>
             </td>
@@ -146,7 +147,7 @@
     </table>
     <table id="third_table">
         <tr>
-            <td>
+            <td class="refueling_table">
                 <table id="fuel_table">
                     <tr>
                         <th colspan="8">Rozliczenie tankowania</th>
@@ -154,11 +155,11 @@
                     <tr>
                         <td>Lp</td>
                         <td>Data</td>
-                        <td>Miejscowość</td>
+                        <td>Miejscowosc</td>
                         <td>Licznik</td>
                         <td>Stan paliwa</td>
-                        <td class="bold_border">Ilość tankowania</td>
-                        <td>Forma płatności</td>
+                        <td class="bold_border">Ilosc tankowania</td>
+                        <td>Forma płatnosci</td>
                         <td>Inne</td>
                     </tr>
                     <tr th:each="fuel,iterator : ${pdf.card.fuels}">
@@ -249,40 +250,40 @@
                     </tr>
                 </table>
             </td>
-            <td>
+            <td class="refueling">
                 <table id="fuel_final_table">
                     <tr>
                         <th colspan="2">PALIWO-POJAZD</th>
                         <th colspan="2">PALIWO-AGREGAT</th>
                     </tr>
                     <tr>
-                        <td>Stan pocz.</td>
+                        <td class="hide_border">Stan pocz.</td>
                         <td>..............</td>
                         <td colspan="2">............................</td>
                     </tr>
                     <tr>
-                        <td>Tankow.</td>
+                        <td class="hide_border">Tankow.</td>
                         <td>..............</td>
                         <td colspan="2">............................</td>
                     </tr>
                     <tr>
-                        <td>Stan konc.</td>
+                        <td class="hide_border">Stan konc.</td>
                         <td>..............</td>
                         <td colspan="2">............................</td>
                     </tr>
                     <tr>
-                        <td>Zuzycie.</td>
+                        <td class="hide_border">Zuzycie.</td>
                         <td>..............</td>
                         <td colspan="2">............................</td>
                     </tr>
                     <tr>
-                        <td style="font-size: 10px;">Zuzycie litr/100km</td>
-                        <td>..............</td>
-                        <td style="font-size: 10px;">Zuzycie litr/100km</td>
-                        <td>..............</td>
+                        <td class="small_font">Zuzycie litr/100km</td>
+                        <td class="bold_outline">..............</td>
+                        <td class="small_font">Zuzycie litr/100km</td>
+                        <td class="bold_outline">..............</td>
                     </tr>
                     <tr>
-                        <td colspan="3" style="text-align: left;">Ad Blue/miejscowosc</td>
+                        <td colspan="3" class="text_left">Ad Blue/miejscowosc</td>
                         <td>Ilosc / litry</td>
                     </tr>
                     <tr>
