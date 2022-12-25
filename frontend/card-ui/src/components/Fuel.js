@@ -5,9 +5,11 @@ import { AiOutlineEdit, AiOutlineClose } from 'react-icons/ai';
 import { useFormik } from 'formik';
 import { fuelSchema } from '../validation/schema';
 import Alert from './Alert';
+import Loading from './Loading';
 
 function Fuel(props) {
     const { cardId, cardReady, toggleForm, theme } = props;
+    const [loading, setLoading] = useState(false);
 
     const [fuels, setFuels] = useState([]);
     const [fetch, setFetch] = useState(true);
@@ -16,26 +18,32 @@ function Fuel(props) {
 
     const onSubmit = (values, actions) => {
         if (editMode) {
+            setLoading(true);
             FuelService.editFuel(fuelId, values)
                 .then(
                     (response) => {
                         retrieveFuelByCardId();
                         actions.resetForm();
                         setEditMode(false);
+                        setLoading(false);
                     },
                     (error) => {
                         console.log(error);
+                        setLoading(false);
                     }
                 )
         } else {
+            setLoading(true);
             FuelService.create(cardId, values)
                 .then(
                     (response) => {
                         retrieveFuelByCardId();
                         actions.resetForm();
+                        setLoading(false);
                     },
                     (error) => {
                         console.log(error);
+                        setLoading(false);
                     }
                 )
         }
@@ -57,6 +65,7 @@ function Fuel(props) {
         if (toggleForm == false) {
             console.log("Toggle form first")
         } else {
+            setLoading(true);
             FuelService.singleFuel(id)
                 .then(response => {
                     setFieldValue('refuelingDate', response.data.refuelingDate)
@@ -64,9 +73,11 @@ function Fuel(props) {
                     setFieldValue('vehicleCounter', response.data.vehicleCounter)
                     setFieldValue('refuelingAmount', response.data.refuelingAmount)
                     setFuelId(response.data.id);
+                    setLoading(false);
                 })
                 .catch(e => {
                     console.log(e);
+                    setLoading(false);
                 })
         }
     }
@@ -80,33 +91,33 @@ function Fuel(props) {
     }
 
     const deleteFuel = (id) => {
+        setLoading(true);
         FuelService.deleteFuel(id)
             .then(response => {
                 retrieveFuelByCardId();
+                setLoading(false);
             })
             .catch(e => {
                 console.log(e);
+                setLoading(false);
             })
     }
-    let unsubscribed = false;
 
     const retrieveFuelByCardId = () => {
+        setLoading(true);
         CardService.getFuelFromCard(cardId)
             .then(response => {
-                if (!unsubscribed) {
-                    setFuels(response.data);
-                }
+                setFuels(response.data);
+                setLoading(false);
             })
             .catch(e => {
                 console.log(e);
+                setLoading(false);
             })
     }
 
     useEffect(() => {
         fetch && retrieveFuelByCardId();
-        return () => {
-            unsubscribed = true;
-        }
     }, []);
 
     return (
@@ -119,6 +130,10 @@ function Fuel(props) {
                 setOpen={setConfirmOpen}
                 onConfirm={deleteFuel}
                 modalTheme={theme}
+            />
+            <Loading
+                description={"Loading, please wait..."}
+                open={loading}
             />
             <div className={cardReady ? 'flex flex-col items-center opacity-60' : 'flex flex-col items-center'}>
                 {toggleForm && !cardReady &&

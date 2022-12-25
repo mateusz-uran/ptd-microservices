@@ -2,17 +2,16 @@ package io.github.mateuszuran.pdfgenerator.controller;
 
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
-import io.github.mateuszuran.pdfgenerator.dto.PdfResponse;
 import io.github.mateuszuran.pdfgenerator.service.PdfService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -22,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 
 @Slf4j
-@RestController
+@Controller
 @RequestMapping("/api/pdf")
 @RequiredArgsConstructor
 public class PdfController {
