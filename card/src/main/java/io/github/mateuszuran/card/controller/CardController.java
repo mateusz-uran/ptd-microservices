@@ -26,8 +26,7 @@ public class CardController {
     @ResponseStatus(HttpStatus.CREATED)
     @CircuitBreaker(name = "user")
     public ResponseEntity<?> addCard(@RequestBody CardRequest cardDto, @RequestParam int year, @RequestParam int month, @RequestParam int dayOfMonth) {
-        service.saveCard(cardDto, year, month, dayOfMonth);
-        return ResponseEntity.ok().body("Card added");
+        return ResponseEntity.ok().body(service.saveCard(cardDto, year, month, dayOfMonth));
     }
 
     @GetMapping("/all")

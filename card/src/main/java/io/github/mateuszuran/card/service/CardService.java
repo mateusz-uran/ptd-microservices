@@ -19,8 +19,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,14 +31,14 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 @RequiredArgsConstructor
 public class CardService {
     private final CardRepository repository;
-    private final WebClient.Builder webClientBuilder;
+    private final WebClient webClient;
     private final KafkaTemplate<String, CardToggledEvent> kafkaTemplate;
     private final TripMapper tripMapper;
     private final FuelMapper fuelMapper;
     private final CardMapper cardMapper;
 
-    private UserResponse getUsername(String username) {
-        return webClientBuilder.build().get()
+    public UserResponse getUsername(String username) {
+        return webClient.get()
                 .uri("http://user-service/api/user",
                         uriBuilder -> uriBuilder.queryParam("username", username).build())
                 .retrieve()
@@ -48,7 +46,7 @@ public class CardService {
                 .block();
     }
 
-    public void saveCard(CardRequest cardDto, int year, int month, int dayOfMonth) {
+    public CardResponse saveCard(CardRequest cardDto, int year, int month, int dayOfMonth) {
         if (repository.existsByNumber(cardDto.getNumber())) {
             throw new CardExistsException(cardDto.getNumber());
         } else {
@@ -61,6 +59,7 @@ public class CardService {
                     .creationTime(date)
                     .build();
             repository.save(card);
+            return cardMapper.mapToCardResponseWithModelMapper(card);
         }
     }
 
