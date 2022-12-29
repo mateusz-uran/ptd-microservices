@@ -3,6 +3,7 @@ package io.github.mateuszuran.controller;
 import io.github.mateuszuran.dto.request.TrailerRequest;
 import io.github.mateuszuran.dto.request.VehicleImageRequest;
 import io.github.mateuszuran.dto.request.VehicleRequest;
+import io.github.mateuszuran.dto.response.VehiclePDFResponse;
 import io.github.mateuszuran.service.TrailerService;
 import io.github.mateuszuran.service.VehicleImageService;
 import io.github.mateuszuran.service.VehicleService;
@@ -57,6 +58,11 @@ public class VehicleController {
     public ResponseEntity<?> uploadImageToPostByParam(@RequestParam Long id, @RequestParam MultipartFile file) throws Exception {
         vehicleImageService.uploadVehicleImage(id, file);
         return ResponseEntity.ok().body("Image uploaded");
+    }
+
+    @GetMapping(params = "userId")
+    public ResponseEntity<VehiclePDFResponse> sendToPdfService(@RequestParam Long userId) {
+        return ResponseEntity.ok().body(service.sendToPdf(userId));
     }
 
     @DeleteMapping

@@ -6,9 +6,11 @@ import { trips } from '../validation/schema';
 import { AiOutlinePlus, AiOutlineMinus, AiOutlineEdit, AiOutlineClose } from 'react-icons/ai';
 import { toast } from 'react-toastify';
 import Alert from './Alert';
+import Loading from './Loading';
 
 function TripFormik(props) {
     const { cardId, cardReady, toggleForm, theme } = props;
+    const [loading, setLoading] = useState(false);
 
     const [fetch, setFetch] = useState(true);
     const [editMode, setEditMode] = useState(false);
@@ -38,26 +40,32 @@ function TripFormik(props) {
     }
 
     const onSubmitNewTrip = (values, actions) => {
+        setLoading(true);
         TripService.create(cardId, values.inputFields).then(
             (response) => {
                 retrieveTripByCardId();
                 actions.resetForm();
+                setLoading(false);
             },
             (error) => {
                 console.log(error);
+                setLoading(false);
             }
         )
     }
 
     const onSubmitEditedTrip = (values, actions) => {
+        setLoading(true);
         TripService.editTrip(trip.id, values.inputFields[0]).then(
             (response) => {
                 retrieveTripByCardId();
                 actions.resetForm();
                 setEditMode(false);
+                setLoading(false);
             },
             (error) => {
                 console.log(error);
+                setLoading(false);
             }
         )
     }
@@ -66,14 +74,17 @@ function TripFormik(props) {
         if (toggleForm === false) {
             toast.warning("Toggle add form first.")
         } else {
+            setLoading(true);
             setEditMode(true);
             TripService.retrieveSingle(id)
                 .then(response => {
                     setTrip(response.data);
                     setEditMode(true);
+                    setLoading(false);
                 })
                 .catch(e => {
                     console.log(e);
+                    setLoading(false);
                 })
         }
     }
@@ -87,22 +98,28 @@ function TripFormik(props) {
     }
 
     const deleteTrip = (id) => {
+        setLoading(false);
         TripService.deleteTrip(id)
             .then(response => {
                 retrieveTripByCardId();
+                setLoading(true);
             })
             .catch(e => {
                 console.log(e);
+                setLoading(false);
             })
     }
 
     const retrieveTripByCardId = () => {
+        setLoading(true);
         CardService.getTripFromCard(cardId)
             .then(response => {
                 setFetchedTrips(response.data);
+                setLoading(false);
             })
             .catch(e => {
                 console.log(e);
+                setLoading(false);
             })
     }
 
@@ -121,6 +138,10 @@ function TripFormik(props) {
                 onConfirm={deleteTrip}
                 modalTheme={theme}
             />
+            <Loading
+                description={"Loading, please wait..."}
+                open={loading}
+            />
             <div className={cardReady ? 'opacity-60' : ''}>
                 {toggleForm && !cardReady &&
                     <Formik
@@ -135,7 +156,7 @@ function TripFormik(props) {
                                     name='inputFields'
                                     render={arrayHelpers => {
                                         return (
-                                            <div>
+                                            <div className='flex flex-col items-start md:items-end'>
                                                 {values.inputFields && values.inputFields.length > 0
                                                     ? values.inputFields.map((input, index) => (
                                                         <div key={index} className='bg-slate-100 dark:bg-slate-700 mb-2'>
@@ -271,7 +292,7 @@ function TripFormik(props) {
                                                                             component='span'
                                                                             className='text-red-600 text-xs font-light' />
                                                                     </div>
-                                                                    <label className='text-sm text-gray-400 uppercase'>start</label>
+                                                                    <label className='text-sm text-gray-400 uppercase'>end</label>
                                                                     <div className='grid grid-cols-2 gap-2 items-center px-1 sm:grid-cols-5'>
                                                                         <Field
                                                                             placeholder='day'
@@ -363,6 +384,7 @@ function TripFormik(props) {
                                                                         className='px-1 rounded md:my-1 hover:bg-blue-400 dark:bg-gray-800 dark:hover:bg-blue-800 hover:text-white dark:text-white'
                                                                     ><AiOutlineMinus /></button>
                                                                     <button
+                                                                        disabled={!editMode ? false : true}
                                                                         type='button'
                                                                         onClick={() => arrayHelpers.push({
                                                                             dayStart: '', hourStart: '', locationStart: values.inputFields[index].locationEnd, countryStart: values.inputFields[index].countryEnd, counterStart: values.inputFields[index].counterEnd,
@@ -370,16 +392,16 @@ function TripFormik(props) {
                                                                         })}
                                                                         className='px-1 rounded md:my-1 hover:bg-blue-400 dark:bg-gray-800 dark:hover:bg-blue-800 hover:text-white dark:text-white'
                                                                     ><AiOutlinePlus /></button>
-                                                                    <button
-                                                                        type='submit'
-                                                                        className='px-1 ml-1 mb-1 bg-blue-400 dark:bg-blue-900 text-white dark:text-slate-300 rounded md:my-1 hover:bg-slate-300 dark:hover:bg-gray-600 hover:text-gray-600'
-                                                                    >Add</button>
                                                                 </div>
                                                             </div>
                                                         </div>
 
                                                     ))
                                                     : null}
+                                                <button
+                                                    type='submit'
+                                                    className='px-1 ml-1 mb-1 bg-blue-400 dark:bg-blue-900 text-white dark:text-slate-300 rounded md:my-1 hover:bg-slate-300 dark:hover:bg-gray-600 hover:text-gray-600'
+                                                >{!editMode ? "Add" : "Save"}</button>
                                             </div>
                                         )
                                     }}

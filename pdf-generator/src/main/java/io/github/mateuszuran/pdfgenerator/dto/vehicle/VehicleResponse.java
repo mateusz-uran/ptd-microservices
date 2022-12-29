@@ -1,7 +1,5 @@
-package io.github.mateuszuran.dto.response;
+package io.github.mateuszuran.pdfgenerator.dto.vehicle;
 
-import io.github.mateuszuran.dto.request.TrailerRequest;
-import io.github.mateuszuran.dto.request.VehicleRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +16,6 @@ public class VehicleResponse {
     private String licensePlate;
     private Integer leftTankFuelCapacity;
     private Integer rightTankFuelCapacity;
-    private Integer fullTankCapacity;
     private Integer adBlueCapacity;
+    private Integer fullTankCapacity;
 }

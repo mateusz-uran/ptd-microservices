@@ -2,11 +2,17 @@
     size: A4 landscape;
 }
 
+.wrapper {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+}
+
 #first_table {
-    border: 1px solid;
     width: 100%;
     text-align: center;
     border-collapse: collapse;
+    border: 1px solid rgba(0,0,0,0.25);
 }
 
 #card_image {
@@ -27,66 +33,120 @@
 
 .address {
     font-size: 13px;
-    color: #4600B7;
+    font-weight: bold;
+    color: #4700b8;
 }
 
 #second_table {
-    border: 1px solid;
     width: 100%;
     text-align: center;
+    border-collapse: collapse;
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+    border-left: 1px solid rgba(0,0,0,0.25);
+    border-right: 1px solid rgba(0,0,0,0.25);
+}
+
+#second_table td {
+    padding: 0;
 }
 
 #car_info_table {
     width: 100%;
     border-collapse: collapse;
-    margin: 0;
+}
+
+#car_info_table td {
+    padding: 10px;
 }
 
 #counters_info_table {
     width: 100%;
     border-collapse: collapse;
+    border-style: hidden;
     margin: 0;
 }
 
-#counters_info_table th {
-    text-align: center;
-    border-right: 1px solid;
+#counters_info_table td {
+    padding: 10px;
 }
 
-#counters_info_table th:last-child {
-    text-align: center;
-    border-right: none;
+#counters_info_table .right_border {
+    border-right: 1px solid rgba(0,0,0,0.25);
+}
+
+#counters_info_table .head {
+    height: 20px;
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+    padding: 0;
+}
+
+#counters_info_table .h_single_border {
+    border-right: 1px solid rgba(0,0,0,0.25);
+}
+
+#counters_info_table .upper_padding {
+    padding-top: 15px;
 }
 
 #counters_info_table td:nth-child(2) {
-    border-right: 1px solid;
+    border-right: 1px solid rgba(0,0,0,0.25);
 }
 
 .car_info {
     margin: 0;
 }
 
+.registration {
+    font-weight: bold;
+}
+
 #third_table {
     width: 100%;
-    border-left: 1px solid;
-    border-right: 1px solid;
-    border-bottom: 1px solid;
     border-collapse: collapse;
+    border-style: hidden;
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+    border-left: 1px solid rgba(0,0,0,0.25);
+    border-right: 1px solid rgba(0,0,0,0.25);
 }
 
-#fuel_table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: center;
-}
-
-#fuel_table th {
-    border-bottom: 1px solid;
+#third_table td {
     padding: 0;
 }
 
-#fuel_table tr td {
-    border: 1px solid;
+#third_table .refueling_table {
+    border-right: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+
+#fuel_table {
+    width: 100%;
+    border-style: hidden;
+    text-align: center;
+    border-collapse: collapse;
+}
+
+#fuel_table tr > td {
+    padding: 5px;
+}
+
+#fuel_table th {
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+}
+
+#fuel_table td {
+    border: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+#fuel_table td {
+    padding: 4px;
+}
+
+#fuel_table tr:nth-child(+n+11) {
+    display: none;
+}
+
+#fuel_table tr:last-child {
+    display: visible;
 }
 
 #fuel_final_table {
@@ -94,34 +154,43 @@
     border-collapse: collapse;
     text-align: center;
     border-style: hidden;
-    border-left: 1px solid;
+}
+
+#fuel_final_table tr > td {
+    padding: 5px;
 }
 
 #fuel_final_table th {
-    border-bottom: 1px solid;
-    border-left: 1px solid;
-    padding: 0;
+    border-left: 1px solid  rgba(0,0,0,0.25);
 }
 
-#fuel_final_table tr td {
-    border: 1px solid;
+#fuel_final_table td {
+    border: 1px solid rgba(0,0,0,0.25);
 }
 
-#fuel_final_table th:last-child {
-    text-align: center;
-    border-right: none;
+.small_font {
+    font-size: 10px;
 }
 
-#fuel_final_table p {
-    padding: 0;
-    margin: 0;
-    display: inline
+.text_left {
+    text-align: left;
+}
+
+#fuel_final_table .hide_border {
+    border-right: 1px solid transparent;
+}
+
+#fuel_final_table .bold_outline {
+    outline: 1px solid;
+    outline-offset: -1px;
 }
 
 #bottom_table {
     width: 100%;
     font-weight: bold;
-    text-align: center;
+    text-align: left;
+    border-style: hidden;
+    border: 0;
 }
 
 #trip_table {
@@ -130,12 +199,48 @@
     border-collapse: collapse;
     text-align: center;
     border-style: hidden;
+    border-left: 1px solid rgba(0,0,0,0.25);
+    border-right: 1px solid rgba(0,0,0,0.25);
+    border-top: 1px solid rgba(0,0,0,0.25);
+}
+
+#trip_table tr:nth-child(+n+22) {
+    display: none;
+}
+
+#trip_table tr:last-child {
+    display: visible;
 }
 
 #trip_table tr th {
-    border: 1px solid;
+    border: 1px solid  rgba(0,0,0,0.25);
 }
 
 #trip_table tr td {
-    border: 1px solid;
+    border: 1px solid  rgba(0,0,0,0.25);
+}
+
+#trip_table .start {
+    color:#2323DC;
+}
+
+#trip_table .end {
+    color:#DC2300;
+}
+
+#trip_table .misc {
+    color:#008000;
+}
+
+#trip_table .middle {
+    border-right: 2px solid black;
+}
+
+#end_table {
+    width: 100%;
+    border-collapse: collapse;
+    border-style: hidden;
+    border-left: 1px solid rgba(0,0,0,0.25);
+    border-right: 1px solid rgba(0,0,0,0.25);
+    border-bottom: 1px solid rgba(0,0,0,0.25);
 }

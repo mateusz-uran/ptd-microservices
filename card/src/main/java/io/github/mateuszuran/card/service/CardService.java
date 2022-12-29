@@ -17,24 +17,28 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
+import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CardService {
     private final CardRepository repository;
-    private final WebClient.Builder webClientBuilder;
+    private final WebClient webClient;
     private final KafkaTemplate<String, CardToggledEvent> kafkaTemplate;
     private final TripMapper tripMapper;
     private final FuelMapper fuelMapper;
     private final CardMapper cardMapper;
 
-    private UserResponse getUsername(String username) {
-        return webClientBuilder.build().get()
+    public UserResponse getUsername(String username) {
+        return webClient.get()
                 .uri("http://user-service/api/user",
                         uriBuilder -> uriBuilder.queryParam("username", username).build())
                 .retrieve()
@@ -42,17 +46,20 @@ public class CardService {
                 .block();
     }
 
-    public void saveCard(CardRequest cardDto) {
+    public CardResponse saveCard(CardRequest cardDto, int year, int month, int dayOfMonth) {
         if (repository.existsByNumber(cardDto.getNumber())) {
             throw new CardExistsException(cardDto.getNumber());
         } else {
             var username = getUsername(cardDto.getAuthorUsername());
+            var actualDate = LocalDateTime.now();
+            var date = LocalDateTime.of(year, month, dayOfMonth, actualDate.getHour(), actualDate.getMinute(), actualDate.getSecond());
             Card card = Card.builder()
                     .number(cardDto.getNumber())
                     .userId(username.getId())
-                    .creationTime(LocalDateTime.now())
+                    .creationTime(date)
                     .build();
             repository.save(card);
+            return cardMapper.mapToCardResponseWithModelMapper(card);
         }
     }
 
@@ -61,21 +68,15 @@ public class CardService {
                 .orElseThrow(CardNotFoundException::new);
     }
 
-    public List<CardResponse> getAllCardsByUser(String username) {
+    public List<CardResponse> getAllCardByUserAndDate(String username, int year, int month) {
         var user = getUsername(username);
-        var cards = repository.findAllByUserId(user.getId());
-        return cards.stream()
-                .map(cardMapper::mapToCardResponseWithModelMapper)
-                .collect(Collectors.toList());
-    }
+        var actualDate = LocalDate.of(year, month, 1);
 
-    public List<CardResponse> getAllCardByUserAndDate(String username, String month) {
-        var user = getUsername(username);
-        var cards = repository.findAllByUserId(user.getId());
-        return cards.stream()
-                .filter(card -> card.getCreationTime().getMonth().toString().equals(month))
-                .toList()
-                .stream().map(cardMapper::mapToCardResponseWithFormattedCreationTime)
+        LocalDateTime startDate = actualDate.with(firstDayOfMonth()).atStartOfDay();
+        LocalDateTime endDate = actualDate.with(lastDayOfMonth()).atStartOfDay();
+
+        var result = repository.findAllByUserIdAndCreationTimeBetween(user.getId(), startDate, endDate);
+        return result.stream().map(cardMapper::mapToCardResponseWithFormattedCreationTime)
                 .sorted(Comparator.comparing(CardResponse::getCreationTime).reversed())
                 .toList();
     }
@@ -100,7 +101,10 @@ public class CardService {
 
     public boolean toggleCard(Long id) {
         var result = repository.findById(id).orElseThrow();
-        if (result.getTrips().isEmpty() && result.getFuels().isEmpty()) {
+
+        if (result.getFuels().isEmpty()) {
+            throw new CardEmptyException();
+        } else if (result.getTrips().isEmpty()) {
             throw new CardEmptyException();
         } else {
             result.setDone(!result.isDone());
@@ -110,8 +114,8 @@ public class CardService {
             } else {
                 kafkaTemplate.send("notificationTopic", new CardToggledEvent(result.getNumber(), "Card is not ready yet."));
             }
-            return result.isDone();
         }
+        return result.isDone();
     }
 
     public CardPDFResponse sendCardToPDF(Long id) {

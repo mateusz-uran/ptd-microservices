@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CardService from '../services/CardService';
 import PdfService from '../services/PdfService';
+import UserService from '../services/UserService';
 import Fuel from './Fuel';
 import TripFormik from './TripFormik';
 import {
@@ -8,18 +9,25 @@ import {
     AiOutlinePlus, AiOutlineEye, AiOutlineEyeInvisible
 } from 'react-icons/ai'
 import { BsFillSunFill } from 'react-icons/bs';
+import { FiRefreshCcw } from 'react-icons/fi';
+import { IoMdArrowDropdown } from 'react-icons/io';
 import { MdDarkMode } from 'react-icons/md';
 import { useFormik } from 'formik';
 import { cardSchema } from '../validation/schema';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Alert from './Alert';
+import Warning from './Warning';
+import Loading from './Loading';
 
 
 function Card() {
     const [user, setUser] = useState('');
     const [fetchedCards, setFetchedCards] = useState(true);
     const [storedUser, setStoredUser] = useState('');
+    const [storedUserId, setStoredUserId] = useState('');
+
+    const [loading, setLoading] = useState(false);
 
     const [cards, setCards] = useState([]);
     const [toggleFetch, setToggleFetch] = useState(false);
@@ -31,6 +39,28 @@ function Card() {
     const [addFuelToggle, setAddFuelToggle] = useState(false);
 
     const [darkMode, setDarkMode] = useState(JSON.parse(localStorage.getItem('themeMode')));
+
+    const [currentYear, setCurrentYear] = useState(getCurrentYear());
+    const [currentMonth, setCurrentMonth] = useState(getCurrentMonth());
+    const [calendar, setCalendar] = useState(false);
+    const [tempYear, setTempYear] = useState();
+
+    const [years, setYearsDates] = useState([]);
+
+    const [months, setMonths] = useState([
+        { number: 1, name: 'jan' },
+        { number: 2, name: 'feb' },
+        { number: 3, name: 'mar' },
+        { number: 4, name: 'apr' },
+        { number: 5, name: 'may' },
+        { number: 6, name: 'june' },
+        { number: 7, name: 'july' },
+        { number: 8, name: 'aug' },
+        { number: 9, name: 'sept' },
+        { number: 10, name: 'oct' },
+        { number: 11, name: 'nov' },
+        { number: 12, name: 'dec' },
+    ])
 
     const handleUsernameInLocalStorage = (e) => {
         e.preventDefault();
@@ -50,15 +80,19 @@ function Card() {
 
     const onSubmit = (values, actions) => {
         if (storedUser != null) {
+            setLoading(true);
+            let day = getCurrentDay();
             values.authorUsername = storedUser;
-            CardService.create(values).then(
+            CardService.create(values, currentYear, currentMonth, day).then(
                 (response) => {
                     console.log(response);
                     setFetchedCards(true);
                     actions.resetForm();
+                    setLoading(false);
                 },
                 (error) => {
                     console.log(error);
+                    setLoading(false);
                     toast.error(error.response.data.description);
                 }
             )
@@ -81,16 +115,56 @@ function Card() {
         localStorage.setItem('themeMode', JSON.stringify(darkMode));
     }
 
-    const retrieveCardsByUser = () => {
+    function getCurrentMonth() {
+        const current = new Date();
+        return current.getMonth() + 1;
+    }
+
+    function getCurrentYear() {
+        const current = new Date();
+        return current.getFullYear();
+    }
+
+    function getCurrentDay() {
+        const current = new Date();
+        return current.getDate();
+    }
+
+    function fillArray(currentYear) {
+        let defaultYear = 2022;
+        let arrRange = currentYear - defaultYear;
+        while (defaultYear <= currentYear && years.length < arrRange + 1) {
+            years.push(defaultYear);
+            defaultYear = defaultYear + 1;
+        }
+        return years;
+    }
+
+    const toggleCalendar = (year) => {
+        setTempYear(year);
+        setCalendar(!calendar);
+    }
+
+    const changeYear = (year, month) => {
+        setCurrentYear(year);
+        setCurrentMonth(month);
+        setCalendar(false);
+    }
+
+    const retrieveCardByUserAndDate = () => {
         if (!localStorage.getItem('user')) {
             console.log("Cant find any user")
         } else {
-            CardService.getCardByUser(JSON.parse(localStorage.getItem('user')))
+            setLoading(true);
+            CardService.getCardByUserAndMonth(
+                JSON.parse(localStorage.getItem('user')), currentYear, currentMonth)
                 .then(response => {
                     setCards(response.data);
+                    setLoading(false);
                 })
                 .catch(e => {
                     console.log(e);
+                    setLoading(false);
                     setCards([]);
                 })
         }
@@ -107,50 +181,69 @@ function Card() {
     }
 
     const deleteCardById = (id) => {
+        setLoading(true);
         CardService.deleteCard(id)
             .then(response => {
                 console.log(response)
-                retrieveCardsByUser();
+                retrieveCardByUserAndDate();
                 setToggleFetch(false);
+                setLoading(false);
             })
             .catch(e => {
                 console.log(e);
+                setLoading(false);
                 toast.error(e.response.data.description);
             })
     }
 
     const toggleCard = (id) => {
+        setLoading(true);
         CardService.toggleCard(id)
             .then(
                 (response) => {
-                    console.log(response);
-                    retrieveCardsByUser();
+                    retrieveCardByUserAndDate();
                     setCardReady(!cardReady);
+                    setLoading(false);
                 },
                 (error) => {
                     console.log(error);
+                    setLoading(false);
                     toast.error(error.response.data.description);
                 }
             )
     }
 
-    const generatePdf = (id) => {
-        try {
-            PdfService.getPdf(id)
-                .then(response => {
-                    console.log(response);
-                    //Create a Blob from the PDF Stream
-                    const file = new Blob([response.data], { type: "application/pdf" });
-                    //Build a URL from the file
-                    const fileURL = URL.createObjectURL(file);
-                    //Open the URL on new Window
-                    const pdfWindow = window.open();
-                    pdfWindow.location.href = fileURL;
-                }, (error) => {
-                    console.log(error);
-                })
-        } catch (error) {
-            console.log(error);
+    const retrieveUserInfo = () => {
+        UserService.getUserByUsername(JSON.parse(localStorage.getItem('user')))
+            .then(response => {
+                setStoredUserId(response.data.id);
+            })
+    }
+
+    const [generatingPdf, setGeneratingPdf] = useState(false);
+
+    const generatePdf = (id, done) => {
+        if (!done) {
+            toast.warn("Toggle card first!");
+        } else {
+            try {
+                setGeneratingPdf(true);
+                PdfService.getPdf(id, storedUserId)
+                    .then(response => {
+                        setGeneratingPdf(false);
+                        const file = new Blob([response.data], { type: "application/pdf" });
+                        const fileURL = URL.createObjectURL(file);
+                        const pdfWindow = window.open();
+                        pdfWindow.location.href = fileURL;
+                    }, (error) => {
+                        setGeneratingPdf(false);
+                        toast.error("Something went wrong, please again later...");
+                        console.log(error);
+                    })
+            } catch (error) {
+                console.log(error);
+                setGeneratingPdf(false);
+            }
         }
     }
 
@@ -167,9 +260,8 @@ function Card() {
     const onToggleTripForm = () => {
         if (cardReady) {
             toast.error("Card is ready, cant edit");
-        } else {
-            setAddTripToggle(!addTripToggle);
         }
+        setAddTripToggle(!addTripToggle);
     }
 
     const onToggleFuelForm = () => {
@@ -188,11 +280,13 @@ function Card() {
     }
 
     useEffect(() => {
+        retrieveUserInfo();
+        fillArray(currentYear);
         retrieveUser();
-        fetchedCards && retrieveCardsByUser();
+        fetchedCards && retrieveCardByUserAndDate();
         setFetchedCards(false);
         retrieveDarkMode();
-    }, [user, cardId, fetchedCards]);
+    }, [user, fetchedCards]);
 
     return (
         <div className={`flex flex-col h-screen ${darkMode ? 'dark bg-slate-900' : ''}`}>
@@ -216,6 +310,14 @@ function Card() {
                 setOpen={setConfirmOpen}
                 onConfirm={deleteCardById}
             />
+            <Warning
+                description={"Generating PDF, please wait..."}
+                open={generatingPdf}
+            />
+            <Loading
+                description={"Loading, please wait..."}
+                open={loading}
+            />
             <div className='flex w-full px-2 py-4 bg-blue-200 justify-between dark:bg-gray-600 items-center w-100'>
                 <div className='flex items-center'>
                     <form onSubmit={handleUsernameInLocalStorage} className='flex h-10 m-2 rounded bg-gray-200'>
@@ -238,7 +340,7 @@ function Card() {
                 </div>
             </div>
             <div className='flex flex-col md:flex-row md:h-screen overflow-x-auto'>
-                <div className='flex md:flex-col bg-gray-100 dark:bg-gray-700 pb-2 md:min-w-min'>
+                <div className='flex flex-col items-center bg-gray-100 dark:bg-gray-700 pb-2 md:min-w-min'>
                     <div className={addCardToggle ? 'flex hidden' : 'flex'}>
                         <form onSubmit={handleSubmit} className='flex justify-between flex-col p-1 mr-1'>
                             <div className='flex flex'>
@@ -260,16 +362,44 @@ function Card() {
                             </div>
                         </form>
                     </div>
-                    <div className='flex md:flex-col items-center w-full overflow-x-auto'>
+                    <div className='flex flex-col p-4 w-max'>
+                        <p className='m-1 p-1 text-xs font-bold bg-blue-200 text-slate-500 dark:bg-slate-800 dark:text-slate-300 rounded'>Cards from: {currentYear}-{currentMonth}</p>
+                        <div className='grid grid-cols-3 sm:grid-cols-5 md:grid-cols-3 gap-2 mx-2 border border-blue-300 dark:border-transparent rounded'>
+                            {years && years.length > 0 && years.map((year, index) => (
+                                <div key={index} className='flex p-1 text-sm'>
+                                    <div className='relative flex justify-center w-max items-center'>
+                                        <p className={`${tempYear === year ? 'bg-slate-300 dark:bg-slate-800' : 'dark:bg-slate-600'} flex items-center z-10 dark:text-slate-300 p-1 rounded`}>
+                                            {year}
+                                            <i onClick={() => toggleCalendar(year)}><IoMdArrowDropdown /></i>
+                                        </p>
+                                        <div className='absolute w-24 z-50 top-7 md:left-2 grid grid-cols-3 bg-blue-300 dark:bg-slate-900'>
+                                            {tempYear === year && calendar && months.map((month, index) => (
+                                                <div className='' key={index}>
+                                                    <div className='flex justify-center border dark:border-slate-500 dark:text-slate-300 uppercase'>
+                                                        <p className='text-xs p-0.5 hover:bg-slate-300 dark:hover:bg-slate-500 hover:cursor-pointer' onClick={() => changeYear(year, month.number)}>{month.name}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className='flex flex-row items-center justify-center m-1 p-1 text-xs font-bold bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300 rounded'>
+                            <i className='mx-1 p-1 hover:bg-blue-400 dark:hover:bg-slate-900 dark:bg-slate-600 hover:cursor-pointer rounded' onClick={() => retrieveCardByUserAndDate()}><FiRefreshCcw /></i>
+                            <p className='mx-1'>Refresh cards</p>
+                        </div>
+                    </div>
+                    <div className='flex md:flex-col items-center w-full overflow-x-auto border-t-2 border-slate-300 dark:border-slate-800'>
                         {cards && cards.length > 0 ?
                             cards.map((card, index) => (
                                 <div key={index} className='flex content-center md:w-full justify-center'>
                                     <div className={`flex w-full m-1 rounded border-2 border-transparent ${card.done ? 'border-green-600' : ''}`}>
                                         <div className={toggleFetch && card.id === cardId ? 'flex flex-col md:flex-row md:w-full md:justify-between rounded bg-slate-200 dark:bg-slate-600 p-2 flex dark:text-gray-300 text-center items-center' : 'flex flex-col md:flex-row md:w-full md:justify-between bg-transparent rounded p-2 flex dark:text-gray-300 text-center items-center'}>
-                                            <p>{card.number}</p>
+                                            <p className='w-full'>{card.number}</p>
                                             <span className='flex md:ml-1'>
                                                 <i onClick={() => handleToggleCardContent(card.id, card.done)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black cursor-pointer'><AiOutlineArrowRight className={toggleFetch && card.id === cardId ? '-rotate-90 md:rotate-180' : 'rotate-90 md:rotate-0'} /></i>
-                                                <i onClick={card.done ? () => generatePdf(card.id) : undefined} className={`px-1 rounded ${card.done ? 'cursor-pointer hover:bg-blue-200 active:bg-blue-200 dark:active:bg-slate-400 hover:text-black active:text-black dark:hover:bg-slate-400' : 'cursor-not-allowed'}`}><AiFillFilePdf /></i>
+                                                <i onClick={() => generatePdf(card.id, card.done)} className={`px-1 rounded cursor-pointer hover:bg-blue-200 active:bg-blue-200 dark:active:bg-slate-400 hover:text-black active:text-black dark:hover:bg-slate-400`}><AiFillFilePdf /></i>
                                                 <i onClick={() => handleModal(card.id, card.number)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black'><AiOutlineDelete /></i>
                                                 <i onClick={() => toggleCard(card.id)} className='px-1 rounded hover:bg-blue-200 active:bg-blue-200 dark:hover:bg-slate-400 dark:active:bg-slate-400 hover:text-black active:text-black cursor-pointer'>
                                                     {card.done ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}

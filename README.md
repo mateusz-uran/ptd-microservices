@@ -91,6 +91,8 @@ When above command execute then docker will download required images to run appl
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+![diagram]
+
 <!-- CONTACT -->
 ## Contact
 
@@ -100,3 +102,4 @@ My personal blog: [https://mateusz-uran.pl/](https://mateusz-uran.pl/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+[diagram]: diagram.png

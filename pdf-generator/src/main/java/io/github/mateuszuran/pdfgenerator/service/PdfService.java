@@ -1,9 +1,11 @@
 package io.github.mateuszuran.pdfgenerator.service;
 
-import io.github.mateuszuran.pdfgenerator.dto.CardPDFResponse;
-import io.github.mateuszuran.pdfgenerator.dto.CounterResponse;
-import io.github.mateuszuran.pdfgenerator.dto.FuelResponse;
-import io.github.mateuszuran.pdfgenerator.dto.TripResponse;
+import io.github.mateuszuran.pdfgenerator.dto.PdfResponse;
+import io.github.mateuszuran.pdfgenerator.dto.card.CardPDFResponse;
+import io.github.mateuszuran.pdfgenerator.dto.card.CounterResponse;
+import io.github.mateuszuran.pdfgenerator.dto.card.FuelResponse;
+import io.github.mateuszuran.pdfgenerator.dto.card.TripResponse;
+import io.github.mateuszuran.pdfgenerator.dto.vehicle.VehiclePDFResponse;
 import io.github.mateuszuran.pdfgenerator.exception.CardNotReadyException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,19 @@ public class PdfService {
                 .block();
     }
 
+    private VehiclePDFResponse getVehicleValues(Long userId) {
+        return webClientBuilder.build().get()
+                .uri("http://vehicle-service/api/vehicle",
+                        uriBuilder -> uriBuilder.queryParam("userId", userId).build())
+                .retrieve()
+                .bodyToMono(VehiclePDFResponse.class)
+                .block();
+    }
+
+    public VehiclePDFResponse retrieveVehicleDataForPdf(Long id) {
+        return getVehicleValues(id);
+    }
+
     public CardPDFResponse calculateCardDataForPdf(Long id) {
         var card = getCardValues(id);
         if (card.getCardInfo().isDone()) {
@@ -39,5 +54,12 @@ public class PdfService {
         } else {
             throw new CardNotReadyException();
         }
+    }
+
+    public PdfResponse buildResponse(CardPDFResponse card, VehiclePDFResponse vehicle) {
+        return PdfResponse.builder()
+                .card(card)
+                .vehiclePdf(vehicle)
+                .build();
     }
 }

@@ -32,8 +32,6 @@ services:
       - ./postgres-card:/data/postgres
     ports:
       - "5432:5432"
-    networks:
-      - postgres-card
     restart: unless-stopped
 
   postgres-vehicle:
@@ -68,7 +66,6 @@ services:
       - "8282:80"
     networks:
       - postgres-user
-      - postgres-card
       - postgres-vehicle
     restart: unless-stopped
 
@@ -95,6 +92,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
   zipkin:
     image: openzipkin/zipkin
     container_name: zipkin
@@ -119,8 +117,6 @@ services:
       dockerfile: Dockerfile
     image: api-gateway
     container_name: api-gateway
-    links:
-      - discovery-server
     ports:
       - "8080:8080"
     expose:
@@ -130,11 +126,24 @@ services:
     depends_on:
       - zipkin
       - discovery-server
-
+  ## Card-Service Docker Compose Config
+  card-service:
+    container_name: card-service
+    build:
+      context: ./card/
+      dockerfile: Dockerfile
+    image: card
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-card:5432/card-service
+    depends_on:
+      - postgres-card
+      - broker
+      - zipkin
+      - discovery-server
+      - api-gateway
 networks:
   postgres-user:
-    driver: bridge
-  postgres-card:
     driver: bridge
   postgres-vehicle:
     driver: bridge

@@ -16,9 +16,15 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <cloudinary-version>1.33.0</cloudinary-version>
+        <model.mapper.version>3.1.1</model.mapper.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>${model.mapper.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

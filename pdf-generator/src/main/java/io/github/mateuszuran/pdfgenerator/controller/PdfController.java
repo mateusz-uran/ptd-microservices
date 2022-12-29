@@ -8,10 +8,10 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 
 @Slf4j
-@RestController
+@Controller
 @RequestMapping("/api/pdf")
 @RequiredArgsConstructor
 public class PdfController {
@@ -31,13 +31,16 @@ public class PdfController {
 
     @CircuitBreaker(name = "card")
     @GetMapping
-    public ResponseEntity<?> getPDF(@RequestParam Long id, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> getPDF(@RequestParam Long id, @RequestParam Long userId, HttpServletRequest request, HttpServletResponse response) {
         var card = service.calculateCardDataForPdf(id);
+        var vehicle = service.retrieveVehicleDataForPdf(userId);
+
+        var pdf = service.buildResponse(card, vehicle);
 
         WebContext context = new WebContext(request, response, servletContext);
-        context.setVariable("card", card);
-        String orderHtml = templateEngine.process("card", context);
+        context.setVariable("pdf", pdf);
 
+        String orderHtml = templateEngine.process("card", context);
         ByteArrayOutputStream target = new ByteArrayOutputStream();
 
         ConverterProperties converterProperties = new ConverterProperties();

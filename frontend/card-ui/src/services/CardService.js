@@ -11,8 +11,26 @@ const getCardByUser = username => {
     return http.get('/', { params: { username: username } })
 };
 
-const create = card => {
-    return http.post('/', card);
+const getCardByUserAndMonth = (username, year, month) => {
+    return http.get('/all', {
+        params:
+        {
+            username: username,
+            year: year,
+            month: month
+        }
+    })
+}
+
+const create = (card, year, month, dayOfMonth) => {
+    return http.post('/', card, {
+        params:
+        {
+            year: year,
+            month: month,
+            dayOfMonth: dayOfMonth
+        }
+    });
 }
 
 const getTripFromCard = id => {
@@ -37,6 +55,7 @@ const singleCard = id => {
 
 const CardService = {
     getCardByUser,
+    getCardByUserAndMonth,
     create,
     getTripFromCard,
     getFuelFromCard,

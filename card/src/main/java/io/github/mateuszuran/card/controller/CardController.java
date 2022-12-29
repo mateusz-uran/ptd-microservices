@@ -25,21 +25,15 @@ public class CardController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @CircuitBreaker(name = "user")
-    public ResponseEntity<?> addCard(@RequestBody CardRequest cardDto) {
-        service.saveCard(cardDto);
-        return ResponseEntity.ok().body("Card added");
+    public ResponseEntity<?> addCard(@RequestBody CardRequest cardDto, @RequestParam int year, @RequestParam int month, @RequestParam int dayOfMonth) {
+        return ResponseEntity.ok().body(service.saveCard(cardDto, year, month, dayOfMonth));
     }
 
-//    @GetMapping
-//    @CircuitBreaker(name = "user")
-//    public ResponseEntity<List<CardResponse>> getCards(@RequestParam String username) {
-//        return ResponseEntity.ok().body(service.getAllCardsByUser(username));
-//    }
-
-    @GetMapping
+    @GetMapping("/all")
     @CircuitBreaker(name = "user")
-    public ResponseEntity<List<CardResponse>> getCardsByMonth(@RequestParam String username, @RequestParam String month) {
-        return ResponseEntity.ok().body(service.getAllCardByUserAndDate(username, month));
+    public ResponseEntity<List<CardResponse>> getCardsByMonth(
+            @RequestParam String username, @RequestParam int year, @RequestParam int month) {
+        return ResponseEntity.ok().body(service.getAllCardByUserAndDate(username, year, month));
     }
 
     @GetMapping("/fuel")
@@ -65,7 +59,7 @@ public class CardController {
         return ResponseEntity.ok().body("single card" + id);
     }
 
-    @GetMapping(params = "id")
+    @GetMapping
     public ResponseEntity<CardPDFResponse> sendCard(@RequestParam Long id) {
         return ResponseEntity.ok()
                 .body(service.sendCardToPDF(id));

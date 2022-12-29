@@ -5,9 +5,11 @@ import { AiOutlineEdit, AiOutlineClose } from 'react-icons/ai';
 import { useFormik } from 'formik';
 import { fuelSchema } from '../validation/schema';
 import Alert from './Alert';
+import Loading from './Loading';
 
 function Fuel(props) {
     const { cardId, cardReady, toggleForm, theme } = props;
+    const [loading, setLoading] = useState(false);
 
     const [fuels, setFuels] = useState([]);
     const [fetch, setFetch] = useState(true);
@@ -16,26 +18,32 @@ function Fuel(props) {
 
     const onSubmit = (values, actions) => {
         if (editMode) {
+            setLoading(true);
             FuelService.editFuel(fuelId, values)
                 .then(
                     (response) => {
                         retrieveFuelByCardId();
                         actions.resetForm();
                         setEditMode(false);
+                        setLoading(false);
                     },
                     (error) => {
                         console.log(error);
+                        setLoading(false);
                     }
                 )
         } else {
+            setLoading(true);
             FuelService.create(cardId, values)
                 .then(
                     (response) => {
                         retrieveFuelByCardId();
                         actions.resetForm();
+                        setLoading(false);
                     },
                     (error) => {
                         console.log(error);
+                        setLoading(false);
                     }
                 )
         }
@@ -57,6 +65,7 @@ function Fuel(props) {
         if (toggleForm == false) {
             console.log("Toggle form first")
         } else {
+            setLoading(true);
             FuelService.singleFuel(id)
                 .then(response => {
                     setFieldValue('refuelingDate', response.data.refuelingDate)
@@ -64,9 +73,11 @@ function Fuel(props) {
                     setFieldValue('vehicleCounter', response.data.vehicleCounter)
                     setFieldValue('refuelingAmount', response.data.refuelingAmount)
                     setFuelId(response.data.id);
+                    setLoading(false);
                 })
                 .catch(e => {
                     console.log(e);
+                    setLoading(false);
                 })
         }
     }
@@ -80,22 +91,28 @@ function Fuel(props) {
     }
 
     const deleteFuel = (id) => {
+        setLoading(true);
         FuelService.deleteFuel(id)
             .then(response => {
                 retrieveFuelByCardId();
+                setLoading(false);
             })
             .catch(e => {
                 console.log(e);
+                setLoading(false);
             })
     }
 
     const retrieveFuelByCardId = () => {
+        setLoading(true);
         CardService.getFuelFromCard(cardId)
             .then(response => {
                 setFuels(response.data);
+                setLoading(false);
             })
             .catch(e => {
                 console.log(e);
+                setLoading(false);
             })
     }
 
@@ -113,6 +130,10 @@ function Fuel(props) {
                 setOpen={setConfirmOpen}
                 onConfirm={deleteFuel}
                 modalTheme={theme}
+            />
+            <Loading
+                description={"Loading, please wait..."}
+                open={loading}
             />
             <div className={cardReady ? 'flex flex-col items-center opacity-60' : 'flex flex-col items-center'}>
                 {toggleForm && !cardReady &&
@@ -171,33 +192,33 @@ function Fuel(props) {
                 }
                 <div className='flex w-full overflow-x-auto justify-center'>
                     {fuels && fuels.length > 0 ?
-                    <table className='w-full md:w-1/2 bg-slate-200 dark:bg-slate-700 rounded text-sm table-auto text-center'>
-                    <thead className='text-gray-400'>
-                        <tr className='text-slate-500 dark:text-slate-400 border-b-2 border-white dark:border-zinc-500 uppercase text-xs'>
-                            <th className='px-2'>date</th>
-                            <th className='px-2'>location</th>
-                            <th className='px-2'>counter</th>
-                            <th className='px-2'>amount</th>
-                            <th className=''></th>
-                        </tr>
-                    </thead>
-                    <tbody className='text-slate-600 dark:text-slate-300'>
-                        { fuels.map((fuel, index) => (
-                            <tr key={index} className='border-t-2 border-white dark:border-zinc-500 hover:bg-blue-400 dark:hover:bg-slate-900 hover:text-white dark:hover:text-gray-200'>
-                                <td>{fuel.refuelingDate}</td>
-                                <td>{fuel.refuelingLocation}</td>
-                                <td>{fuel.vehicleCounter}</td>
-                                <td>{fuel.refuelingAmount}</td>
-                                <td className='bg-slate-300 dark:bg-slate-800 text-slate-600 dark:text-slate-300'>
-                                    <div className={`flex flex-col md:flex-row items-center md:justify-center rounded cursor-pointer py-1 ${cardReady ? 'invisible' : ''}`}>
-                                        <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-blue-600 dark:hover:text-blue-800' onClick={() => {loadFuelToEdit(fuel.id); setEditMode(true);}}><AiOutlineEdit /></i>
-                                        <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-red-600' onClick={() => handleModal(fuel.id)}><AiOutlineClose /></i>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table> : <div className='flex'><p className='text-slate-500 text-sm'>There is no refueling information.</p></div>}
+                        <table className='w-full md:w-1/2 bg-slate-200 dark:bg-slate-700 rounded text-sm table-auto text-center'>
+                            <thead className='text-gray-400'>
+                                <tr className='text-slate-500 dark:text-slate-400 border-b-2 border-white dark:border-zinc-500 uppercase text-xs'>
+                                    <th className='px-2'>date</th>
+                                    <th className='px-2'>location</th>
+                                    <th className='px-2'>counter</th>
+                                    <th className='px-2'>amount</th>
+                                    <th className=''></th>
+                                </tr>
+                            </thead>
+                            <tbody className='text-slate-600 dark:text-slate-300'>
+                                {fuels.map((fuel, index) => (
+                                    <tr key={index} className='border-t-2 border-white dark:border-zinc-500 hover:bg-blue-400 dark:hover:bg-slate-900 hover:text-white dark:hover:text-gray-200'>
+                                        <td>{fuel.refuelingDate}</td>
+                                        <td>{fuel.refuelingLocation}</td>
+                                        <td>{fuel.vehicleCounter}</td>
+                                        <td>{fuel.refuelingAmount}</td>
+                                        <td className='bg-slate-300 dark:bg-slate-800 text-slate-600 dark:text-slate-300'>
+                                            <div className={`flex flex-col md:flex-row items-center md:justify-center rounded cursor-pointer py-1 ${cardReady ? 'invisible' : ''}`}>
+                                                <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-blue-600 dark:hover:text-blue-800' onClick={() => { loadFuelToEdit(fuel.id); setEditMode(true); }}><AiOutlineEdit /></i>
+                                                <i className='rounded p-1 hover:bg-white dark:hover:bg-gray-400 hover:text-red-600' onClick={() => handleModal(fuel.id)}><AiOutlineClose /></i>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table> : <div className='flex'><p className='text-slate-500 text-sm'>There is no refueling information.</p></div>}
                 </div>
             </div>
         </div>

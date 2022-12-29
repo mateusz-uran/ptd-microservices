@@ -1,17 +1,15 @@
-package io.github.mateuszuran.pdfgenerator.dto;
+package io.github.mateuszuran.pdfgenerator.dto.card;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class FuelResponse {
     private Long id;
-    private String currentDate;
+    private String refuelingDate;
     private String refuelingLocation;
     private Integer vehicleCounter;
     private Integer refuelingAmount;
