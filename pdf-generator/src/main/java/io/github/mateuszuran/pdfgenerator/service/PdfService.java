@@ -8,11 +8,13 @@ import io.github.mateuszuran.pdfgenerator.dto.card.TripResponse;
 import io.github.mateuszuran.pdfgenerator.dto.vehicle.VehiclePDFResponse;
 import io.github.mateuszuran.pdfgenerator.exception.CardNotReadyException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.NoSuchElementException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PdfService {

@@ -18,8 +18,8 @@
                 <table id="card_image">
                     <tr>
                         <td>
-                                                    <img th:src="@{${pdf.vehiclePdf.image.link}}" alt="volvo"
-                                                         style="width: 226px;height: 115px;"/>
+                            <img th:src="@{${pdf.vehiclePdf.image.link}}" alt="volvo"
+                                 style="width: 226px;height: 115px;"/>
                         </td>
                     </tr>
                     <tr>
@@ -76,7 +76,7 @@
     </table>
     <table id="second_table">
         <tr>
-            <td>
+            <td class="info">
                 <table id="car_info_table">
                     <tr>
                         <td>Samochód</td>
@@ -104,7 +104,7 @@
                             <p class="car_info" style="font-size: 10px;">Typ</p>
                         </td>
                         <td>
-                            <p class="car_info" th:text="${pdf.vehiclePdf.trailer.licensePlate}">240 litrów</p>
+                            <p class="car_info" th:text="${pdf.vehiclePdf.trailer.fuelCapacity}">240 litrów</p>
                             <p class="car_info" style="font-size: 10px;">Poj zbiornika</p>
                         </td>
                     </tr>
@@ -116,7 +116,7 @@
                     </tr>
                 </table>
             </td>
-            <td style="width: 40%; border-left: 1px solid; border-color: rgba(0,0,0,0.25);">
+            <td class="counters" style="">
                 <table id="counters_info_table">
                     <tr class="head">
                         <th class="h_single_border" colspan="2">LICZNIK - POJAZD</th>
@@ -150,7 +150,7 @@
             <td class="refueling_table">
                 <table id="fuel_table">
                     <tr>
-                        <th colspan="8">Rozliczenie tankowania</th>
+                        <th colspan="8" style="border-right: 1px solid rgba(0,0,0,0.25); padding: 0; margin:0; outline: 0">Rozliczenie tankowania</th>
                     </tr>
                     <tr>
                         <td>Lp</td>
@@ -159,7 +159,7 @@
                         <td>Licznik</td>
                         <td>Stan paliwa</td>
                         <td class="bold_border">Ilosc tankowania</td>
-                        <td>Forma płatnosci</td>
+                        <td>Forma platnosci</td>
                         <td>Inne</td>
                     </tr>
                     <tr th:each="fuel,iterator : ${pdf.card.fuels}">
@@ -253,34 +253,34 @@
             <td class="refueling">
                 <table id="fuel_final_table">
                     <tr>
-                        <th colspan="2">PALIWO-POJAZD</th>
-                        <th colspan="2">PALIWO-AGREGAT</th>
+                        <th colspan="2" style="border-right: 1px solid  rgba(0,0,0,0.25); padding: 0; margin:0; outline: 0; font-weight: lighter">PALIWO-POJAZD</th>
+                        <th colspan="2" style="padding: 0; margin:0; outline: 0; font-weight: lighter">PALIWO-AGREGAT</th>
                     </tr>
                     <tr>
                         <td class="hide_border">Stan pocz.</td>
-                        <td>..............</td>
+                        <td>....................</td>
                         <td colspan="2">............................</td>
                     </tr>
                     <tr>
                         <td class="hide_border">Tankow.</td>
-                        <td>..............</td>
+                        <td>....................</td>
                         <td colspan="2">............................</td>
                     </tr>
                     <tr>
                         <td class="hide_border">Stan konc.</td>
-                        <td>..............</td>
+                        <td>....................</td>
                         <td colspan="2">............................</td>
                     </tr>
                     <tr>
                         <td class="hide_border">Zuzycie.</td>
-                        <td>..............</td>
+                        <td>....................</td>
                         <td colspan="2">............................</td>
                     </tr>
                     <tr>
                         <td class="small_font">Zuzycie litr/100km</td>
-                        <td class="bold_outline">..............</td>
+                        <td>..............</td>
                         <td class="small_font">Zuzycie litr/100km</td>
-                        <td class="bold_outline">..............</td>
+                        <td>..............</td>
                     </tr>
                     <tr>
                         <td colspan="3" class="text_left">Ad Blue/miejscowosc</td>

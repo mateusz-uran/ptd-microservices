@@ -1,13 +1,13 @@
 @page {
     size: A4 landscape;
 }
-
+/**
 .wrapper {
     margin: 0;
     padding: 0;
     outline: 0;
 }
-
+**/
 #first_table {
     width: 100%;
     text-align: center;
@@ -46,6 +46,15 @@
     border-right: 1px solid rgba(0,0,0,0.25);
 }
 
+#second_table .info {
+    width: 70%;
+}
+
+#second_table .counters {
+    width: 30%;
+    border-left: 1px solid rgba(0,0,0,0.25);
+}
+
 #second_table td {
     padding: 0;
 }
@@ -56,7 +65,7 @@
 }
 
 #car_info_table td {
-    padding: 10px;
+    /**padding: 10px;**/
 }
 
 #counters_info_table {
@@ -67,7 +76,7 @@
 }
 
 #counters_info_table td {
-    padding: 10px;
+    /**padding: 10px;**/
 }
 
 #counters_info_table .right_border {
@@ -78,6 +87,7 @@
     height: 20px;
     border-bottom: 1px solid rgba(0,0,0,0.25);
     padding: 0;
+    white-space: nowrap;
 }
 
 #counters_info_table .h_single_border {
@@ -115,8 +125,12 @@
 
 #third_table .refueling_table {
     border-right: 1px solid rgba(0, 0, 0, 0.25);
+    width: 70%;
 }
 
+#third_table .refueling {
+    width: 30%;
+}
 
 #fuel_table {
     width: 100%;
@@ -135,9 +149,6 @@
 
 #fuel_table td {
     border: 1px solid rgba(0, 0, 0, 0.25);
-}
-
-#fuel_table td {
     padding: 4px;
 }
 
@@ -154,18 +165,18 @@
     border-collapse: collapse;
     text-align: center;
     border-style: hidden;
+    text-align: left;
 }
 
 #fuel_final_table tr > td {
     padding: 5px;
 }
 
-#fuel_final_table th {
-    border-left: 1px solid  rgba(0,0,0,0.25);
-}
-
 #fuel_final_table td {
-    border: 1px solid rgba(0,0,0,0.25);
+    border-right: 1px solid rgba(0,0,0,0.25);
+    border-top: 1px solid rgba(0,0,0,0.25);
+    padding: 4px;
+    white-space: nowrap;
 }
 
 .small_font {
@@ -178,11 +189,6 @@
 
 #fuel_final_table .hide_border {
     border-right: 1px solid transparent;
-}
-
-#fuel_final_table .bold_outline {
-    outline: 1px solid;
-    outline-offset: -1px;
 }
 
 #bottom_table {
