@@ -127,21 +127,21 @@ services:
       - zipkin
       - discovery-server
   ## Card-Service Docker Compose Config
-  card-service:
-    container_name: card-service
-    build:
-      context: ./card/
-      dockerfile: Dockerfile
-    image: card
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-card:5432/card-service
-    depends_on:
-      - postgres-card
-      - broker
-      - zipkin
-      - discovery-server
-      - api-gateway
+#  card-service:
+#    container_name: card-service
+#    build:
+#      context: ./card/
+#      dockerfile: Dockerfile
+#    image: card
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-card:5432/card-service
+#    depends_on:
+#      - postgres-card
+#      - broker
+#      - zipkin
+#      - discovery-server
+#      - api-gateway
 networks:
   postgres-user:
     driver: bridge
