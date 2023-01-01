@@ -233,6 +233,7 @@
     border-left: 1px solid rgba(0,0,0,0.25);
     border-right: 1px solid rgba(0,0,0,0.25);
     border-top: 1px solid rgba(0,0,0,0.25);
+    font-size: smaller;
 }
 
 #trip_table tr:nth-child(+n+22) {
@@ -244,11 +245,11 @@
 }
 
 #trip_table tr th {
-    border: 1px solid  rgba(0,0,0,0.25);
+    border: 1px solid rgba(0,0,0,0.25);
 }
 
 #trip_table tr td {
-    border: 1px solid  rgba(0,0,0,0.25);
+    border: 1px solid rgba(0,0,0,0.25);
 }
 
 #trip_table .start {
@@ -264,7 +265,7 @@
 }
 
 #trip_table .middle {
-    border-right: 2px solid black;
+    border-right: 1px solid rgba(0,0,0, 1);
 }
 
 #end_table {
