@@ -38,7 +38,7 @@ class CardServiceUnitTest {
     }
 
     @Test
-    void checkIfCardExists() {
+    void givenCardId_whenFindById_thenReturnObject() {
         //given
         Card card = Card.builder().id(anyLong()).build();
         when(repository.findById(card.getId())).thenReturn(Optional.of(card));
@@ -59,7 +59,7 @@ class CardServiceUnitTest {
     }
 
     @Test
-    void getFuelsFromCard() {
+    void givenCardId_whenFindById_thenReturnMappedSortedListOfFuels() {
         Card card = Card.builder()
                 .id(anyLong())
                 .fuels(List.of(Fuel.builder()
@@ -73,7 +73,7 @@ class CardServiceUnitTest {
     }
 
     @Test
-    void getTripsFromCard() {
+    void givenCardId_whenFindById_thenReturnMappedSortedListOfTrips() {
         Card card = Card.builder()
                 .id(anyLong())
                 .trips(List.of(Trip.builder()
@@ -86,7 +86,7 @@ class CardServiceUnitTest {
     }
 
     @Test
-    void deleteCard() {
+    void givenCardId_whenFindById_thenDeleteCard() {
         Card card = Card.builder().number("XYZ").build();
         given(repository.findById(card.getId())).willReturn(Optional.of(card));
         service.deleteCard(card.getId());
