@@ -1,13 +1,7 @@
 @page {
     size: A4 landscape;
 }
-/**
-.wrapper {
-    margin: 0;
-    padding: 0;
-    outline: 0;
-}
-**/
+
 #first_table {
     width: 100%;
     text-align: center;
@@ -51,7 +45,6 @@
 }
 
 #second_table .counters {
-    width: 30%;
     border-left: 1px solid rgba(0,0,0,0.25);
 }
 
@@ -64,19 +57,27 @@
     border-collapse: collapse;
 }
 
-#car_info_table td {
-    /**padding: 10px;**/
-}
-
 #counters_info_table {
     width: 100%;
     border-collapse: collapse;
     border-style: hidden;
     margin: 0;
+    text-align: left;
+}
+
+#counters_info_table th {
+    text-align: left;
+    font-weight: lighter;
+    padding-top: 4px;
+    padding-right: 4px;
+    padding-left: 4px;
+    width: 50%;
+    border-bottom: 1px solid rgba(0,0,0,0.25);
 }
 
 #counters_info_table td {
-    /**padding: 10px;**/
+    padding: 4px;
+    width: 50%;
 }
 
 #counters_info_table .right_border {
@@ -84,9 +85,6 @@
 }
 
 #counters_info_table .head {
-    height: 20px;
-    border-bottom: 1px solid rgba(0,0,0,0.25);
-    padding: 0;
     white-space: nowrap;
 }
 
@@ -119,37 +117,48 @@
     border-right: 1px solid rgba(0,0,0,0.25);
 }
 
-#third_table td {
-    padding: 0;
-}
-
 #third_table .refueling_table {
     border-right: 1px solid rgba(0, 0, 0, 0.25);
     width: 70%;
 }
 
-#third_table .refueling {
-    width: 30%;
-}
-
 #fuel_table {
     width: 100%;
-    border-style: hidden;
     text-align: center;
-    border-collapse: collapse;
-}
-
-#fuel_table tr > td {
-    padding: 5px;
 }
 
 #fuel_table th {
     border-bottom: 1px solid rgba(0,0,0,0.25);
+    padding: 5px;
 }
 
 #fuel_table td {
     border: 1px solid rgba(0, 0, 0, 0.25);
-    padding: 4px;
+    padding: 5px;
+}
+
+#fuel_table tr:first-child td {
+  border-top: 0;
+}
+
+#fuel_table tr td:first-child {
+  border-left: 0;
+}
+
+#fuel_table tr:last-child td {
+  border-bottom: 0;
+}
+
+#fuel_table tr td:last-child {
+  border-right: 0;
+}
+
+#fuel_table td:nth-child(6n+6) {
+    border-right: 1px double rgba(0, 0, 0, 1);
+}
+
+#fuel_table td:nth-child(5n+5) {
+    border-right: 1px double rgba(0, 0, 0, 1);
 }
 
 #fuel_table tr:nth-child(+n+11) {
@@ -168,15 +177,35 @@
     text-align: left;
 }
 
-#fuel_final_table tr > td {
+#fuel_final_table th {
+    text-align: left;
+    border-bottom: 1px solid rgba(0,0,0,0.25);
     padding: 5px;
+    font-weight: lighter;
+    width: 50%;
 }
 
 #fuel_final_table td {
-    border-right: 1px solid rgba(0,0,0,0.25);
-    border-top: 1px solid rgba(0,0,0,0.25);
-    padding: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    padding: 5px;
     white-space: nowrap;
+    width: 50%;
+}
+
+#fuel_final_table tr:first-child td {
+  border-top: 0;
+}
+
+#fuel_final_table tr td:first-child {
+  border-left: 0;
+}
+
+#fuel_final_table tr:last-child td {
+  border-bottom: 0;
+}
+
+#fuel_final_table tr td:last-child {
+  border-right: 0;
 }
 
 .small_font {
@@ -200,7 +229,6 @@
 }
 
 #trip_table {
-    page-break-before: always;
     width: 100%;
     border-collapse: collapse;
     text-align: center;
@@ -208,38 +236,52 @@
     border-left: 1px solid rgba(0,0,0,0.25);
     border-right: 1px solid rgba(0,0,0,0.25);
     border-top: 1px solid rgba(0,0,0,0.25);
+    font-size: smaller;
+    page-break-inside: auto;
 }
 
-#trip_table tr:nth-child(+n+22) {
-    display: none;
+#trip_table tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
 }
 
-#trip_table tr:last-child {
-    display: visible;
+#trip_table thead {
+    display: table-header-group;
+}
+
+#trip_table tfoot {
+    display: table-footer-group;
+}
+
+#trip_table td {
+    padding: 5px;
 }
 
 #trip_table tr th {
-    border: 1px solid  rgba(0,0,0,0.25);
+    border: 1px solid rgba(0,0,0,0.25);
 }
 
 #trip_table tr td {
-    border: 1px solid  rgba(0,0,0,0.25);
+    border: 1px solid rgba(0,0,0,0.25);
 }
 
 #trip_table .start {
-    color:#2323DC;
+    color: #2323DC;
+    padding: 0;
 }
 
 #trip_table .end {
-    color:#DC2300;
+    color: #DC2300;
+    padding: 0;
 }
 
 #trip_table .misc {
-    color:#008000;
+    color: #008000;
+    padding: 0;
 }
 
 #trip_table .middle {
-    border-right: 2px solid black;
+    border-right: 1px double rgba(0,0,0, 1);
 }
 
 #end_table {
@@ -249,4 +291,6 @@
     border-left: 1px solid rgba(0,0,0,0.25);
     border-right: 1px solid rgba(0,0,0,0.25);
     border-bottom: 1px solid rgba(0,0,0,0.25);
+    page-break-before: auto;
+    break-before: auto;
 }
