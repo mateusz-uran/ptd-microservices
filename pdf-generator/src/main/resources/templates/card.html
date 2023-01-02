@@ -23,7 +23,8 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="font-size: 15px; text-transform:uppercase;" th:text="${pdf.vehiclePdf.image.name}">
+                    <td style="font-size: 15px; text-transform:uppercase; color: #336600;"
+                        th:text="${pdf.vehiclePdf.image.name}+ '/' + ${pdf.vehiclePdf.image.description}">
                         volvo/krone
                     </td>
                 </tr>
@@ -246,8 +247,12 @@
                     <td>&nbsp;</td>
                 </tr>
                 <tr>
-                    <td colspan="5" style="text-align: right;">Razem: Paliwa</td>
-                    <td th:text="${pdf.card.counter.refuelingSum}">paliwo</td>
+                    <td colspan="5" style="text-align: right; border-right: 1px double rgba(0, 0, 0, 1);">Razem:
+                        Paliwa
+                    </td>
+                    <td th:text="${pdf.card.counter.refuelingSum}" style="border-right: 1px double rgba(0, 0, 0, 1);">
+                        paliwo
+                    </td>
                     <td colspan="2" style="font-size: 10px; text-align: left;">*Gotówka / Przelew</td>
                 </tr>
             </table>
@@ -263,29 +268,29 @@
                 </tr>
                 <tr>
                     <td class="hide_border">Stan pocz.</td>
-                    <td>.........</td>
-                    <td colspan="2">............................</td>
+                    <td>....................</td>
+                    <td colspan="2">.......................................</td>
                 </tr>
                 <tr>
                     <td class="hide_border">Tankow.</td>
-                    <td>.........</td>
-                    <td colspan="2">............................</td>
+                    <td>....................</td>
+                    <td colspan="2">.......................................</td>
                 </tr>
                 <tr>
                     <td class="hide_border">Stan konc.</td>
-                    <td>.........</td>
-                    <td colspan="2">............................</td>
+                    <td>....................</td>
+                    <td colspan="2">.......................................</td>
                 </tr>
                 <tr>
                     <td class="hide_border">Zuzycie.</td>
-                    <td>.........</td>
-                    <td colspan="2">............................</td>
+                    <td>....................</td>
+                    <td colspan="2">.......................................</td>
                 </tr>
                 <tr>
                     <td class="small_font">Zuzycie litr/100km</td>
-                    <td>.........</td>
+                    <td>&nbsp;</td>
                     <td class="small_font">Zuzycie litr/100km</td>
-                    <td>.........</td>
+                    <td>&nbsp;</td>
                 </tr>
                 <tr>
                     <td colspan="3" class="text_left">Ad Blue/miejscowosc</td>
@@ -331,6 +336,7 @@
     </tr>
 </table>
 <table id="trip_table">
+    <thead>
     <tr>
         <th colspan="5" class="start middle">WYJAZD</th>
         <th colspan="5" class="end middle">PRZYJAZD</th>
@@ -350,7 +356,8 @@
         <td class="end">Państwo</td>
         <td class="end middle">Licznik</td>
     </tr>
-    <tr th:each="trip : ${pdf.card.trips}">
+    </thead>
+    <tr th:each="trip, index : ${pdf.card.trips}">
         <td th:text="${trip.dayStart}"></td>
         <td th:text="${trip.hourStart}"></td>
         <td th:text="${trip.locationStart}"></td>
@@ -365,258 +372,37 @@
         <td>&nbsp;</td>
         <td>&nbsp;</td>
     </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="middle"></td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-    </tr>
+    <tfoot>
     <tr>
         <td colspan="10" style="border: 0;"></td>
-        <td style="border: 0; font-weight: bold;" th:text="'Razem ' + ${pdf.card.counter.mileage} + ' km'">Razem 12345
+        <td style="border: 0; font-weight: bold;" th:text="'Razem ' + ${pdf.card.counter.mileage} + ' km'">
+            Razem
+            12345
             km
         </td>
         <td colspan="4" style="border: 0;"></td>
     </tr>
+    </tfoot>
 </table>
 <table id="end_table" style="font-size: 14px;">
     <tr>
-        <td>Dane etapowe z przejazdu z wg. wskazań komputera:</td>
+        <td>Dane etapowe z przejazdu z wg. wskazan komputera:</td>
     </tr>
     <tr>
         <td>
             Km przejechane na etapie: ..........................
-            Średnie zużycie paliwa na etapie: ..........................
-            Całkowite zużycie paliwa na etapie: ..........................
+            Srednie zużycie paliwa na etapie: ..........................
+            Calkowite zuzycie paliwa na etapie: ..........................
         </td>
     </tr>
     <tr>
         <td>
-            Śrendia prędkosc na etapie: ..........................
-            Zużycie paliwa na biegu jałowym na etapie: ..........................
+            Srendia predkosc na etapie: ..........................
+            Zużycie paliwa na biegu jalowym na etapie: ..........................
         </td>
     </tr>
     <tr>
-        <td>Zużycie paliwa na nieekonomicznych obrotach: ..........................</td>
+        <td>Zuzycie paliwa na nieekonomicznych obrotach: ..........................</td>
         <td>....................................................</td>
     </tr>
     <tr style="text-align: center;">
@@ -624,7 +410,6 @@
         <td>podpis kierowcy</td>
     </tr>
 </table>
-
 </body>
 
 </html>
