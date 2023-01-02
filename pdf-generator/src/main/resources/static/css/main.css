@@ -266,17 +266,17 @@
 }
 
 #trip_table .start {
-    color:#2323DC;
+    color: #2323DC;
     padding: 0;
 }
 
 #trip_table .end {
-    color:#DC2300;
+    color: #DC2300;
     padding: 0;
 }
 
 #trip_table .misc {
-    color:#008000;
+    color: #008000;
     padding: 0;
 }
 
@@ -291,6 +291,6 @@
     border-left: 1px solid rgba(0,0,0,0.25);
     border-right: 1px solid rgba(0,0,0,0.25);
     border-bottom: 1px solid rgba(0,0,0,0.25);
-    page-break-before: always;
-    break-before: always;
+    page-break-before: auto;
+    break-before: auto;
 }
