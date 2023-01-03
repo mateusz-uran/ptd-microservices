@@ -28,14 +28,27 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
+
 public class CardService {
-    private final CardRepository repository;
+    private CardRepository repository;
     private final WebClient webClient;
-    private final KafkaTemplate<String, CardToggledEvent> kafkaTemplate;
-    private final TripMapper tripMapper;
-    private final FuelMapper fuelMapper;
-    private final CardMapper cardMapper;
+    private KafkaTemplate<String, CardToggledEvent> kafkaTemplate;
+    private TripMapper tripMapper;
+    private FuelMapper fuelMapper;
+    private CardMapper cardMapper;
+
+    public CardService(WebClient webClient) {
+        this.webClient = webClient;
+    }
+
+    public CardService(CardRepository repository, WebClient webClient, KafkaTemplate<String, CardToggledEvent> kafkaTemplate, TripMapper tripMapper, FuelMapper fuelMapper, CardMapper cardMapper) {
+        this.repository = repository;
+        this.webClient = webClient;
+        this.kafkaTemplate = kafkaTemplate;
+        this.tripMapper = tripMapper;
+        this.fuelMapper = fuelMapper;
+        this.cardMapper = cardMapper;
+    }
 
     public UserResponse getUsername(String username) {
         return webClient.get()
