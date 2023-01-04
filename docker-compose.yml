@@ -103,7 +103,7 @@ services:
     build:
       context: ./discovery-server
       dockerfile: Dockerfile
-    image: discovery-server
+    image: discovery-server:1.0
     container_name: discovery-server
     hostname: discovery-server
     ports:
@@ -115,7 +115,7 @@ services:
     build:
       context: ./api-gateway/
       dockerfile: Dockerfile
-    image: api-gateway
+    image: api-gateway:1.0
     container_name: api-gateway
     ports:
       - "8080:8080"
