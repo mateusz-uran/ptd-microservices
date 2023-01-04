@@ -1,5 +1,6 @@
 package io.github.mateuszuran.card.service;
 
+import com.ctc.wstx.shaded.msv_core.util.Uri;
 import io.github.mateuszuran.card.dto.request.CardRequest;
 import io.github.mateuszuran.card.dto.response.*;
 import io.github.mateuszuran.card.event.CardToggledEvent;
@@ -31,14 +32,14 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 @RequiredArgsConstructor
 public class CardService {
     private final CardRepository repository;
-    private final WebClient webClient;
+    private final WebClient.Builder webClientBuilder;
     private final KafkaTemplate<String, CardToggledEvent> kafkaTemplate;
     private final TripMapper tripMapper;
     private final FuelMapper fuelMapper;
     private final CardMapper cardMapper;
 
     public UserResponse getUsername(String username) {
-        return webClient.get()
+        return webClientBuilder.build().get()
                 .uri("http://user-service/api/user",
                         uriBuilder -> uriBuilder.queryParam("username", username).build())
                 .retrieve()
