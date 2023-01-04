@@ -2,7 +2,7 @@ package io.github.mateuszuran.card.model;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "card_fuels")
