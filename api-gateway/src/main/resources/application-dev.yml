@@ -6,12 +6,9 @@ eureka:
 logging:
   level:
     root: INFO
-    org:
-      springframework:
-        cloud:
-          gateway:
-            route:
-              RouteDefinitionLocator: INFO
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.cloud.gateway.route.RouteDefinitionLocator: INFO
+
 spring:
   application:
     name: api-gateway
@@ -30,8 +27,7 @@ spring:
         - id: user-service
           uri: lb://user-service
           predicates:
-            - Path=/api/user/**
-            - Path=/api/auth/**
+            - Path=/api/user/**, /api/auth/**
         - id: card-service
           uri: lb://card-service
           predicates:

@@ -6,12 +6,9 @@ eureka:
 logging:
   level:
     root: INFO
-    org:
-      springframework:
-        cloud:
-          gateway:
-            route:
-              RouteDefinitionLocator: INFO
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.cloud.gateway.route.RouteDefinitionLocator: INFO
+
 spring:
   application:
     name: api-gateway
