@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -21,10 +22,13 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        RegexRequestMatcher regexAuth = new RegexRequestMatcher("^/api/auth/.*", "POST");
+        RegexRequestMatcher regexUser = new RegexRequestMatcher("/api/user\\?username=.*", "GET");
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/auth/**", "/api/user/**").permitAll()
+                .requestMatchers(regexAuth).permitAll()
+                .requestMatchers(regexUser).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
