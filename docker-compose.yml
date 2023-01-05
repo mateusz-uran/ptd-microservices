@@ -93,29 +93,24 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
 
-  zipkin:
-    image: openzipkin/zipkin
-    container_name: zipkin
-    ports:
-      - "9411:9411"
   ## Eureka Server
   discovery-server:
     build:
       context: ./discovery-server
       dockerfile: Dockerfile
-    image: discovery-server:1.0
+    image: discovery-server:1.2
     container_name: discovery-server
     hostname: discovery-server
     ports:
       - "8761:8761"
-    depends_on:
-      - zipkin
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
 
   api-gateway:
     build:
       context: ./api-gateway/
       dockerfile: Dockerfile
-    image: api-gateway:1.0
+    image: api-gateway:1.3
     container_name: api-gateway
     ports:
       - "8080:8080"
@@ -124,7 +119,6 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
-      - zipkin
       - discovery-server
   ## Card-Service Docker Compose Config
   card-service:
@@ -139,7 +133,6 @@ services:
     depends_on:
       - postgres-card
       - broker
-      - zipkin
       - discovery-server
       - api-gateway
 networks:

@@ -1,7 +1,7 @@
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://discovery-server:8761/eureka
+      defaultZone: http://localhost:8761/eureka
 
 logging:
   level:
@@ -30,7 +30,8 @@ spring:
         - id: user-service
           uri: lb://user-service
           predicates:
-            - Path=/api/user/**, /api/auth/**
+            - Path=/api/user/**
+            - Path=/api/auth/**
         - id: card-service
           uri: lb://card-service
           predicates:
