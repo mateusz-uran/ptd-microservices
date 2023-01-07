@@ -16,8 +16,6 @@ services:
     ports:
       - "5431:5431"
     command: -p 5431
-    networks:
-      - postgres-user
     restart: unless-stopped
 
   postgres-card:
@@ -49,8 +47,6 @@ services:
     ports:
       - "5433:5433"
     command: -p 5433
-    networks:
-      - postgres-vehicle
     restart: unless-stopped
 
   pgadmin:
@@ -64,9 +60,6 @@ services:
       - pgadmin:/var/lib/pgadmin
     ports:
       - "8282:80"
-    networks:
-      - postgres-user
-      - postgres-vehicle
     restart: unless-stopped
 
   ## Broker
@@ -126,28 +119,6 @@ services:
     depends_on:
       - zipkin
       - discovery-server
-  ## Card-Service Docker Compose Config
-  card-service:
-    container_name: card-service
-    build:
-      context: ./card/
-      dockerfile: Dockerfile
-    image: card
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-card:5432/card-service
-    depends_on:
-      - postgres-card
-      - broker
-      - zipkin
-      - discovery-server
-      - api-gateway
-networks:
-  postgres-user:
-    driver: bridge
-  postgres-vehicle:
-    driver: bridge
-
 volumes:
   postgres-user:
   postgres-card:
