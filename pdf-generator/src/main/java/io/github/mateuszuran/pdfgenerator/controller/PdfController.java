@@ -9,16 +9,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.thymeleaf.web.IWebExchange;
+
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -28,17 +35,21 @@ public class PdfController {
     private final PdfService service;
     private final ServletContext servletContext;
     private final TemplateEngine templateEngine;
+    private IWebExchange webExchange;
 
     @CircuitBreaker(name = "card")
     @GetMapping
-    public ResponseEntity<?> getPDF(@RequestParam Long id, @RequestParam Long userId, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> getPDF(@RequestParam Long id, @RequestParam Long userId, IWebExchange request, Locale response) {
         var card = service.calculateCardDataForPdf(id);
         var vehicle = service.retrieveVehicleDataForPdf(userId);
 
         var pdf = service.buildResponse(card, vehicle);
+        Map<String, Object> pdfMap = new HashMap<>();
+        pdfMap.put("pdf", pdf);
 
-        WebContext context = new WebContext(request, response, servletContext);
-        context.setVariable("pdf", pdf);
+        WebContext context = new WebContext(webExchange, response, pdfMap);
+//        WebContext context = new WebContext(request, response);
+//        context.setVariable("pdf", pdf);
 
         String orderHtml = templateEngine.process("card", context);
         ByteArrayOutputStream target = new ByteArrayOutputStream();
