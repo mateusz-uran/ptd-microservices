@@ -101,6 +101,8 @@ services:
     hostname: discovery-server
     ports:
       - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - zipkin
 
@@ -108,7 +110,7 @@ services:
     build:
       context: ./api-gateway/
       dockerfile: Dockerfile
-    image: api-gateway
+    image: api-gateway:1.0
     container_name: api-gateway
     ports:
       - "8080:8080"
