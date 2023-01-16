@@ -1,7 +1,7 @@
 package io.github.mateuszuran.repository;
 
 import io.github.mateuszuran.model.VehicleImage;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface VehicleImageRepository extends JpaRepository<VehicleImage, Long> {
+public interface VehicleImageRepository extends MongoRepository<VehicleImage, String> {
 }

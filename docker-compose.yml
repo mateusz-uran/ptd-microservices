@@ -49,6 +49,20 @@ services:
     command: -p 5433
     restart: unless-stopped
 
+  mongodb-vehicle:
+    container_name: mongodb-vehicle
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mateuszuran
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: root-db
+    volumes:
+      - ./docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./mongodb-vehicle:/data/db
+    ports:
+      - '27017:27017'
+    restart: unless-stopped
+
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4
@@ -124,3 +138,4 @@ volumes:
   postgres-card:
   postgres-vehicle:
   pgadmin:
+  mongodb-vehicle:

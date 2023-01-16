@@ -24,36 +24,37 @@ public class VehicleImageService {
     private final VehicleService service;
     private final CloudinaryManager cloudinary;
 
-    public void addImageInformation(Long id, VehicleImageRequest vehicleDto) {
-        var vehicle = service.getVehicle(id);
+    public void addImageInformation(String id, VehicleImageRequest vehicleDto) {
         VehicleImage image = VehicleImage.builder()
                 .name(vehicleDto.getName())
                 .description(vehicleDto.getDescription())
-                .vehicle(vehicle)
                 .build();
         repository.save(image);
         service.updateVehicleWithImage(id, image);
     }
 
-    public void uploadVehicleImage(final Long id, MultipartFile file) throws Exception {
+    public void uploadVehicleImage(final String id, MultipartFile file) throws Exception {
         if (file.isEmpty()) {
             throw new FileUploadException();
         }
         if (!Arrays.asList(IMAGE_JPEG.getMimeType(), IMAGE_PNG.getMimeType()).contains(file.getContentType())) {
             throw new FileUploadException(file.getContentType());
         }
-        if (repository.findById(id).isEmpty()) {
-            throw new IllegalArgumentException("Vehicle image information not found");
-        }
-        var result = cloudinary.upload(file);
-        updateImageLink(result, id);
+
+        var uploadedImageLink = cloudinary.upload(file);
+        updateImageWithLink(id, uploadedImageLink);
     }
 
-    private void updateImageLink(Map metadata, Long id) {
-        var vehicleImage = repository.findById(id)
+    private void updateImageWithLink(String id, Map<String, Object> link) {
+        var existingImage = getVehicleImage(id);
+        existingImage.setPublicImageId(link.get("publicLink").toString());
+        existingImage.setLink(link.get("secretLink").toString());
+        repository.save(existingImage);
+        service.updateVehicleWithImage(id, existingImage);
+    }
+
+    private VehicleImage getVehicleImage(String id) {
+        return repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Image not found"));
-        vehicleImage.setPublicImageId(String.valueOf(metadata.get("public_id")));
-        vehicleImage.setLink(String.valueOf(metadata.get("secure_url")));
-        repository.save(vehicleImage);
     }
 }

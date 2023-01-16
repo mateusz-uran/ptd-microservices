@@ -33,7 +33,7 @@ public class VehicleService {
                 .block();
     }
 
-    public void addVehicle(VehicleRequest vehicleDto) {
+    public VehicleResponse addVehicle(VehicleRequest vehicleDto) {
         var username = getUsername(vehicleDto.getUserVehicleUsername());
         Vehicle vehicle = Vehicle.builder()
                 .model(vehicleDto.getModel())
@@ -45,44 +45,20 @@ public class VehicleService {
                 .adBlueCapacity(vehicleDto.getAdBlueCapacity())
                 .userId(username.getId())
                 .build();
-        repository.save(vehicle);
+        var result = repository.save(vehicle);
+        return mapper.mapToVehicleResponse(result);
     }
 
-    public void updateVehicleWithTrailer(Long id, Trailer trailer) {
+    public void updateVehicleWithTrailer(String id, Trailer trailer) {
         var vehicle = repository.findById(id).orElseThrow();
         vehicle.setTrailer(trailer);
         repository.save(vehicle);
     }
 
-    public void updateVehicleWithImage(Long id, VehicleImage image) {
+    public void updateVehicleWithImage(String id, VehicleImage image) {
         var vehicle = repository.findById(id).orElseThrow();
         vehicle.setImage(image);
         repository.save(vehicle);
-    }
-
-    public Vehicle getVehicle(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
-    }
-
-    public Vehicle updateVehicle(Long id, VehicleRequest vehicleDto) {
-        return repository.findById(id)
-                .map(vehicle -> {
-                    if(vehicleDto.getModel() != null) {
-                        vehicle.setModel(vehicleDto.getModel());
-                    } else if (vehicleDto.getType() != null) {
-                        vehicle.setType(vehicleDto.getType());
-                    } else if (vehicleDto.getLicensePlate() != null) {
-                        vehicle.setLicensePlate(vehicleDto.getLicensePlate());
-                    } else if (vehicleDto.getLeftTankFuelCapacity() != null) {
-                        vehicle.setLeftTankFuelCapacity(vehicleDto.getLeftTankFuelCapacity());
-                    } else if (vehicleDto.getRightTankFuelCapacity() != null) {
-                        vehicle.setRightTankFuelCapacity(vehicleDto.getRightTankFuelCapacity());
-                    } else if (vehicleDto.getAdBlueCapacity() != null) {
-                        vehicle.setAdBlueCapacity(vehicleDto.getAdBlueCapacity());
-                    }
-                    return repository.save(vehicle);
-                }).orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
     }
 
     public VehiclePDFResponse sendToPdf(Long id) {
@@ -97,7 +73,7 @@ public class VehicleService {
                 .build();
     }
 
-    public void delete(Long id) {
+    public void delete(String id) {
         repository.findById(id)
                 .ifPresent(vehicle -> {
                     cloudinary.deleteImage(vehicle.getImage().getPublicImageId());

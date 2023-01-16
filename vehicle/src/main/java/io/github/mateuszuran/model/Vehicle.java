@@ -4,19 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "vehicles")
+@Document
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
 public class Vehicle {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
     private String model;
     private String type;
     private String licensePlate;
@@ -25,10 +23,6 @@ public class Vehicle {
     private Integer fullTankCapacity;
     private Integer adBlueCapacity;
     private Long userId;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "trailer_id", referencedColumnName = "id")
     private Trailer trailer;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "vehicle_image_id", referencedColumnName = "id")
     private VehicleImage image;
 }

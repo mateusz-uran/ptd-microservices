@@ -1,7 +1,7 @@
 package io.github.mateuszuran.repository;
 
 import io.github.mateuszuran.model.Trailer;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface TrailerRepository extends JpaRepository<Trailer, Long> {
+public interface TrailerRepository extends MongoRepository<Trailer, String> {
 }
