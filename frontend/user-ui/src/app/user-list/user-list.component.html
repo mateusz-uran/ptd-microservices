@@ -1,3 +1,14 @@
-<div *ngFor="let user of userDto">
-    <p>{{user.username}}</p>
-</div>
+<mat-sidenav mode="side" opened class="sidenav">
+
+    <mat-nav-list role="list" *ngFor="let user of userDto">
+        <mat-list-item>
+            <div class="element">
+                <div class="image-wrapper">
+                    <img src="https://material.angular.io/assets/img/examples/shiba1.jpg">
+                </div>
+                <div class="user-wrapper" [routerLink]="['/user-details', user.username]" routerLinkActive="active">{{user.username}}</div>
+            </div>
+        </mat-list-item>
+    </mat-nav-list>
+
+</mat-sidenav>

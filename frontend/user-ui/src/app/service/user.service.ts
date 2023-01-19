@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserDto } from '../model/user-dto';
 
@@ -12,5 +12,10 @@ export class UserService {
 
   getAllUsers(): Observable<Array<UserDto>> {
     return this.httpClient.get<Array<UserDto>>("http://localhost:8080/api/user/all");
+  }
+
+  getUserInformation(username: string): Observable<UserDto> {
+    const params = new HttpParams().set('username', username);
+    return this.httpClient.get<UserDto>("http://localhost:8080/api/user", { params });
   }
 }
