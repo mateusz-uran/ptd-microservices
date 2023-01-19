@@ -15,7 +15,6 @@ export class UserService {
   }
 
   getUserInformation(username: string): Observable<UserDto> {
-    const params = new HttpParams().set('username', username);
-    return this.httpClient.get<UserDto>("http://localhost:8080/api/user", { params });
+    return this.httpClient.get<UserDto>("http://localhost:8080/api/user/" + username);
   }
 }

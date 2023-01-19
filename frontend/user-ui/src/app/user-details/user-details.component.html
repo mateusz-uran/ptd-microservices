@@ -1,3 +1,6 @@
-<div *ngIf="userDto !== undefined">
-    <p>{{userDto.id}}</p>
+<div *ngIf="userDto !== undefined" class="info-wrapper">
+    <span>{{userDto.firstName}}</span>
+    <span>{{userDto.lastName}}</span>
+    <span>{{userDto.username}}</span>
+    <span>{{userDto.email}}</span>
 </div>
