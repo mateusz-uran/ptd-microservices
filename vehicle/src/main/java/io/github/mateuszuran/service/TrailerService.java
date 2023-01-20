@@ -1,5 +1,6 @@
 package io.github.mateuszuran.service;
 
+import io.github.mateuszuran.dto.TrailerDTO;
 import io.github.mateuszuran.dto.request.TrailerRequest;
 import io.github.mateuszuran.model.Trailer;
 import io.github.mateuszuran.repository.TrailerRepository;
@@ -12,13 +13,18 @@ public class TrailerService {
     private final TrailerRepository repository;
     private final VehicleService service;
 
-    public void addTrailer(String id, TrailerRequest trailerDto) {
+    public TrailerDTO addTrailerToVehicle(TrailerDTO trailerDTO, String vehicleId) {
         Trailer trailer = Trailer.builder()
-                .type(trailerDto.getType())
-                .licensePlate(trailerDto.getLicensePlate())
-                .fuelCapacity(trailerDto.getFuelCapacity())
+                .type(trailerDTO.getType())
+                .licensePlate(trailerDTO.getLicensePlate())
+                .fuelCapacity(trailerDTO.getFuelCapacity())
                 .build();
         repository.save(trailer);
-        service.updateVehicleWithTrailer(id, trailer);
+        service.updateVehicleWithTrailerData(trailer, vehicleId);
+        return TrailerDTO.builder()
+                .type(trailer.getType())
+                .licensePlate(trailer.getLicensePlate())
+                .fuelCapacity(trailer.getFuelCapacity())
+                .build();
     }
 }

@@ -23,7 +23,7 @@ public class CloudinaryManager {
                             new Transformation().width(640).height(360).crop("limit")));
             Map<String, Object> imageInfo = new HashMap<>();
             imageInfo.put("publicLink", result.get("public_id"));
-            imageInfo.put("secretLink", result.get("secure_url"));
+            imageInfo.put("imageUrl", result.get("url"));
             return imageInfo;
         } catch (IOException e) {
             throw new RuntimeException(e);

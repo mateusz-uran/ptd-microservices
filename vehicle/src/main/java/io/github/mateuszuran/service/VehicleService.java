@@ -1,5 +1,6 @@
 package io.github.mateuszuran.service;
 
+import io.github.mateuszuran.dto.VehicleDTO;
 import io.github.mateuszuran.dto.request.VehicleRequest;
 import io.github.mateuszuran.dto.response.UserResponse;
 import io.github.mateuszuran.dto.response.VehiclePDFResponse;
@@ -21,44 +22,21 @@ import java.util.List;
 public class VehicleService {
     private final VehicleRepository repository;
     private final CloudinaryManager cloudinary;
-    private final WebClient.Builder webClientBuilder;
     private final VehicleMapper mapper;
 
-    private UserResponse getUsername(String username) {
-        return webClientBuilder.build().get()
-                .uri("http://user-service/api/user",
-                        uriBuilder -> uriBuilder.queryParam("username", username).build())
-                .retrieve()
-                .bodyToMono(UserResponse.class)
-                .block();
-    }
-
-    public VehicleResponse addVehicle(VehicleRequest vehicleDto) {
-        var username = getUsername(vehicleDto.getUserVehicleUsername());
+    public VehicleResponse addVehicleInformation(VehicleDTO vehicleDTO, Long userId) {
         Vehicle vehicle = Vehicle.builder()
-                .model(vehicleDto.getModel())
-                .type(vehicleDto.getType())
-                .licensePlate(vehicleDto.getLicensePlate())
-                .leftTankFuelCapacity(vehicleDto.getLeftTankFuelCapacity())
-                .rightTankFuelCapacity(vehicleDto.getRightTankFuelCapacity())
-                .fullTankCapacity(vehicleDto.getLeftTankFuelCapacity() + vehicleDto.getRightTankFuelCapacity())
-                .adBlueCapacity(vehicleDto.getAdBlueCapacity())
-                .userId(username.getId())
+                .model(vehicleDTO.getModel())
+                .type(vehicleDTO.getType())
+                .licensePlate(vehicleDTO.getLicensePlate())
+                .leftTankFuelCapacity(vehicleDTO.getLeftTankFuelCapacity())
+                .rightTankFuelCapacity(vehicleDTO.getRightTankFuelCapacity())
+                .fullTankCapacity(vehicleDTO.getLeftTankFuelCapacity() + vehicleDTO.getRightTankFuelCapacity())
+                .adBlueCapacity(vehicleDTO.getAdBlueCapacity())
+                .userId(userId)
                 .build();
-        var result = repository.save(vehicle);
-        return mapper.mapToVehicleResponse(result);
-    }
-
-    public void updateVehicleWithTrailer(String id, Trailer trailer) {
-        var vehicle = repository.findById(id).orElseThrow();
-        vehicle.setTrailer(trailer);
         repository.save(vehicle);
-    }
-
-    public void updateVehicleWithImage(String id, VehicleImage image) {
-        var vehicle = repository.findById(id).orElseThrow();
-        vehicle.setImage(image);
-        repository.save(vehicle);
+        return mapper.mapToVehicleResponse(vehicle);
     }
 
     public VehiclePDFResponse sendToPdf(Long id) {
@@ -79,5 +57,22 @@ public class VehicleService {
                     cloudinary.deleteImage(vehicle.getImage().getPublicImageId());
                     repository.deleteById(vehicle.getId());
                 });
+    }
+
+    public void updateVehicleWithTrailerData(Trailer trailer, String vehicleId) {
+        var vehicleToUpdate = getVehicleById(vehicleId);
+        vehicleToUpdate.setTrailer(trailer);
+        repository.save(vehicleToUpdate);
+    }
+
+    public void updateVehicleWithImageData(VehicleImage vehicleImage, String vehicleId) {
+        var vehicleToUpdate = getVehicleById(vehicleId);
+        vehicleToUpdate.setImage(vehicleImage);
+        repository.save(vehicleToUpdate);
+    }
+
+    private Vehicle getVehicleById(String vehicleId) {
+        return repository.findById(vehicleId)
+                .orElseThrow();
     }
 }

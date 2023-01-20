@@ -1,9 +1,13 @@
 package io.github.mateuszuran.controller;
 
+import io.github.mateuszuran.dto.TrailerDTO;
+import io.github.mateuszuran.dto.VehicleDTO;
+import io.github.mateuszuran.dto.VehicleImageDTO;
 import io.github.mateuszuran.dto.request.TrailerRequest;
 import io.github.mateuszuran.dto.request.VehicleImageRequest;
 import io.github.mateuszuran.dto.request.VehicleRequest;
 import io.github.mateuszuran.dto.response.VehiclePDFResponse;
+import io.github.mateuszuran.dto.response.VehicleResponse;
 import io.github.mateuszuran.model.Vehicle;
 import io.github.mateuszuran.service.TrailerService;
 import io.github.mateuszuran.service.VehicleImageService;
@@ -23,30 +27,29 @@ public class VehicleController {
     private final TrailerService trailerService;
     private final VehicleImageService vehicleImageService;
 
-    @PostMapping
-    public ResponseEntity<?> add(@RequestBody VehicleRequest vehicleRequest) {
-        service.addVehicle(vehicleRequest);
-        return ResponseEntity.ok().body(HttpStatus.CREATED);
+    @PostMapping("/{userId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<VehicleResponse> addVehicle(@RequestBody VehicleDTO vehicleDTO, @PathVariable Long userId) {
+        return ResponseEntity.ok()
+                .body(service.addVehicleInformation(vehicleDTO, userId));
     }
 
-    @PostMapping(params = "trailer")
-    public ResponseEntity<?> addTrailer(@RequestParam String id, @RequestBody TrailerRequest trailerRequest) {
-        trailerService.addTrailer(id, trailerRequest);
-        return ResponseEntity.ok().body(HttpStatus.CREATED);
+    @PostMapping("/trailer/{vehicleId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<TrailerDTO> addTrailer(@RequestBody TrailerDTO trailerDTO, @PathVariable String vehicleId) {
+        return ResponseEntity.ok()
+                .body(trailerService.addTrailerToVehicle(trailerDTO, vehicleId));
     }
 
-    @PostMapping(params = "image_info")
-    public ResponseEntity<?> addImageInfo(@RequestParam String id, @RequestBody VehicleImageRequest vehicleImageRequest) {
-        vehicleImageService.addImageInformation(id, vehicleImageRequest);
-        return ResponseEntity.ok().body(HttpStatus.CREATED);
-    }
-
-    @PostMapping(path = "/upload",
-            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE},
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> uploadImageToPostByParam(@RequestParam String id, @RequestParam MultipartFile file) throws Exception {
-        vehicleImageService.uploadVehicleImage(id, file);
-        return ResponseEntity.ok().body("Image uploaded");
+    @PostMapping(value = "/image/{vehicleId}", consumes = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<VehicleImageDTO> addImage(
+            @RequestPart("description") String vehicleImageRequest,
+            @PathVariable String vehicleId,
+            @RequestPart("image") MultipartFile file
+    ) throws Exception {
+        return ResponseEntity.ok()
+                .body(vehicleImageService.addVehicleImage(vehicleImageRequest, vehicleId, file));
     }
 
     @GetMapping(params = "userId")
