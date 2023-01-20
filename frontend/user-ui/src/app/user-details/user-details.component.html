@@ -1,6 +1,6 @@
-<mat-card *ngIf="userDto !== undefined">
+<mat-card>
     <mat-card-header color="primary">
-        <mat-card-title>Dashboard</mat-card-title>
+        <mat-card-title>User Details</mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
     <mat-card-content class="card-content">
@@ -13,7 +13,7 @@
             <p class="user-data">{{userDto.email}}</p>&nbsp;
         </span>
         <span>
-            <p class="user-data-headers">Status:</p>
+            <p class="user-data-headers">Status</p>
             <p class="user-data">{{userDto.active ? 'Active' : 'Inactive'}}</p>
         </span>
     </mat-card-content>
@@ -25,3 +25,4 @@
         <mat-progress-bar mode="determinate" value="100" [color]="userDto.active ? '' : 'accent'"></mat-progress-bar>
     </mat-card-footer>
 </mat-card>
+<app-vehicle-details [userId]="userDto.id"></app-vehicle-details>

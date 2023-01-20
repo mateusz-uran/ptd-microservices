@@ -11,7 +11,14 @@ import { UserService } from '../service/user.service';
 export class UserDetailsComponent implements OnInit {
 
   username!: string;
-  userDto!: UserDto;
+  userDto: UserDto = {
+    id: 0,
+    firstName: '',
+    lastName: '',
+    username: '',
+    email: '',
+    active: false
+  };
 
   constructor(private route: ActivatedRoute, private userService: UserService) {
     this.route.params.subscribe(params => {

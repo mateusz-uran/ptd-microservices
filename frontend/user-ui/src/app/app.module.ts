@@ -16,6 +16,8 @@ import { UserDetailsComponent } from './user-details/user-details.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { VehicleDetailsComponent } from './vehicle-details/vehicle-details.component';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     UserListComponent,
     NavbarComponent,
     HomeComponent,
-    UserDetailsComponent
+    UserDetailsComponent,
+    VehicleDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +39,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatListModule,
     MatCardModule,
     MatProgressBarModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatExpansionModule
   ],
   providers: [],
   bootstrap: [AppComponent]
