@@ -10,8 +10,8 @@ export class UserService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getAllUsers(): Observable<Array<UserDto>> {
-    return this.httpClient.get<Array<UserDto>>("http://localhost:8080/api/user/all");
+  getAllUsers(): Observable<Array<string>> {
+    return this.httpClient.get<Array<string>>("http://localhost:8080/api/user/all");
   }
 
   getUserInformation(username: string): Observable<UserDto> {

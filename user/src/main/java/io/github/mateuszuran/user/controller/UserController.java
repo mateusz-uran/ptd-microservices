@@ -25,9 +25,8 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<UserResponseDto>> getAllUsers() {
-        log.info("Exposing all users");
-        return ResponseEntity.ok().body(service.getAllUsersFromDB());
+    public ResponseEntity<List<String>> getUsersNicknames() {
+        return ResponseEntity.ok().body(service.getAllUsersUsername());
     }
 
     @GetMapping

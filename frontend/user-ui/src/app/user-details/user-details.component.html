@@ -1,6 +1,17 @@
-<div *ngIf="userDto !== undefined" class="info-wrapper">
-    <span>{{userDto.firstName}}</span>
-    <span>{{userDto.lastName}}</span>
-    <span>{{userDto.username}}</span>
-    <span>{{userDto.email}}</span>
+<div class="wrapper">
+    <div *ngIf="userDto !== undefined" class="info-wrapper">
+        <div>
+            <h3>Dashboard</h3>
+        </div>
+        <div>
+            <div>
+                <div>
+                    <span>{{userDto.firstName}}</span>
+                    <span>{{userDto.lastName}}</span>
+                </div>
+                <span>{{userDto.username}}</span>
+                <span>{{userDto.email}}</span>
+            </div>
+        </div>
+    </div>
 </div>

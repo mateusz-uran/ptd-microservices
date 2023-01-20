@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,11 +48,15 @@ public class UserService {
         return mapToUserResponse(user);
     }
 
-    public List<UserResponseDto> getAllUsersFromDB() {
+    public List<UserResponseDto> getAllUsersFromDB () {
         var users = repository.findAll();
         return users.stream()
                 .map(this::mapToUserResponse)
                 .collect(Collectors.toList());
+    }
+
+    public List<String> getAllUsersUsername() {
+        return repository.getUsernameList();
     }
 
     private UserResponseDto mapToUserResponse(User user) {

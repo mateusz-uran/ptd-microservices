@@ -10,17 +10,14 @@ import { UserDto } from '../model/user-dto';
 export class UserListComponent implements OnInit {
 
   userDto: UserDto[] = [];
+  username: string[] = [];
 
-  constructor(private userService: UserService) {  }
+  constructor(private userService: UserService) { }
 
   ngOnInit(): void {
-    this.getListOfUsers();
-  }
-
-  getListOfUsers() {
     this.userService.getAllUsers()
-    .subscribe(data => {
-      this.userDto = data;
-    })
+      .subscribe(data => {
+        this.username = data;
+      })
   }
 }

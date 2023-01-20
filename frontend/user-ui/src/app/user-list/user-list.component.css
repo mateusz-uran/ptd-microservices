@@ -30,5 +30,10 @@ img {
 .user-wrapper {
     width: 70%;
     text-align: left;
-    padding: 0 10px;
+    padding: 5px 10px;
+}
+
+.active {
+    background-color: #7986cb;
+    border-radius: 5px;
 }
