@@ -34,6 +34,11 @@ public class UserController {
         return ResponseEntity.ok().body(service.getUserByUsernameFromDB(username));
     }
 
+    @PostMapping("/{userId}")
+    public ResponseEntity<Boolean> toggleUserStatement(@PathVariable Long userId) {
+        return ResponseEntity.ok().body(service.toggleUserLock(userId));
+    }
+
     @GetMapping("/{username}")
     public ResponseEntity<UserResponseDto> getUserInformation(@PathVariable String username) {
         return ResponseEntity.ok().body(service.getUserInformation(username));

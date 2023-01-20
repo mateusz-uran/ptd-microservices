@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../service/user.service';
-import { UserDto } from '../model/user-dto';
 
 @Component({
   selector: 'app-user-list',
@@ -9,7 +8,6 @@ import { UserDto } from '../model/user-dto';
 })
 export class UserListComponent implements OnInit {
 
-  userDto: UserDto[] = [];
   username: string[] = [];
 
   constructor(private userService: UserService) { }

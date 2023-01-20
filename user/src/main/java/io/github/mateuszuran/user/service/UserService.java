@@ -48,7 +48,7 @@ public class UserService {
         return mapToUserResponse(user);
     }
 
-    public List<UserResponseDto> getAllUsersFromDB () {
+    public List<UserResponseDto> getAllUsersFromDB() {
         var users = repository.findAll();
         return users.stream()
                 .map(this::mapToUserResponse)
@@ -57,6 +57,13 @@ public class UserService {
 
     public List<String> getAllUsersUsername() {
         return repository.getUsernameList();
+    }
+
+    public boolean toggleUserLock(Long userId) {
+        var user = repository.findById(userId).orElseThrow();
+        user.setActive(!user.isActive());
+        repository.save(user);
+        return user.isActive();
     }
 
     private UserResponseDto mapToUserResponse(User user) {

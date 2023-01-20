@@ -27,4 +27,11 @@ export class UserDetailsComponent implements OnInit {
         this.userDto = data;
       })
   }
+
+  toggleUser() {
+    this.userService.toggleUserActiveStatus(this.userDto.id)
+      .subscribe(data => {
+        this.userDto.active = data;
+      })
+  }
 }

@@ -17,4 +17,8 @@ export class UserService {
   getUserInformation(username: string): Observable<UserDto> {
     return this.httpClient.get<UserDto>("http://localhost:8080/api/user/" + username);
   }
+
+  toggleUserActiveStatus(userId: number): Observable<boolean> {
+    return this.httpClient.post<boolean>("http://localhost:8080/api/user/" +  userId, null);
+  }
 }
