@@ -25,4 +25,4 @@
         <mat-progress-bar mode="determinate" value="100" [color]="userDto.active ? '' : 'accent'"></mat-progress-bar>
     </mat-card-footer>
 </mat-card>
-<app-vehicle-details [userId]="userDto.id"></app-vehicle-details>
+<app-vehicle-details *ngIf="userId" [userId]="userId"></app-vehicle-details>

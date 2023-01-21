@@ -3,6 +3,7 @@ package io.github.mateuszuran.controller;
 import io.github.mateuszuran.dto.TrailerDTO;
 import io.github.mateuszuran.dto.VehicleDTO;
 import io.github.mateuszuran.dto.VehicleImageDTO;
+import io.github.mateuszuran.dto.VehicleResponseDTO;
 import io.github.mateuszuran.dto.request.TrailerRequest;
 import io.github.mateuszuran.dto.request.VehicleImageRequest;
 import io.github.mateuszuran.dto.request.VehicleRequest;
@@ -50,6 +51,12 @@ public class VehicleController {
     ) throws Exception {
         return ResponseEntity.ok()
                 .body(vehicleImageService.addVehicleImage(vehicleImageRequest, vehicleId, file));
+    }
+
+    @GetMapping("/info/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<VehicleResponseDTO> retrieveInformation(@PathVariable Long userId) {
+        return ResponseEntity.ok().body(service.retrieveVehicleInformation(userId));
     }
 
     @GetMapping(params = "userId")

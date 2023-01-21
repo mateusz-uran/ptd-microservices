@@ -1,59 +1,60 @@
-<mat-card class="card">
+<!-- *ngIf="vehicleData !== undefined && vehicleIsEmpty !== true" -->
+<mat-card class="card" *ngIf="vehicle && vehicleIsEmpty !== true">
     <mat-card-header>
         <mat-card-title>Users Vehicle Details</mat-card-title>
     </mat-card-header>
     <mat-card-content>
         <mat-divider></mat-divider>
         <mat-card-subtitle>Truck</mat-card-subtitle>
-        <div class="truck">
+        <div class="truck" *ngIf="vehicle.truck">
             <span>
                 <p class="vehicle-data-headers">Model</p>
-                <p class="vehicle-data">VOLVO FH 500 EURO-6</p>&nbsp;
+                <p class="vehicle-data">{{vehicle.truck.model}}</p>&nbsp;
             </span>
             <span>
                 <p class="vehicle-data-headers">Type</p>
-                <p class="vehicle-data">Ciągnik siodłowy</p>&nbsp;
+                <p class="vehicle-data">{{vehicle.truck.type}}</p>&nbsp;
             </span>
             <span>
                 <p class="vehicle-data-headers">License Plate</p>
-                <p class="vehicle-data">LOP 46164</p>&nbsp;
+                <p class="vehicle-data">{{vehicle.truck.licensePlate}}</p>&nbsp;
             </span>
             <span>
                 <p class="vehicle-data-headers">Fuel Tanks (left/right)</p>
-                <p class="vehicle-data">750 / 405</p>&nbsp;
+                <p class="vehicle-data">{{vehicle.truck.leftTankFuelCapacity}}/{{vehicle.truck.rightTankFuelCapacity}}</p>&nbsp;
             </span>
             <span>
                 <p class="vehicle-data-headers">Adblue Tank</p>
-                <p class="vehicle-data">240</p>&nbsp;
+                <p class="vehicle-data">{{vehicle.truck.adBlueCapacity}}</p>&nbsp;
             </span>
         </div>
         <mat-divider></mat-divider>
         <mat-card-subtitle>Trailer</mat-card-subtitle>
-        <div class="trailer">
+        <div class="trailer" *ngIf="vehicle.trailer">
             <span>
                 <p class="vehicle-data-headers">Type</p>
-                <p class="vehicle-data">Naczepa chłodnia</p>&nbsp;
+                <p class="vehicle-data">{{vehicle.trailer.type}}</p>&nbsp;
             </span>
             <span>
                 <p class="vehicle-data-headers">License Plate</p>
-                <p class="vehicle-data">LOP 44KX</p>&nbsp;
+                <p class="vehicle-data">{{vehicle.trailer.licensePlate}}</p>&nbsp;
             </span>
             <span>
                 <p class="vehicle-data-headers">Fuel Tank</p>
-                <p class="vehicle-data">240</p>&nbsp;
+                <p class="vehicle-data">{{vehicle.trailer.fuelCapacity}}</p>&nbsp;
             </span>
         </div>
         <mat-divider></mat-divider>
         <mat-card-subtitle>Vehicle Image</mat-card-subtitle>
-        <div class="truck-image">
+        <div class="truck-image" *ngIf="vehicle.image">
             <span>
                 <p class="vehicle-data-headers">Description</p>
-                <p class="vehicle-data">Volvo FH KRONE</p>&nbsp;
+                <p class="vehicle-data">{{vehicle.image.description}}</p>&nbsp;
             </span>
             <span>
                 <p class="vehicle-data-headers">Image</p>
                 <div class="image-wrapper">
-                    <img src="https://material.angular.io/assets/img/examples/shiba1.jpg">
+                    <img src={{vehicle.image.link}}>
                 </div>
             </span>
         </div>
