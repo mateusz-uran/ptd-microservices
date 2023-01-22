@@ -17,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -54,23 +55,25 @@ public class VehicleService {
 
     public VehicleResponseDTO retrieveVehicleInformation(Long userId) {
         var vehicle = repository.findByUserId(userId).orElseThrow();
+        var optionalTrailer = validateVehicleTrailer(vehicle, mapper).orElse(TrailerDTO.builder().build());
+        var optionalImage = validateVehicleImage(vehicle, mapper).orElse(VehicleImageDTO.builder().build());
         return VehicleResponseDTO.builder()
                 .truck(mapper.mapToVehicleDTO(vehicle))
-                .trailer(validateVehicleTrailer(vehicle, mapper))
-                .image(validateVehicleImage(vehicle, mapper))
+                .trailer(optionalTrailer)
+                .image(optionalImage)
                 .build();
     }
 
-    private TrailerDTO validateVehicleTrailer(Vehicle vehicle, VehicleMapper vehicleMapper) {
+    private Optional<TrailerDTO> validateVehicleTrailer(Vehicle vehicle, VehicleMapper vehicleMapper) {
         if (vehicle.getTrailer() != null) {
-            return vehicleMapper.mapToTrailerDTO(vehicle.getTrailer());
-        } else return null;
+            return Optional.of(vehicleMapper.mapToTrailerDTO(vehicle.getTrailer()));
+        } else return Optional.empty();
     }
 
-    private VehicleImageDTO validateVehicleImage(Vehicle vehicle, VehicleMapper vehicleMapper) {
+    private Optional<VehicleImageDTO> validateVehicleImage(Vehicle vehicle, VehicleMapper vehicleMapper) {
         if (vehicle.getImage() != null) {
-            return vehicleMapper.mapToVehicleImageDTO(vehicle.getImage());
-        } else return null;
+            return Optional.of(vehicleMapper.mapToVehicleImageDTO(vehicle.getImage()));
+        } else return Optional.empty();
     }
 
     private Vehicle getVehicleById(String vehicleId) {
