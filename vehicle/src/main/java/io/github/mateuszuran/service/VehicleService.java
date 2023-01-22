@@ -1,6 +1,8 @@
 package io.github.mateuszuran.service;
 
+import io.github.mateuszuran.dto.TrailerDTO;
 import io.github.mateuszuran.dto.VehicleDTO;
+import io.github.mateuszuran.dto.VehicleImageDTO;
 import io.github.mateuszuran.dto.VehicleResponseDTO;
 import io.github.mateuszuran.dto.response.VehiclePDFResponse;
 import io.github.mateuszuran.dto.response.VehicleResponse;
@@ -11,7 +13,10 @@ import io.github.mateuszuran.model.Vehicle;
 import io.github.mateuszuran.model.VehicleImage;
 import io.github.mateuszuran.repository.VehicleRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -51,9 +56,21 @@ public class VehicleService {
         var vehicle = repository.findByUserId(userId).orElseThrow();
         return VehicleResponseDTO.builder()
                 .truck(mapper.mapToVehicleDTO(vehicle))
-                .trailer(mapper.mapToTrailerDTO(vehicle.getTrailer()))
-                .image(mapper.mapToVehicleImageDTO(vehicle.getImage()))
+                .trailer(validateVehicleTrailer(vehicle, mapper))
+                .image(validateVehicleImage(vehicle, mapper))
                 .build();
+    }
+
+    private TrailerDTO validateVehicleTrailer(Vehicle vehicle, VehicleMapper vehicleMapper) {
+        if (vehicle.getTrailer() != null) {
+            return vehicleMapper.mapToTrailerDTO(vehicle.getTrailer());
+        } else return null;
+    }
+
+    private VehicleImageDTO validateVehicleImage(Vehicle vehicle, VehicleMapper vehicleMapper) {
+        if (vehicle.getImage() != null) {
+            return vehicleMapper.mapToVehicleImageDTO(vehicle.getImage());
+        } else return null;
     }
 
     private Vehicle getVehicleById(String vehicleId) {
