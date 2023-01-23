@@ -45,4 +45,12 @@ export class VehicleDetailsComponent implements OnInit {
         }
       })
   }
+
+  deleteVehicle() {
+    this.vehicleService.deleteVehicleInformation(this.vehicleId)
+    .subscribe(() => {
+      this.vehicle = undefined;
+      this.vehicleIsEmpty = true;
+    })
+  }
 }

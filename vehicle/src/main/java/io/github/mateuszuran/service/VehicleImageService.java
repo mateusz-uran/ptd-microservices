@@ -3,10 +3,8 @@ package io.github.mateuszuran.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mateuszuran.dto.VehicleImageDTO;
-import io.github.mateuszuran.dto.request.VehicleImageRequest;
 import io.github.mateuszuran.filestore.CloudinaryManager;
 import io.github.mateuszuran.model.VehicleImage;
-import io.github.mateuszuran.repository.VehicleImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -23,7 +21,6 @@ import static org.apache.http.entity.ContentType.IMAGE_PNG;
 @Service
 @RequiredArgsConstructor
 public class VehicleImageService {
-    private final VehicleImageRepository repository;
     private final VehicleService vehicleService;
     private final CloudinaryManager cloudinary;
 
@@ -38,7 +35,6 @@ public class VehicleImageService {
                 .publicImageId(imageInfo.get("publicLink").toString())
                 .link(imageInfo.get("imageUrl").toString())
                 .build();
-        repository.save(vehicleImage);
         vehicleService.updateVehicleWithImageData(vehicleImage, vehicleId);
         return VehicleImageDTO.builder()
                 .name(vehicleImage.getName())

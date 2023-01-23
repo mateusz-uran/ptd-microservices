@@ -93,10 +93,12 @@ public class VehicleService {
                 .build();
     }
 
-    public void delete(String id) {
-        repository.findById(id)
+    public void delete(String vehicleId) {
+        repository.findById(vehicleId)
                 .ifPresent(vehicle -> {
-                    cloudinary.deleteImage(vehicle.getImage().getPublicImageId());
+                    if(vehicle.getImage() != null) {
+                        cloudinary.deleteImage(vehicle.getImage().getPublicImageId());
+                    }
                     repository.deleteById(vehicle.getId());
                 });
     }

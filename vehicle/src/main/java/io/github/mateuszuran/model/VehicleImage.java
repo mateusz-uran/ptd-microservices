@@ -7,13 +7,11 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
 public class VehicleImage {
-    @Id
     private String id;
     private String name;
     private String description;

@@ -28,4 +28,8 @@ export class VehicleService {
       observe: 'events',
     });
   }
+
+  deleteVehicleInformation(vehicleId: string) {
+    return this.httpClient.delete("http://localhost:8080/api/vehicle/delete/" + vehicleId)
+  }
 }

@@ -64,9 +64,9 @@ public class VehicleController {
         return ResponseEntity.ok().body(service.sendToPdf(userId));
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteVehicle(@RequestParam String id) {
-        service.delete(id);
-        return ResponseEntity.ok().body(HttpStatus.NO_CONTENT);
+    @DeleteMapping("/delete/{vehicleId}")
+    public ResponseEntity<?> deleteVehicle(@PathVariable String vehicleId) {
+        service.delete(vehicleId);
+        return ResponseEntity.ok(HttpStatus.NO_CONTENT);
     }
 }
