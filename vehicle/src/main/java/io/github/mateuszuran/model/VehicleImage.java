@@ -4,24 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "vehicle_image")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
 public class VehicleImage {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
     private String name;
     private String description;
     private String publicImageId;
     private String link;
-
-    @OneToOne(mappedBy = "image")
-    private Vehicle vehicle;
 }

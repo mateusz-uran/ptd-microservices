@@ -1,7 +1,9 @@
 package io.github.mateuszuran.service;
 
-import io.github.mateuszuran.dto.request.VehicleRequest;
-import io.github.mateuszuran.dto.response.UserResponse;
+import io.github.mateuszuran.dto.TrailerDTO;
+import io.github.mateuszuran.dto.VehicleDTO;
+import io.github.mateuszuran.dto.VehicleImageDTO;
+import io.github.mateuszuran.dto.VehicleResponseDTO;
 import io.github.mateuszuran.dto.response.VehiclePDFResponse;
 import io.github.mateuszuran.dto.response.VehicleResponse;
 import io.github.mateuszuran.filestore.CloudinaryManager;
@@ -11,78 +13,72 @@ import io.github.mateuszuran.model.Vehicle;
 import io.github.mateuszuran.model.VehicleImage;
 import io.github.mateuszuran.repository.VehicleRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class VehicleService {
     private final VehicleRepository repository;
     private final CloudinaryManager cloudinary;
-    private final WebClient.Builder webClientBuilder;
     private final VehicleMapper mapper;
 
-    private UserResponse getUsername(String username) {
-        return webClientBuilder.build().get()
-                .uri("http://user-service/api/user",
-                        uriBuilder -> uriBuilder.queryParam("username", username).build())
-                .retrieve()
-                .bodyToMono(UserResponse.class)
-                .block();
-    }
-
-    public void addVehicle(VehicleRequest vehicleDto) {
-        var username = getUsername(vehicleDto.getUserVehicleUsername());
+    public VehicleResponse addVehicleInformation(VehicleDTO vehicleDTO, Long userId) {
         Vehicle vehicle = Vehicle.builder()
-                .model(vehicleDto.getModel())
-                .type(vehicleDto.getType())
-                .licensePlate(vehicleDto.getLicensePlate())
-                .leftTankFuelCapacity(vehicleDto.getLeftTankFuelCapacity())
-                .rightTankFuelCapacity(vehicleDto.getRightTankFuelCapacity())
-                .fullTankCapacity(vehicleDto.getLeftTankFuelCapacity() + vehicleDto.getRightTankFuelCapacity())
-                .adBlueCapacity(vehicleDto.getAdBlueCapacity())
-                .userId(username.getId())
+                .model(vehicleDTO.getModel())
+                .type(vehicleDTO.getType())
+                .licensePlate(vehicleDTO.getLicensePlate())
+                .leftTankFuelCapacity(vehicleDTO.getLeftTankFuelCapacity())
+                .rightTankFuelCapacity(vehicleDTO.getRightTankFuelCapacity())
+                .fullTankCapacity(vehicleDTO.getLeftTankFuelCapacity() + vehicleDTO.getRightTankFuelCapacity())
+                .adBlueCapacity(vehicleDTO.getAdBlueCapacity())
+                .userId(userId)
                 .build();
         repository.save(vehicle);
+        return mapper.mapToVehicleResponse(vehicle);
     }
 
-    public void updateVehicleWithTrailer(Long id, Trailer trailer) {
-        var vehicle = repository.findById(id).orElseThrow();
-        vehicle.setTrailer(trailer);
-        repository.save(vehicle);
+    public void updateVehicleWithTrailerData(Trailer trailer, String vehicleId) {
+        var vehicleToUpdate = getVehicleById(vehicleId);
+        vehicleToUpdate.setTrailer(trailer);
+        repository.save(vehicleToUpdate);
     }
 
-    public void updateVehicleWithImage(Long id, VehicleImage image) {
-        var vehicle = repository.findById(id).orElseThrow();
-        vehicle.setImage(image);
-        repository.save(vehicle);
+    public void updateVehicleWithImageData(VehicleImage vehicleImage, String vehicleId) {
+        var vehicleToUpdate = getVehicleById(vehicleId);
+        vehicleToUpdate.setImage(vehicleImage);
+        repository.save(vehicleToUpdate);
     }
 
-    public Vehicle getVehicle(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
+    public VehicleResponseDTO retrieveVehicleInformation(Long userId) {
+        var vehicle = repository.findByUserId(userId).orElseThrow();
+        var optionalTrailer = validateVehicleTrailer(vehicle, mapper).orElse(TrailerDTO.builder().build());
+        var optionalImage = validateVehicleImage(vehicle, mapper).orElse(VehicleImageDTO.builder().build());
+        return VehicleResponseDTO.builder()
+                .truck(mapper.mapToVehicleDTO(vehicle))
+                .trailer(optionalTrailer)
+                .image(optionalImage)
+                .build();
     }
 
-    public Vehicle updateVehicle(Long id, VehicleRequest vehicleDto) {
-        return repository.findById(id)
-                .map(vehicle -> {
-                    if(vehicleDto.getModel() != null) {
-                        vehicle.setModel(vehicleDto.getModel());
-                    } else if (vehicleDto.getType() != null) {
-                        vehicle.setType(vehicleDto.getType());
-                    } else if (vehicleDto.getLicensePlate() != null) {
-                        vehicle.setLicensePlate(vehicleDto.getLicensePlate());
-                    } else if (vehicleDto.getLeftTankFuelCapacity() != null) {
-                        vehicle.setLeftTankFuelCapacity(vehicleDto.getLeftTankFuelCapacity());
-                    } else if (vehicleDto.getRightTankFuelCapacity() != null) {
-                        vehicle.setRightTankFuelCapacity(vehicleDto.getRightTankFuelCapacity());
-                    } else if (vehicleDto.getAdBlueCapacity() != null) {
-                        vehicle.setAdBlueCapacity(vehicleDto.getAdBlueCapacity());
-                    }
-                    return repository.save(vehicle);
-                }).orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
+    private Optional<TrailerDTO> validateVehicleTrailer(Vehicle vehicle, VehicleMapper vehicleMapper) {
+        if (vehicle.getTrailer() != null) {
+            return Optional.of(vehicleMapper.mapToTrailerDTO(vehicle.getTrailer()));
+        } else return Optional.empty();
+    }
+
+    private Optional<VehicleImageDTO> validateVehicleImage(Vehicle vehicle, VehicleMapper vehicleMapper) {
+        if (vehicle.getImage() != null) {
+            return Optional.of(vehicleMapper.mapToVehicleImageDTO(vehicle.getImage()));
+        } else return Optional.empty();
+    }
+
+    private Vehicle getVehicleById(String vehicleId) {
+        return repository.findById(vehicleId)
+                .orElseThrow();
     }
 
     public VehiclePDFResponse sendToPdf(Long id) {
@@ -97,10 +93,12 @@ public class VehicleService {
                 .build();
     }
 
-    public void delete(Long id) {
-        repository.findById(id)
+    public void delete(String vehicleId) {
+        repository.findById(vehicleId)
                 .ifPresent(vehicle -> {
-                    cloudinary.deleteImage(vehicle.getImage().getPublicImageId());
+                    if(vehicle.getImage() != null) {
+                        cloudinary.deleteImage(vehicle.getImage().getPublicImageId());
+                    }
                     repository.deleteById(vehicle.getId());
                 });
     }

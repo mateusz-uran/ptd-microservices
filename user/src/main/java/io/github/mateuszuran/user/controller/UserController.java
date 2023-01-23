@@ -1,7 +1,7 @@
 package io.github.mateuszuran.user.controller;
 
 import io.github.mateuszuran.user.dto.UserRequestDto;
-import io.github.mateuszuran.user.dto.UserResponse;
+import io.github.mateuszuran.user.dto.UserResponseDto;
 import io.github.mateuszuran.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,19 +19,28 @@ public class UserController {
     private final UserService service;
 
     @PostMapping
-    public ResponseEntity<HttpStatus> addUser(@RequestBody UserRequestDto userDto) {
-        service.addUserToDB(userDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<UserResponseDto> addUser(@RequestBody UserRequestDto userDto) {
+        return ResponseEntity.ok().body(
+                service.addUserToDB(userDto));
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<UserResponse>> getAllUsers() {
-        log.info("Exposing all users");
-        return ResponseEntity.ok().body(service.getAllUsersFromDB());
+    public ResponseEntity<List<String>> getUsersNicknames() {
+        return ResponseEntity.ok().body(service.getAllUsersUsername());
     }
 
     @GetMapping
-    public ResponseEntity<UserResponse> getSingleUser(@RequestParam String username) {
+    public ResponseEntity<UserResponseDto> getSingleUser(@RequestParam String username) {
         return ResponseEntity.ok().body(service.getUserByUsernameFromDB(username));
+    }
+
+    @PostMapping("/{userId}")
+    public ResponseEntity<Boolean> toggleUserStatement(@PathVariable Long userId) {
+        return ResponseEntity.ok().body(service.toggleUserLock(userId));
+    }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<UserResponseDto> getUserInformation(@PathVariable String username) {
+        return ResponseEntity.ok().body(service.getUserInformation(username));
     }
 }

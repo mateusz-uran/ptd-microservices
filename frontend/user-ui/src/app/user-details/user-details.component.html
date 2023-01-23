@@ -1,0 +1,28 @@
+<mat-card>
+    <mat-card-header color="primary">
+        <mat-card-title>User Details</mat-card-title>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content class="card-content">
+        <span>
+            <p class="user-data-headers">Name & Surname</p>
+            <p class="user-data">{{userDto.firstName}}&nbsp;{{userDto.lastName}}</p>&nbsp;
+        </span>
+        <span>
+            <p class="user-data-headers">Email Address</p>
+            <p class="user-data">{{userDto.email}}</p>&nbsp;
+        </span>
+        <span>
+            <p class="user-data-headers">Status</p>
+            <p class="user-data">{{userDto.active ? 'Active' : 'Inactive'}}</p>
+        </span>
+    </mat-card-content>
+    <mat-divider></mat-divider>
+    <mat-card-actions>
+        <button mat-raised-button (click)="toggleUser()">{{userDto.active ? 'Lock' : 'Unlock'}}</button>
+    </mat-card-actions>
+    <mat-card-footer>
+        <mat-progress-bar mode="determinate" value="100" [color]="userDto.active ? '' : 'accent'"></mat-progress-bar>
+    </mat-card-footer>
+</mat-card>
+<app-vehicle-details *ngIf="userId" [userId]="userId"></app-vehicle-details>

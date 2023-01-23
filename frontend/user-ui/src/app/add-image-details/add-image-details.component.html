@@ -1,0 +1,24 @@
+<mat-card>
+    <mat-progress-bar
+          color="primary"
+          [value]="progress">
+    </mat-progress-bar>
+    <form [formGroup]="imageForm" (ngSubmit)="submitImage()">
+
+        <mat-form-field appearance="fill">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Description</mat-label>
+            <input matInput formControlName="description" required>
+        </mat-form-field>
+
+        <input (change)="onChange($event)" type="file">
+
+        <div class="submit-wrapper">
+            <button mat-flat-button color="primary" [disabled]="!currentFile">Submit</button>
+        </div>
+    </form>
+</mat-card>

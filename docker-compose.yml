@@ -16,8 +16,6 @@ services:
     ports:
       - "5431:5431"
     command: -p 5431
-    networks:
-      - postgres-user
     restart: unless-stopped
 
   postgres-card:
@@ -34,23 +32,18 @@ services:
       - "5432:5432"
     restart: unless-stopped
 
-  postgres-vehicle:
-    container_name: postgres-vehicle
-    image: postgres:alpine3.16
+  mongodb-vehicle:
+    container_name: mongodb-vehicle
+    image: mongo
     environment:
-      POSTGRES_DB: vehicle-service
-      POSTGRES_USER: mateuszuran
-      POSTGRES_PASSWORD: password
-      PGDATA: /data/postgres
+      MONGO_INITDB_ROOT_USERNAME: mateuszuran
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: root-db
     volumes:
-      - ./postgres-vehicle:/data/postgres
-    expose:
-      - "5433"
+      - ./docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./mongodb-vehicle:/data/db
     ports:
-      - "5433:5433"
-    command: -p 5433
-    networks:
-      - postgres-vehicle
+      - '27017:27017'
     restart: unless-stopped
 
   pgadmin:
@@ -64,9 +57,6 @@ services:
       - pgadmin:/var/lib/pgadmin
     ports:
       - "8282:80"
-    networks:
-      - postgres-user
-      - postgres-vehicle
     restart: unless-stopped
 
   ## Broker
@@ -126,30 +116,8 @@ services:
     depends_on:
       - zipkin
       - discovery-server
-  ## Card-Service Docker Compose Config
-  card-service:
-    container_name: card-service
-    build:
-      context: ./card/
-      dockerfile: Dockerfile
-    image: card
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-card:5432/card-service
-    depends_on:
-      - postgres-card
-      - broker
-      - zipkin
-      - discovery-server
-      - api-gateway
-networks:
-  postgres-user:
-    driver: bridge
-  postgres-vehicle:
-    driver: bridge
-
 volumes:
   postgres-user:
   postgres-card:
-  postgres-vehicle:
   pgadmin:
+  mongodb-vehicle:
