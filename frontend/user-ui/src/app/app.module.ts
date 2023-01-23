@@ -23,6 +23,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { AddTrailerDetailsComponent } from './add-trailer-details/add-trailer-details.component';
 import { AddImageDetailsComponent } from './add-image-details/add-image-details.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { DialogContentComponent } from './dialog-content/dialog-content.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,8 @@ import { AddImageDetailsComponent } from './add-image-details/add-image-details.
     VehicleDetailsComponent,
     AddTruckDetailsComponent,
     AddTrailerDetailsComponent,
-    AddImageDetailsComponent
+    AddImageDetailsComponent,
+    DialogContentComponent
   ],
   imports: [
     BrowserModule,
@@ -51,7 +54,8 @@ import { AddImageDetailsComponent } from './add-image-details/add-image-details.
     MatExpansionModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

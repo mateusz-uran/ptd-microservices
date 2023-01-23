@@ -1,6 +1,8 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { VehicleResponse } from '../model/vehicle-dto';
 import { VehicleService } from '../service/vehicle.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogContentComponent } from '../dialog-content/dialog-content.component';
 
 @Component({
   selector: 'app-vehicle-details',
@@ -18,14 +20,14 @@ export class VehicleDetailsComponent implements OnInit {
   validateTrailerFrom: boolean = false;
   validateImageFrom: boolean = false;
 
-  constructor(private vehicleService: VehicleService) { }
+  constructor(private vehicleService: VehicleService, private dialog: MatDialog) { }
 
   ngOnChanges(changes: SimpleChanges) {
     this.userId = changes['userId'].currentValue;
     this.getVehicleInfo(this.userId);
   }
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
     this.getVehicleInfo(this.userId);
   }
 
@@ -47,10 +49,16 @@ export class VehicleDetailsComponent implements OnInit {
   }
 
   deleteVehicle() {
-    this.vehicleService.deleteVehicleInformation(this.vehicleId)
-    .subscribe(() => {
-      this.vehicle = undefined;
-      this.vehicleIsEmpty = true;
-    })
+    const dialogRef = this.dialog.open(DialogContentComponent);
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.vehicleService.deleteVehicleInformation(this.vehicleId)
+        .subscribe(() => {
+          this.vehicle = undefined;
+          this.vehicleIsEmpty = true;
+        })
+      }
+    });
   }
 }
