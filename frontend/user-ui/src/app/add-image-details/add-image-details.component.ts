@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 import { VehicleService } from '../service/vehicle.service';
+import {
+  HttpEventType, HttpResponse
+} from "@angular/common/http";
 
 @Component({
   selector: 'app-add-image-details',
@@ -14,6 +17,7 @@ export class AddImageDetailsComponent implements OnInit {
   currentFile!: File;
   retrieviedVehicleId: string = '';
   retrieviedUsername: string = '';
+  progress: number = 0;
 
   constructor(private router: Router, private route: ActivatedRoute,
     private vehicleService: VehicleService) { }
@@ -35,20 +39,21 @@ export class AddImageDetailsComponent implements OnInit {
   }
   submitImage() {
     const formData = new FormData();
-    console.log(this.imageForm.value);
-    console.log(this.currentFile)
     formData.append('description', JSON.stringify(this.imageForm.value))
     formData.append('image', this.currentFile);
 
     this.vehicleService.submitImageData(this.retrieviedVehicleId, formData)
       .subscribe({
-        next: () => {
-          this.router.navigate(['/user-details/', this.retrieviedUsername]);
+        next: (event: any) => {
+          if (event.type === HttpEventType.UploadProgress) {
+            this.progress = Math.round(100 * event.loaded / event.total);
+          } else if (event instanceof HttpResponse) {
+            this.router.navigate(['/user-details/', this.retrieviedUsername]);
+          }
         },
         error: (e) => {
           console.log(e);
         }
       })
   }
-
 }

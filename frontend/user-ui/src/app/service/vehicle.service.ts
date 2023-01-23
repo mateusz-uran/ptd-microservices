@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpEvent } from '@angular/common/http';
 import { VehicleResponse, Truck, Trailer, VehicleImage } from '../model/vehicle-dto';
 import { Observable } from 'rxjs';
 
@@ -22,8 +22,10 @@ export class VehicleService {
     return this.httpClient.post<Trailer>("http://localhost:8080/api/vehicle/trailer/" + vehicleId, trailer);
   }
 
-  submitImageData(vehicleId: string, vehicleImage: FormData): Observable<VehicleImage> {
-
-    return this.httpClient.post<VehicleImage>("http://localhost:8080/api/vehicle/image/" + vehicleId, vehicleImage);
+  submitImageData(vehicleId: string, vehicleImage: FormData): Observable<HttpEvent<VehicleImage>> {
+    return this.httpClient.post<VehicleImage>("http://localhost:8080/api/vehicle/image/" + vehicleId, vehicleImage, {
+      reportProgress: true,
+      observe: 'events',
+    });
   }
 }
