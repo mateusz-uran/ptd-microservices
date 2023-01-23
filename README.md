@@ -58,6 +58,8 @@ Technologies:
 * Tailwind CSS
 * Formik and Yup
 * Cloudinary
+* Angular
+* MongoDB
 
 
 ### Built With
