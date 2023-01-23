@@ -1,0 +1,13 @@
+mat-card {
+    display: flex;
+    align-items: center;
+}
+
+mat-form-field {
+    padding: 10px;
+}
+
+.submit-wrapper {
+    text-align: center;
+    padding: 10px;
+}

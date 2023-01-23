@@ -1,11 +1,23 @@
-<!-- *ngIf="vehicleData !== undefined && vehicleIsEmpty !== true" -->
-<mat-card class="card" *ngIf="vehicle && vehicleIsEmpty !== true">
+<mat-card class="card">
     <mat-card-header>
         <mat-card-title>Users Vehicle Details</mat-card-title>
+        <span class="card-header-spacer"></span>
+        <span>
+            <button mat-flat-button color="accent" class="vehicle-button" *ngIf="vehicle && vehicleIsEmpty"
+                [routerLink]="['add-truck', userId]">add</button>
+        </span>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content *ngIf="vehicle && !vehicleIsEmpty">
         <mat-divider></mat-divider>
-        <mat-card-subtitle>Truck</mat-card-subtitle>
+        <mat-card-header class="sub-header">
+            <span>
+                <mat-card-subtitle>Truck</mat-card-subtitle>
+            </span>
+            <span class="card-header-spacer"></span>
+            <span>
+                <button mat-flat-button color="accent" class="vehicle-button">edit</button>
+            </span>
+        </mat-card-header>
         <div class="truck" *ngIf="vehicle.truck">
             <span>
                 <p class="vehicle-data-headers">Model</p>
@@ -21,7 +33,8 @@
             </span>
             <span>
                 <p class="vehicle-data-headers">Fuel Tanks (left/right)</p>
-                <p class="vehicle-data">{{vehicle.truck.leftTankFuelCapacity}}/{{vehicle.truck.rightTankFuelCapacity}}</p>&nbsp;
+                <p class="vehicle-data">{{vehicle.truck.leftTankFuelCapacity}}/{{vehicle.truck.rightTankFuelCapacity}}
+                </p>&nbsp;
             </span>
             <span>
                 <p class="vehicle-data-headers">Adblue Tank</p>
@@ -29,7 +42,17 @@
             </span>
         </div>
         <mat-divider></mat-divider>
-        <mat-card-subtitle>Trailer</mat-card-subtitle>
+        <mat-card-header class="sub-header">
+            <span>
+                <mat-card-subtitle>Trailer</mat-card-subtitle>
+            </span>
+            <span class="card-header-spacer"></span>
+            <span>
+                <button mat-flat-button color="accent" class="vehicle-button" *ngIf="validateTrailerFrom"
+                    [routerLink]="['add-trailer', vehicleId]">add</button>
+                <button mat-flat-button color="accent" class="vehicle-button">edit</button>
+            </span>
+        </mat-card-header>
         <div class="trailer" *ngIf="vehicle.trailer">
             <span>
                 <p class="vehicle-data-headers">Type</p>
@@ -45,8 +68,22 @@
             </span>
         </div>
         <mat-divider></mat-divider>
-        <mat-card-subtitle>Vehicle Image</mat-card-subtitle>
+        <mat-card-header class="sub-header">
+            <span>
+                <mat-card-subtitle>Vehicle Image</mat-card-subtitle>
+            </span>
+            <span class="card-header-spacer"></span>
+            <span>
+                <button mat-flat-button color="accent" class="vehicle-button" *ngIf="validateImageFrom"
+                [routerLink]="['add-image', vehicleId]">add</button>
+                <button mat-flat-button color="accent" class="vehicle-button">edit</button>
+            </span>
+        </mat-card-header>
         <div class="truck-image" *ngIf="vehicle.image">
+            <span>
+                <p class="vehicle-data-headers">Name</p>
+                <p class="vehicle-data">{{vehicle.image.name}}</p>&nbsp;
+            </span>
             <span>
                 <p class="vehicle-data-headers">Description</p>
                 <p class="vehicle-data">{{vehicle.image.description}}</p>&nbsp;
@@ -54,13 +91,15 @@
             <span>
                 <p class="vehicle-data-headers">Image</p>
                 <div class="image-wrapper">
-                    <img src={{vehicle.image.link}}>
+                    <img *ngIf="vehicle.image.link; else elseBlock" src={{vehicle.image.link}}>
+                    <ng-template #elseBlock>
+                        <img src="http://res.cloudinary.com/dzwnsabwr/image/upload/v1674478194/akiizaq8ftpw8bpgq3hb.png">
+                    </ng-template>
                 </div>
             </span>
         </div>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-button>EDIT</button>
         <button mat-button>DELETE</button>
     </mat-card-actions>
 </mat-card>

@@ -13,6 +13,10 @@ export class VehicleDetailsComponent implements OnInit {
 
   vehicle?: VehicleResponse;
   vehicleIsEmpty: boolean = false;
+  vehicleId: string = '';
+
+  validateTrailerFrom: boolean = false;
+  validateImageFrom: boolean = false;
 
   constructor(private vehicleService: VehicleService) { }
 
@@ -31,6 +35,9 @@ export class VehicleDetailsComponent implements OnInit {
         next: (data) => {
           this.vehicle = data;
           this.vehicleIsEmpty = false;
+          this.vehicleId = data.truck.id;
+          this.validateTrailerFrom = Object.values(data.trailer).every(o => o === null);
+          this.validateImageFrom = Object.values(data.image).every(o => o === null);
         },
         error: (e) => {
           this.vehicleIsEmpty = true;

@@ -11,8 +11,10 @@ import { UserService } from '../service/user.service';
 export class UserDetailsComponent implements OnInit {
 
   userId!: number;
+  username!: string;
   userDto: UserDto = {
-    id: 0
+    id: 0,
+    username: ''
   };
 
   constructor(private route: ActivatedRoute, private userService: UserService) { }
@@ -28,6 +30,7 @@ export class UserDetailsComponent implements OnInit {
       .subscribe(data => {
         this.userDto = data;
         this.userId = data.id;
+        this.username = data.username;
       })
   }
 
