@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mateuszuran.dto.VehicleImageDTO;
 import io.github.mateuszuran.filestore.CloudinaryManager;
+import io.github.mateuszuran.mapper.VehicleMapper;
 import io.github.mateuszuran.model.VehicleImage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

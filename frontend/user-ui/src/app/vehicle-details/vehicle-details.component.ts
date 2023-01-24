@@ -3,6 +3,7 @@ import { VehicleResponse } from '../model/vehicle-dto';
 import { VehicleService } from '../service/vehicle.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogContentComponent } from '../dialog-content/dialog-content.component';
+import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-vehicle-details',
@@ -20,6 +21,9 @@ export class VehicleDetailsComponent implements OnInit {
   validateTrailerFrom: boolean = false;
   validateImageFrom: boolean = false;
 
+  editMode: boolean = false;
+  truckEditForm!: FormGroup;
+
   constructor(private vehicleService: VehicleService, private dialog: MatDialog) { }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -29,6 +33,16 @@ export class VehicleDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getVehicleInfo(this.userId);
+
+    this.truckEditForm = new FormGroup({
+      id: new FormControl(''),
+      model: new FormControl(''),
+      type: new FormControl(''),
+      licensePlate: new FormControl(''),
+      leftTankFuelCapacity: new FormControl(''),
+      rightTankFuelCapacity: new FormControl(''),
+      adBlueCapacity: new FormControl('')
+    });
   }
 
   getVehicleInfo(id: any) {
@@ -54,11 +68,40 @@ export class VehicleDetailsComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.vehicleService.deleteVehicleInformation(this.vehicleId)
-        .subscribe(() => {
-          this.vehicle = undefined;
-          this.vehicleIsEmpty = true;
-        })
+          .subscribe(() => {
+            this.vehicle = undefined;
+            this.vehicleIsEmpty = true;
+          })
       }
     });
+  }
+
+  editTruck() {
+    this.editMode = true;
+    this.truckEditForm.setValue({
+      id: this.vehicleId,
+      model: this.vehicle?.truck.model,
+      type: this.vehicle?.truck.type,
+      licensePlate: this.vehicle?.truck.licensePlate,
+      leftTankFuelCapacity: this.vehicle?.truck.leftTankFuelCapacity,
+      rightTankFuelCapacity: this.vehicle?.truck.rightTankFuelCapacity,
+      adBlueCapacity: this.vehicle?.truck.adBlueCapacity,
+    })
+  }
+
+  saveEditedTruck() {
+    this.editMode = false;
+    this.vehicleService.updateTruckInformation(this.truckEditForm.value)
+      .subscribe({
+        next: (data) => {
+          if(this.vehicle !== undefined) {
+            this.vehicle.truck = data;
+          }
+          this.editMode = false;
+        },
+        error: (e) => {
+          console.log(e);
+        }
+      })
   }
 }

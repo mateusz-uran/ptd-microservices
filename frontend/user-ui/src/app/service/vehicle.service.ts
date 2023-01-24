@@ -32,4 +32,8 @@ export class VehicleService {
   deleteVehicleInformation(vehicleId: string) {
     return this.httpClient.delete("http://localhost:8080/api/vehicle/delete/" + vehicleId)
   }
+
+  updateTruckInformation(truck: Truck): Observable<Truck> {
+    return this.httpClient.patch<Truck>("http://localhost:8080/api/vehicle", truck);
+  }
 }

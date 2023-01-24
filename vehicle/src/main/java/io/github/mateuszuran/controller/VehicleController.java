@@ -64,6 +64,16 @@ public class VehicleController {
         return ResponseEntity.ok().body(service.sendToPdf(userId));
     }
 
+    @PatchMapping
+    public ResponseEntity<VehicleDTO> updateVehicleInfo(@RequestBody VehicleDTO vehicleDTO) {
+        return ResponseEntity.ok(service.editVehicleInformation(vehicleDTO));
+    }
+
+    @PatchMapping("/trailer/{vehicleId}")
+    public ResponseEntity<TrailerDTO> updateTrailerInfo(@RequestBody TrailerDTO trailerDTO, @PathVariable String vehicleId) {
+        return ResponseEntity.ok(service.editTrailerInformation(trailerDTO, vehicleId));
+    }
+
     @DeleteMapping("/delete/{vehicleId}")
     public ResponseEntity<?> deleteVehicle(@PathVariable String vehicleId) {
         service.delete(vehicleId);

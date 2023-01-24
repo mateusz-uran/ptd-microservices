@@ -15,10 +15,11 @@
             </span>
             <span class="card-header-spacer"></span>
             <span>
-                <button mat-flat-button color="accent" class="vehicle-button">edit</button>
+                <button mat-flat-button color="accent" class="vehicle-button" (click)="editTruck()">edit</button>
             </span>
         </mat-card-header>
-        <div class="truck" *ngIf="vehicle.truck">
+
+        <div class="truck" *ngIf="vehicle.truck && !editMode">
             <span>
                 <p class="vehicle-data-headers">Model</p>
                 <p class="vehicle-data">{{vehicle.truck.model}}</p>&nbsp;
@@ -41,6 +42,41 @@
                 <p class="vehicle-data">{{vehicle.truck.adBlueCapacity}}</p>&nbsp;
             </span>
         </div>
+
+        <div class="truck" *ngIf="vehicle.truck && editMode">
+            
+            <form [formGroup]="truckEditForm" (ngSubmit)="saveEditedTruck()">
+                <span>
+                    <p class="vehicle-data-headers">Model</p>
+                    <p class="vehicle-data"><input formControlName="model" required></p>
+                </span>
+                <span>
+                    <p class="vehicle-data-headers">Type</p>
+                    <p class="vehicle-data"><input formControlName="type" required></p>
+                </span>
+                <span>
+                    <p class="vehicle-data-headers">License Plate</p>
+                    <p class="vehicle-data"><input formControlName="licensePlate" required></p>
+                </span>
+                <span>
+                    <p class="vehicle-data-headers">Left Fuel Tank</p>
+                    <p class="vehicle-data"><input formControlName="leftTankFuelCapacity" required></p>
+                </span>
+                <span>
+                    <p class="vehicle-data-headers">Right Fuel Tank</p>
+                    <p class="vehicle-data"><input formControlName="rightTankFuelCapacity" required></p>
+                </span>
+                <span>
+                    <p class="vehicle-data-headers">Adblue Tank</p>
+                    <p class="vehicle-data" ><input formControlName="adBlueCapacity" required></p>
+                </span>
+                <div class="submit-wrapper">
+                    <button mat-flat-button>Submit</button>
+                </div>
+            </form>
+
+        </div>
+
         <mat-divider></mat-divider>
         <mat-card-header class="sub-header">
             <span>
@@ -75,7 +111,7 @@
             <span class="card-header-spacer"></span>
             <span>
                 <button mat-flat-button color="accent" class="vehicle-button" *ngIf="validateImageFrom"
-                [routerLink]="['add-image', vehicleId]">add</button>
+                    [routerLink]="['add-image', vehicleId]">add</button>
                 <button mat-flat-button color="accent" class="vehicle-button">edit</button>
             </span>
         </mat-card-header>
@@ -93,7 +129,8 @@
                 <div class="image-wrapper">
                     <img *ngIf="vehicle.image.link; else elseBlock" src={{vehicle.image.link}}>
                     <ng-template #elseBlock>
-                        <img src="http://res.cloudinary.com/dzwnsabwr/image/upload/v1674478194/akiizaq8ftpw8bpgq3hb.png">
+                        <img
+                            src="http://res.cloudinary.com/dzwnsabwr/image/upload/v1674478194/akiizaq8ftpw8bpgq3hb.png">
                     </ng-template>
                 </div>
             </span>
