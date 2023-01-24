@@ -36,4 +36,8 @@ export class VehicleService {
   updateTruckInformation(truck: Truck): Observable<Truck> {
     return this.httpClient.patch<Truck>("http://localhost:8080/api/vehicle", truck);
   }
+
+  updateTrailerInformation(vehicleId: string, trailer: Trailer): Observable<Trailer> {
+    return this.httpClient.patch<Trailer>("http://localhost:8080/api/vehicle/trailer/" + vehicleId, trailer);
+  }
 }

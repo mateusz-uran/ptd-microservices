@@ -21,8 +21,10 @@ export class VehicleDetailsComponent implements OnInit {
   validateTrailerFrom: boolean = false;
   validateImageFrom: boolean = false;
 
-  editMode: boolean = false;
+  editModeTruck: boolean = false;
   truckEditForm!: FormGroup;
+  editModeTrailer: boolean = true;
+  trailerEditForm!: FormGroup;
 
   constructor(private vehicleService: VehicleService, private dialog: MatDialog) { }
 
@@ -42,6 +44,13 @@ export class VehicleDetailsComponent implements OnInit {
       leftTankFuelCapacity: new FormControl(''),
       rightTankFuelCapacity: new FormControl(''),
       adBlueCapacity: new FormControl('')
+    });
+
+    this.trailerEditForm = new FormGroup({
+      id: new FormControl(''),
+      type: new FormControl(''),
+      licensePlate: new FormControl(''),
+      fuelCapacity: new FormControl('')
     });
   }
 
@@ -77,7 +86,7 @@ export class VehicleDetailsComponent implements OnInit {
   }
 
   editTruck() {
-    this.editMode = true;
+    this.editModeTruck = true;
     this.truckEditForm.setValue({
       id: this.vehicleId,
       model: this.vehicle?.truck.model,
@@ -89,15 +98,41 @@ export class VehicleDetailsComponent implements OnInit {
     })
   }
 
+  editTrailer() {
+    this.editModeTrailer = true;
+    this.trailerEditForm.setValue({
+      id: this.vehicleId,
+      type: this.vehicle?.trailer.type,
+      licensePlate: this.vehicle?.trailer.licensePlate,
+      fuelCapacity: this.vehicle?.trailer.fuelCapacity,
+    })
+  }
+
   saveEditedTruck() {
-    this.editMode = false;
+    this.editModeTruck = false;
     this.vehicleService.updateTruckInformation(this.truckEditForm.value)
       .subscribe({
         next: (data) => {
           if(this.vehicle !== undefined) {
             this.vehicle.truck = data;
           }
-          this.editMode = false;
+          this.editModeTruck = false;
+        },
+        error: (e) => {
+          console.log(e);
+        }
+      })
+  }
+
+  saveEditedTrailer() {
+    this.editModeTrailer = false;
+    this.vehicleService.updateTrailerInformation(this.vehicleId, this.trailerEditForm.value)
+      .subscribe({
+        next: (data) => {
+          if(this.vehicle !== undefined) {
+            this.vehicle.trailer = data;
+          }
+          this.editModeTrailer = false;
         },
         error: (e) => {
           console.log(e);

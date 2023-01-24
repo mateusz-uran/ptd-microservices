@@ -1,5 +1,6 @@
 .card {
     margin: 10px 0;
+    text-align: center;
 }
 
 .truck {
@@ -69,4 +70,5 @@ input {
     padding: 0;
     height: 100%;
     outline: 0;
+    text-align: center;
 }

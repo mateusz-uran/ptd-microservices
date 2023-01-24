@@ -19,32 +19,32 @@
             </span>
         </mat-card-header>
 
-        <div class="truck" *ngIf="vehicle.truck && !editMode">
+        <div class="truck" *ngIf="vehicle.truck && !editModeTruck">
             <span>
                 <p class="vehicle-data-headers">Model</p>
-                <p class="vehicle-data">{{vehicle.truck.model}}</p>&nbsp;
+                <p class="vehicle-data">{{vehicle.truck.model}}</p>
             </span>
             <span>
                 <p class="vehicle-data-headers">Type</p>
-                <p class="vehicle-data">{{vehicle.truck.type}}</p>&nbsp;
+                <p class="vehicle-data">{{vehicle.truck.type}}</p>
             </span>
             <span>
                 <p class="vehicle-data-headers">License Plate</p>
-                <p class="vehicle-data">{{vehicle.truck.licensePlate}}</p>&nbsp;
+                <p class="vehicle-data">{{vehicle.truck.licensePlate}}</p>
             </span>
             <span>
                 <p class="vehicle-data-headers">Fuel Tanks (left/right)</p>
                 <p class="vehicle-data">{{vehicle.truck.leftTankFuelCapacity}}/{{vehicle.truck.rightTankFuelCapacity}}
-                </p>&nbsp;
+                </p>
             </span>
             <span>
                 <p class="vehicle-data-headers">Adblue Tank</p>
-                <p class="vehicle-data">{{vehicle.truck.adBlueCapacity}}</p>&nbsp;
+                <p class="vehicle-data">{{vehicle.truck.adBlueCapacity}}</p>
             </span>
         </div>
 
-        <div class="truck" *ngIf="vehicle.truck && editMode">
-            
+        <div class="truck" *ngIf="vehicle.truck && editModeTruck">
+
             <form [formGroup]="truckEditForm" (ngSubmit)="saveEditedTruck()">
                 <span>
                     <p class="vehicle-data-headers">Model</p>
@@ -68,11 +68,15 @@
                 </span>
                 <span>
                     <p class="vehicle-data-headers">Adblue Tank</p>
-                    <p class="vehicle-data" ><input formControlName="adBlueCapacity" required></p>
+                    <p class="vehicle-data"><input formControlName="adBlueCapacity" required></p>
                 </span>
-                <div class="submit-wrapper">
-                    <button mat-flat-button>Submit</button>
-                </div>
+                <span>
+                    <p>&nbsp;</p>
+                    <p>
+                        <button mat-flat-button (click)="editModeTruck = false">Cancel</button>
+                        <button mat-flat-button>Submit</button>
+                    </p>
+                </span>
             </form>
 
         </div>
@@ -86,23 +90,51 @@
             <span>
                 <button mat-flat-button color="accent" class="vehicle-button" *ngIf="validateTrailerFrom"
                     [routerLink]="['add-trailer', vehicleId]">add</button>
-                <button mat-flat-button color="accent" class="vehicle-button">edit</button>
+                <button mat-flat-button color="accent" class="vehicle-button" (click)="editTrailer()">edit</button>
             </span>
         </mat-card-header>
-        <div class="trailer" *ngIf="vehicle.trailer">
+
+        <div class="trailer" *ngIf="vehicle.trailer && !editModeTrailer">
             <span>
                 <p class="vehicle-data-headers">Type</p>
-                <p class="vehicle-data">{{vehicle.trailer.type}}</p>&nbsp;
+                <p class="vehicle-data">{{vehicle.trailer.type}}</p>
             </span>
             <span>
                 <p class="vehicle-data-headers">License Plate</p>
-                <p class="vehicle-data">{{vehicle.trailer.licensePlate}}</p>&nbsp;
+                <p class="vehicle-data">{{vehicle.trailer.licensePlate}}</p>
             </span>
             <span>
                 <p class="vehicle-data-headers">Fuel Tank</p>
-                <p class="vehicle-data">{{vehicle.trailer.fuelCapacity}}</p>&nbsp;
+                <p class="vehicle-data">{{vehicle.trailer.fuelCapacity}}</p>
             </span>
         </div>
+
+        <div class="truck" *ngIf="vehicle.truck && editModeTrailer">
+
+            <form [formGroup]="trailerEditForm" (ngSubmit)="saveEditedTrailer()">
+                <span>
+                    <p class="vehicle-data-headers">Type</p>
+                    <p class="vehicle-data"><input formControlName="type" required></p>
+                </span>
+                <span>
+                    <p class="vehicle-data-headers">License Plate</p>
+                    <p class="vehicle-data"><input formControlName="licensePlate" required></p>
+                </span>
+                <span>
+                    <p class="vehicle-data-headers">Fuel Tank</p>
+                    <p class="vehicle-data"><input formControlName="fuelCapacity" required></p>
+                </span>
+                <span>
+                    <p>&nbsp;</p>
+                    <p>
+                        <button mat-flat-button (click)="editModeTrailer = false">Cancel</button>
+                        <button mat-flat-button>Submit</button>
+                    </p>
+                </span>
+            </form>
+
+        </div>
+
         <mat-divider></mat-divider>
         <mat-card-header class="sub-header">
             <span>
