@@ -74,6 +74,22 @@ public class VehicleController {
         return ResponseEntity.ok(service.editTrailerInformation(trailerDTO, vehicleId));
     }
 
+    @PatchMapping("/image-info/{vehicleId}")
+    public ResponseEntity<VehicleImageDTO> updateVehicleImageInfo(@RequestBody VehicleImageDTO vehicleImageDTO, @PathVariable String vehicleId) {
+        return ResponseEntity.ok(service.editVehicleImageInformation(vehicleImageDTO, vehicleId));
+    }
+
+    @PostMapping("/single-image/{vehicleId}")
+    public ResponseEntity<VehicleImageDTO> sendOnlyFile(@RequestParam("file") MultipartFile file, @PathVariable String vehicleId) throws Exception {
+        return ResponseEntity.ok(vehicleImageService.updateVehicleImage(vehicleId, file));
+    }
+
+    @DeleteMapping("/delete-image/{vehicleId}")
+    public ResponseEntity<?> deleteVehicleImage(@PathVariable String vehicleId) {
+        vehicleImageService.deleteVehicleImage(vehicleId);
+        return ResponseEntity.ok(HttpStatus.NO_CONTENT);
+    }
+
     @DeleteMapping("/delete/{vehicleId}")
     public ResponseEntity<?> deleteVehicle(@PathVariable String vehicleId) {
         service.delete(vehicleId);

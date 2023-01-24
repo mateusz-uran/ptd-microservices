@@ -1,7 +1,5 @@
 package io.github.mateuszuran.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mateuszuran.dto.VehicleImageDTO;
 import io.github.mateuszuran.filestore.CloudinaryManager;
 import io.github.mateuszuran.mapper.VehicleMapper;
@@ -24,6 +22,7 @@ import static org.apache.http.entity.ContentType.IMAGE_PNG;
 public class VehicleImageService {
     private final VehicleService vehicleService;
     private final CloudinaryManager cloudinary;
+    private final VehicleMapper mapper;
 
     public VehicleImageDTO addVehicleImage(VehicleImageDTO vehicleImageRequest, String vehicleId, MultipartFile file) throws Exception {
         var imageInfo = uploadImage(file);
@@ -43,12 +42,40 @@ public class VehicleImageService {
                 .build();
     }
 
-    private static VehicleImage convertJsonToDTO(String vehicleImageRequest) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(vehicleImageRequest, VehicleImage.class);
+    public VehicleImageDTO updateVehicleImage(String vehicleId, MultipartFile file) throws Exception {
+        var vehicleToUpdate = vehicleService.getVehicleById(vehicleId);
+
+        if (vehicleToUpdate.getImage() != null) {
+            var imageInfo = uploadImage(file);
+
+            var imageInfoToUpdate = vehicleToUpdate.getImage();
+            imageInfoToUpdate.setPublicImageId(imageInfo.get("publicLink").toString());
+            imageInfoToUpdate.setLink(imageInfo.get("imageUrl").toString());
+
+            vehicleService.updateVehicleWithImageData(imageInfoToUpdate, vehicleId);
+
+            return mapper.mapToVehicleImageDTO(imageInfoToUpdate);
+        }
+        return VehicleImageDTO.builder().build();
     }
 
-    public Map<String, Object> uploadImage(MultipartFile file) throws Exception {
+    public void deleteVehicleImage(String vehicleId) {
+        var vehicleToUpdate = vehicleService.getVehicleById(vehicleId);
+
+        if(vehicleToUpdate.getImage().getPublicImageId() != null) {
+            cloudinary.deleteImage(vehicleToUpdate.getImage().getPublicImageId());
+
+            var imageInfoToUpdate = vehicleToUpdate.getImage();
+            imageInfoToUpdate.setPublicImageId("");
+            imageInfoToUpdate.setLink("");
+
+            vehicleService.updateVehicleWithImageData(imageInfoToUpdate, vehicleId);
+
+            mapper.mapToVehicleImageDTO(imageInfoToUpdate);
+        }
+    }
+
+    private Map<String, Object> uploadImage(MultipartFile file) throws Exception {
         if (file.isEmpty()) {
             throw new FileUploadException();
         }

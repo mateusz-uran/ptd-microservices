@@ -23,13 +23,6 @@ export class VehicleService {
   }
 
   submitImageData(vehicleId: string, vehicleImage: FormData): Observable<HttpEvent<VehicleImage>> {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'multipart/data',
-        'Accept': 'application/json',
-      })
-    };
-
     return this.httpClient.post<VehicleImage>("http://localhost:8080/api/vehicle/image/" + vehicleId, vehicleImage, {
       reportProgress: true,
       observe: 'events',
@@ -46,5 +39,17 @@ export class VehicleService {
 
   updateTrailerInformation(vehicleId: string, trailer: Trailer): Observable<Trailer> {
     return this.httpClient.patch<Trailer>("http://localhost:8080/api/vehicle/trailer/" + vehicleId, trailer);
+  }
+
+  updateImageInformation(vehicleId: string, imageInfo: VehicleImage): Observable<VehicleImage> {
+    return this.httpClient.patch<VehicleImage>("http://localhost:8080/api/vehicle/image-info/" + vehicleId, imageInfo);
+  }
+
+  uploadOnlyImage(vehicleId: string, file: FormData): Observable<VehicleImage> {
+    return this.httpClient.post<VehicleImage>("http://localhost:8080/api/vehicle/single-image/" + vehicleId, file);
+  }
+
+  deleteVehicleImage(vehicleId: string) {
+    return this.httpClient.delete("http://localhost:8080/api/vehicle/delete-image/" + vehicleId)
   }
 }

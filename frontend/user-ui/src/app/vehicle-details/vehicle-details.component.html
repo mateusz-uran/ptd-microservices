@@ -15,7 +15,8 @@
             </span>
             <span class="card-header-spacer"></span>
             <span>
-                <button mat-flat-button color="accent" class="vehicle-button" (click)="editTruck()" [disabled]="editModeTruck">edit</button>
+                <button mat-flat-button color="accent" class="vehicle-button" (click)="editTruck()"
+                    [disabled]="editModeTruck">edit</button>
             </span>
         </mat-card-header>
 
@@ -90,7 +91,8 @@
             <span>
                 <button mat-flat-button color="accent" class="vehicle-button" *ngIf="validateTrailerFrom"
                     [routerLink]="['add-trailer', vehicleId]">add</button>
-                <button mat-flat-button color="accent" class="vehicle-button" (click)="editTrailer()" [disabled]="editModeTrailer">edit</button>
+                <button mat-flat-button color="accent" class="vehicle-button" (click)="editTrailer()"
+                    [disabled]="editModeTrailer">edit</button>
             </span>
         </mat-card-header>
 
@@ -144,10 +146,12 @@
             <span>
                 <button mat-flat-button color="accent" class="vehicle-button" *ngIf="validateImageFrom"
                     [routerLink]="['add-image', vehicleId]">add</button>
-                <button mat-flat-button color="accent" class="vehicle-button">edit</button>
+                <button mat-flat-button color="accent" class="vehicle-button" (click)="editImageInfo()"
+                    [disabled]="editModeImageInfo">edit</button>
             </span>
         </mat-card-header>
-        <div class="truck-image" *ngIf="vehicle.image">
+
+        <div class="truck-image" *ngIf="vehicle.image && !editModeImageInfo">
             <span>
                 <p class="vehicle-data-headers">Name</p>
                 <p class="vehicle-data">{{vehicle.image.name}}</p>&nbsp;
@@ -159,17 +163,48 @@
             <span>
                 <p class="vehicle-data-headers">Image</p>
                 <div class="image-wrapper">
-                    <img *ngIf="vehicle.image.link; else elseBlock" src={{vehicle.image.link}}>
+                    <div *ngIf="vehicle.image.link; else elseBlock">
+                        <img src={{vehicle.image.link}}>
+                        <button mat-icon-button (click)="deleteVehicleImage()">
+                            <mat-icon>delete_sweep</mat-icon>
+                        </button>
+                    </div>
                     <ng-template #elseBlock>
-                        <img
-                            src="http://res.cloudinary.com/dzwnsabwr/image/upload/v1674478194/akiizaq8ftpw8bpgq3hb.png">
+                        <input (change)="onChange($event)" type="file">
+                        <button mat-icon-button (click)="uploadImage()">
+                            <mat-icon>cloud_upload</mat-icon>
+                        </button>
+                        <div>
+                            <img src="http://res.cloudinary.com/dzwnsabwr/image/upload/v1674478194/akiizaq8ftpw8bpgq3hb.png">
+                        </div>
                     </ng-template>
                 </div>
             </span>
         </div>
+
+        <div class="truck-image" *ngIf="vehicle.image && editModeImageInfo">
+
+            <form [formGroup]="imageInfoEditForm" (ngSubmit)="saveEditedImageInfo()">
+                <span>
+                    <p class="vehicle-data-headers">Name</p>
+                    <p class="vehicle-data"><input formControlName="name" required></p>
+                </span>
+                <span>
+                    <p class="vehicle-data-headers">Description</p>
+                    <p class="vehicle-data"><input formControlName="description" required></p>
+                </span>
+                <span>
+                    <p>&nbsp;</p>
+                    <p>
+                        <button mat-flat-button (click)="editModeImageInfo = false">Cancel</button>
+                        <button mat-flat-button>Submit</button>
+                    </p>
+                </span>
+            </form>
+
+        </div>
     </mat-card-content>
     <mat-card-actions>
-        <!-- <button mat-button *ngIf="vehicle" (click)="deleteVehicle()">DELETE</button> -->
         <button mat-button *ngIf="vehicle" (click)="deleteVehicle()">DELETE</button>
     </mat-card-actions>
 </mat-card>

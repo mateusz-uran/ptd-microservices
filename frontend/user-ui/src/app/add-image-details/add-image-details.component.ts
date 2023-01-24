@@ -37,13 +37,9 @@ export class AddImageDetailsComponent implements OnInit {
   onChange(event: any) {
     this.currentFile = event.target.files[0];
   }
+  
   submitImage() {
     const formData = new FormData();
-
-    const json = JSON.stringify(this.imageForm.value);
-    const blob = new Blob([json], {
-      type: 'application/json'
-    });
 
     formData.append('description', new Blob([JSON.stringify(this.imageForm.value)], {type: 'application/json'}))
     formData.append('image', this.currentFile);

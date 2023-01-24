@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -81,6 +82,13 @@ public class VehicleService {
         return mapper.mapToTrailerDTO(trailerToUpdate.getTrailer());
     }
 
+    public VehicleImageDTO editVehicleImageInformation(VehicleImageDTO vehicleImageDTO, String vehicleId) {
+        var vehicleImageToUpdate = getVehicleById(vehicleId);
+        modelMapper.map(vehicleImageDTO, vehicleImageToUpdate);
+        repository.save(vehicleImageToUpdate);
+        return mapper.mapToVehicleImageDTO(vehicleImageToUpdate.getImage());
+    }
+
     public VehiclePDFResponse sendToPdf(Long id) {
         var vehicle = repository.findByUserId(id).orElseThrow();
         var mappedVehicle = mapper.mapToVehicleResponse(vehicle);
@@ -103,6 +111,11 @@ public class VehicleService {
                 });
     }
 
+    public Vehicle getVehicleById(String vehicleId) {
+        return repository.findById(vehicleId)
+                .orElseThrow();
+    }
+
     private Optional<TrailerDTO> validateVehicleTrailer(Vehicle vehicle, VehicleMapper vehicleMapper) {
         if (vehicle.getTrailer() != null) {
             return Optional.of(vehicleMapper.mapToTrailerDTO(vehicle.getTrailer()));
@@ -113,10 +126,5 @@ public class VehicleService {
         if (vehicle.getImage() != null) {
             return Optional.of(vehicleMapper.mapToVehicleImageDTO(vehicle.getImage()));
         } else return Optional.empty();
-    }
-
-    private Vehicle getVehicleById(String vehicleId) {
-        return repository.findById(vehicleId)
-                .orElseThrow();
     }
 }

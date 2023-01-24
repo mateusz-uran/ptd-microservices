@@ -4,6 +4,7 @@ import { VehicleService } from '../service/vehicle.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogContentComponent } from '../dialog-content/dialog-content.component';
 import { FormGroup, FormControl } from '@angular/forms';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-vehicle-details',
@@ -23,8 +24,15 @@ export class VehicleDetailsComponent implements OnInit {
 
   editModeTruck: boolean = false;
   truckEditForm!: FormGroup;
+
   editModeTrailer: boolean = false;
   trailerEditForm!: FormGroup;
+
+  editModeImageInfo: boolean = false;
+  imageInfoEditForm!: FormGroup;
+
+  currentFile!: File;
+  progress: number = 0;
 
   constructor(private vehicleService: VehicleService, private dialog: MatDialog) { }
 
@@ -51,6 +59,11 @@ export class VehicleDetailsComponent implements OnInit {
       type: new FormControl(''),
       licensePlate: new FormControl(''),
       fuelCapacity: new FormControl('')
+    });
+
+    this.imageInfoEditForm = new FormGroup({
+      name: new FormControl(''),
+      description: new FormControl('')
     });
   }
 
@@ -108,12 +121,20 @@ export class VehicleDetailsComponent implements OnInit {
     })
   }
 
+  editImageInfo() {
+    this.editModeImageInfo = true;
+    this.imageInfoEditForm.setValue({
+      name: this.vehicle?.image.name,
+      description: this.vehicle?.image.description,
+    })
+  }
+
   saveEditedTruck() {
     this.editModeTruck = false;
     this.vehicleService.updateTruckInformation(this.truckEditForm.value)
       .subscribe({
         next: (data) => {
-          if(this.vehicle !== undefined) {
+          if (this.vehicle !== undefined) {
             this.vehicle.truck = data;
           }
           this.editModeTruck = false;
@@ -129,7 +150,7 @@ export class VehicleDetailsComponent implements OnInit {
     this.vehicleService.updateTrailerInformation(this.vehicleId, this.trailerEditForm.value)
       .subscribe({
         next: (data) => {
-          if(this.vehicle !== undefined) {
+          if (this.vehicle !== undefined) {
             this.vehicle.trailer = data;
           }
           this.editModeTrailer = false;
@@ -138,5 +159,59 @@ export class VehicleDetailsComponent implements OnInit {
           console.log(e);
         }
       })
+  }
+
+  saveEditedImageInfo() {
+    this.editModeImageInfo = true;
+    this.vehicleService.updateImageInformation(this.vehicleId, this.imageInfoEditForm.value)
+      .subscribe({
+        next: (data) => {
+          if (this.vehicle !== undefined) {
+            this.vehicle.image = data;
+          }
+          this.editModeImageInfo = false;
+        },
+        error: (e) => {
+          console.log(e);
+        }
+      })
+  }
+
+  onChange(event: any) {
+    this.currentFile = event.target.files[0];
+  }
+
+  uploadImage() {
+    const formData = new FormData();
+
+    formData.append('file', this.currentFile);
+
+    this.vehicleService.uploadOnlyImage(this.vehicleId, formData)
+      .subscribe({
+        next: (data) => {
+          if (this.vehicle !== undefined) {
+            this.vehicle.image = data;
+          }
+        },
+        error: (e) => {
+          console.log(e);
+        }
+      })
+  }
+
+  deleteVehicleImage() {
+    const dialogRef = this.dialog.open(DialogContentComponent);
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.vehicleService.deleteVehicleImage(this.vehicleId)
+          .subscribe(() => {
+            if (this.vehicle !== undefined) {
+              this.vehicle.image.link = '';
+              this.vehicle.image.publicImageId = '';
+            }
+          })
+      }
+    });
   }
 }
