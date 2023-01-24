@@ -23,7 +23,7 @@ export class VehicleDetailsComponent implements OnInit {
 
   editModeTruck: boolean = false;
   truckEditForm!: FormGroup;
-  editModeTrailer: boolean = true;
+  editModeTrailer: boolean = false;
   trailerEditForm!: FormGroup;
 
   constructor(private vehicleService: VehicleService, private dialog: MatDialog) { }

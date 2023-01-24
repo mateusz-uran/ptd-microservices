@@ -3,7 +3,7 @@
         <mat-card-title>Users Vehicle Details</mat-card-title>
         <span class="card-header-spacer"></span>
         <span>
-            <button mat-flat-button color="accent" class="vehicle-button" *ngIf="!vehicle && vehicleIsEmpty"
+            <button mat-flat-button color="accent" class="vehicle-button" *ngIf="vehicleIsEmpty"
                 [routerLink]="['add-truck', userId]">add</button>
         </span>
     </mat-card-header>
@@ -15,7 +15,7 @@
             </span>
             <span class="card-header-spacer"></span>
             <span>
-                <button mat-flat-button color="accent" class="vehicle-button" (click)="editTruck()">edit</button>
+                <button mat-flat-button color="accent" class="vehicle-button" (click)="editTruck()" [disabled]="editModeTruck">edit</button>
             </span>
         </mat-card-header>
 
@@ -90,7 +90,7 @@
             <span>
                 <button mat-flat-button color="accent" class="vehicle-button" *ngIf="validateTrailerFrom"
                     [routerLink]="['add-trailer', vehicleId]">add</button>
-                <button mat-flat-button color="accent" class="vehicle-button" (click)="editTrailer()">edit</button>
+                <button mat-flat-button color="accent" class="vehicle-button" (click)="editTrailer()" [disabled]="editModeTrailer">edit</button>
             </span>
         </mat-card-header>
 

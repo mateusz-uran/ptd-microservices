@@ -45,7 +45,7 @@ public class VehicleController {
     @PostMapping(value = "/image/{vehicleId}", consumes = {
             MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<VehicleImageDTO> addImage(
-            @RequestPart("description") String vehicleImageRequest,
+            @RequestPart("description") VehicleImageDTO vehicleImageRequest,
             @PathVariable String vehicleId,
             @RequestPart("image") MultipartFile file
     ) throws Exception {

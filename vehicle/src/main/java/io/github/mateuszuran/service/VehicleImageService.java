@@ -25,14 +25,12 @@ public class VehicleImageService {
     private final VehicleService vehicleService;
     private final CloudinaryManager cloudinary;
 
-    public VehicleImageDTO addVehicleImage(String vehicleImageRequest, String vehicleId, MultipartFile file) throws Exception {
+    public VehicleImageDTO addVehicleImage(VehicleImageDTO vehicleImageRequest, String vehicleId, MultipartFile file) throws Exception {
         var imageInfo = uploadImage(file);
 
-        var vehicleImageInfoRequest = convertJsonToDTO(vehicleImageRequest);
-
         VehicleImage vehicleImage = VehicleImage.builder()
-                .name(vehicleImageInfoRequest.getName())
-                .description(vehicleImageInfoRequest.getDescription())
+                .name(vehicleImageRequest.getName())
+                .description(vehicleImageRequest.getDescription())
                 .publicImageId(imageInfo.get("publicLink").toString())
                 .link(imageInfo.get("imageUrl").toString())
                 .build();

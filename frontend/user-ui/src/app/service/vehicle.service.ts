@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEvent } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { VehicleResponse, Truck, Trailer, VehicleImage } from '../model/vehicle-dto';
 import { Observable } from 'rxjs';
 
@@ -23,6 +23,13 @@ export class VehicleService {
   }
 
   submitImageData(vehicleId: string, vehicleImage: FormData): Observable<HttpEvent<VehicleImage>> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'multipart/data',
+        'Accept': 'application/json',
+      })
+    };
+
     return this.httpClient.post<VehicleImage>("http://localhost:8080/api/vehicle/image/" + vehicleId, vehicleImage, {
       reportProgress: true,
       observe: 'events',

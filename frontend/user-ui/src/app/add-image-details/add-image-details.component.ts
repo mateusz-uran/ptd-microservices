@@ -39,7 +39,13 @@ export class AddImageDetailsComponent implements OnInit {
   }
   submitImage() {
     const formData = new FormData();
-    formData.append('description', JSON.stringify(this.imageForm.value))
+
+    const json = JSON.stringify(this.imageForm.value);
+    const blob = new Blob([json], {
+      type: 'application/json'
+    });
+
+    formData.append('description', new Blob([JSON.stringify(this.imageForm.value)], {type: 'application/json'}))
     formData.append('image', this.currentFile);
 
     this.vehicleService.submitImageData(this.retrieviedVehicleId, formData)
