@@ -13,18 +13,22 @@ import io.github.mateuszuran.model.Vehicle;
 import io.github.mateuszuran.model.VehicleImage;
 import io.github.mateuszuran.repository.VehicleRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class VehicleService {
     private final VehicleRepository repository;
     private final CloudinaryManager cloudinary;
     private final VehicleMapper mapper;
+    private final ModelMapper modelMapper;
 
     public VehicleResponse addVehicleInformation(VehicleDTO vehicleDTO, Long userId) {
         Vehicle vehicle = Vehicle.builder()
@@ -64,21 +68,25 @@ public class VehicleService {
                 .build();
     }
 
-    private Optional<TrailerDTO> validateVehicleTrailer(Vehicle vehicle, VehicleMapper vehicleMapper) {
-        if (vehicle.getTrailer() != null) {
-            return Optional.of(vehicleMapper.mapToTrailerDTO(vehicle.getTrailer()));
-        } else return Optional.empty();
+    public VehicleDTO editVehicleInformation(VehicleDTO vehicleDTO) {
+        var vehicleToUpdate = getVehicleById(vehicleDTO.getId());
+        modelMapper.map(vehicleDTO, vehicleToUpdate);
+        repository.save(vehicleToUpdate);
+        return mapper.mapToVehicleDTO(vehicleToUpdate);
     }
 
-    private Optional<VehicleImageDTO> validateVehicleImage(Vehicle vehicle, VehicleMapper vehicleMapper) {
-        if (vehicle.getImage() != null) {
-            return Optional.of(vehicleMapper.mapToVehicleImageDTO(vehicle.getImage()));
-        } else return Optional.empty();
+    public TrailerDTO editTrailerInformation(TrailerDTO trailerDTO, String vehicleId) {
+        var trailerToUpdate = getVehicleById(vehicleId);
+        modelMapper.map(trailerDTO, trailerToUpdate);
+        repository.save(trailerToUpdate);
+        return mapper.mapToTrailerDTO(trailerToUpdate.getTrailer());
     }
 
-    private Vehicle getVehicleById(String vehicleId) {
-        return repository.findById(vehicleId)
-                .orElseThrow();
+    public VehicleImageDTO editVehicleImageInformation(VehicleImageDTO vehicleImageDTO, String vehicleId) {
+        var vehicleImageToUpdate = getVehicleById(vehicleId);
+        modelMapper.map(vehicleImageDTO, vehicleImageToUpdate);
+        repository.save(vehicleImageToUpdate);
+        return mapper.mapToVehicleImageDTO(vehicleImageToUpdate.getImage());
     }
 
     public VehiclePDFResponse sendToPdf(Long id) {
@@ -101,5 +109,22 @@ public class VehicleService {
                     }
                     repository.deleteById(vehicle.getId());
                 });
+    }
+
+    public Vehicle getVehicleById(String vehicleId) {
+        return repository.findById(vehicleId)
+                .orElseThrow();
+    }
+
+    private Optional<TrailerDTO> validateVehicleTrailer(Vehicle vehicle, VehicleMapper vehicleMapper) {
+        if (vehicle.getTrailer() != null) {
+            return Optional.of(vehicleMapper.mapToTrailerDTO(vehicle.getTrailer()));
+        } else return Optional.empty();
+    }
+
+    private Optional<VehicleImageDTO> validateVehicleImage(Vehicle vehicle, VehicleMapper vehicleMapper) {
+        if (vehicle.getImage() != null) {
+            return Optional.of(vehicleMapper.mapToVehicleImageDTO(vehicle.getImage()));
+        } else return Optional.empty();
     }
 }

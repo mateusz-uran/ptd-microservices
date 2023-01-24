@@ -1,5 +1,6 @@
 .card {
     margin: 10px 0;
+    text-align: center;
 }
 
 .truck {
@@ -54,4 +55,20 @@ img {
     min-width: 80px;
     margin: 0 3px;
     font-weight: bold;
+}
+
+form {
+    display: flex;
+    align-items: center;
+}
+
+input {
+    border: 0;
+    background-color: transparent;
+    color: #fff;
+    width: 150px;
+    padding: 0;
+    height: 100%;
+    outline: 0;
+    text-align: center;
 }

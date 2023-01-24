@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEvent } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { VehicleResponse, Truck, Trailer, VehicleImage } from '../model/vehicle-dto';
 import { Observable } from 'rxjs';
 
@@ -31,5 +31,25 @@ export class VehicleService {
 
   deleteVehicleInformation(vehicleId: string) {
     return this.httpClient.delete("http://localhost:8080/api/vehicle/delete/" + vehicleId)
+  }
+
+  updateTruckInformation(truck: Truck): Observable<Truck> {
+    return this.httpClient.patch<Truck>("http://localhost:8080/api/vehicle", truck);
+  }
+
+  updateTrailerInformation(vehicleId: string, trailer: Trailer): Observable<Trailer> {
+    return this.httpClient.patch<Trailer>("http://localhost:8080/api/vehicle/trailer/" + vehicleId, trailer);
+  }
+
+  updateImageInformation(vehicleId: string, imageInfo: VehicleImage): Observable<VehicleImage> {
+    return this.httpClient.patch<VehicleImage>("http://localhost:8080/api/vehicle/image-info/" + vehicleId, imageInfo);
+  }
+
+  uploadOnlyImage(vehicleId: string, file: FormData): Observable<VehicleImage> {
+    return this.httpClient.post<VehicleImage>("http://localhost:8080/api/vehicle/single-image/" + vehicleId, file);
+  }
+
+  deleteVehicleImage(vehicleId: string) {
+    return this.httpClient.delete("http://localhost:8080/api/vehicle/delete-image/" + vehicleId)
   }
 }

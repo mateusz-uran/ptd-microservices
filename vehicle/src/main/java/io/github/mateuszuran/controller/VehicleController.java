@@ -45,7 +45,7 @@ public class VehicleController {
     @PostMapping(value = "/image/{vehicleId}", consumes = {
             MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<VehicleImageDTO> addImage(
-            @RequestPart("description") String vehicleImageRequest,
+            @RequestPart("description") VehicleImageDTO vehicleImageRequest,
             @PathVariable String vehicleId,
             @RequestPart("image") MultipartFile file
     ) throws Exception {
@@ -62,6 +62,32 @@ public class VehicleController {
     @GetMapping(params = "userId")
     public ResponseEntity<VehiclePDFResponse> sendToPdfService(@RequestParam Long userId) {
         return ResponseEntity.ok().body(service.sendToPdf(userId));
+    }
+
+    @PatchMapping
+    public ResponseEntity<VehicleDTO> updateVehicleInfo(@RequestBody VehicleDTO vehicleDTO) {
+        return ResponseEntity.ok(service.editVehicleInformation(vehicleDTO));
+    }
+
+    @PatchMapping("/trailer/{vehicleId}")
+    public ResponseEntity<TrailerDTO> updateTrailerInfo(@RequestBody TrailerDTO trailerDTO, @PathVariable String vehicleId) {
+        return ResponseEntity.ok(service.editTrailerInformation(trailerDTO, vehicleId));
+    }
+
+    @PatchMapping("/image-info/{vehicleId}")
+    public ResponseEntity<VehicleImageDTO> updateVehicleImageInfo(@RequestBody VehicleImageDTO vehicleImageDTO, @PathVariable String vehicleId) {
+        return ResponseEntity.ok(service.editVehicleImageInformation(vehicleImageDTO, vehicleId));
+    }
+
+    @PostMapping("/single-image/{vehicleId}")
+    public ResponseEntity<VehicleImageDTO> sendOnlyFile(@RequestParam("file") MultipartFile file, @PathVariable String vehicleId) throws Exception {
+        return ResponseEntity.ok(vehicleImageService.updateVehicleImage(vehicleId, file));
+    }
+
+    @DeleteMapping("/delete-image/{vehicleId}")
+    public ResponseEntity<?> deleteVehicleImage(@PathVariable String vehicleId) {
+        vehicleImageService.deleteVehicleImage(vehicleId);
+        return ResponseEntity.ok(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/delete/{vehicleId}")
