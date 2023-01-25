@@ -165,7 +165,7 @@
                 <div class="image-wrapper">
                     <div *ngIf="vehicle.image.link; else elseBlock">
                         <img src={{vehicle.image.link}}>
-                        <button mat-icon-button (click)="deleteVehicleImage()">
+                        <button mat-mini-fab color="accent" (click)="deleteVehicleImage()">
                             <mat-icon>delete_sweep</mat-icon>
                         </button>
                     </div>
@@ -175,7 +175,8 @@
                             <mat-icon>cloud_upload</mat-icon>
                         </button>
                         <div>
-                            <img src="http://res.cloudinary.com/dzwnsabwr/image/upload/v1674478194/akiizaq8ftpw8bpgq3hb.png">
+                            <img
+                                src="http://res.cloudinary.com/dzwnsabwr/image/upload/v1674478194/akiizaq8ftpw8bpgq3hb.png">
                         </div>
                     </ng-template>
                 </div>
@@ -205,6 +206,6 @@
         </div>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-button *ngIf="vehicle" (click)="deleteVehicle()">DELETE</button>
+        <button mat-button *ngIf="!vehicleIsEmpty" (click)="deleteVehicle()">DELETE</button>
     </mat-card-actions>
 </mat-card>

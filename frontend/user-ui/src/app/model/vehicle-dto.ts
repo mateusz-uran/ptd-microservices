@@ -15,7 +15,6 @@ export interface Truck {
 }
 
 export interface Trailer {
-    id: string;
     type: string;
     licensePlate: string;
     fuelCapacity: string;

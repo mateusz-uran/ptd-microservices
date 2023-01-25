@@ -1,10 +1,9 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
-import { VehicleResponse } from '../model/vehicle-dto';
+import { Trailer, Truck, VehicleResponse } from '../model/vehicle-dto';
 import { VehicleService } from '../service/vehicle.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogContentComponent } from '../dialog-content/dialog-content.component';
 import { FormGroup, FormControl } from '@angular/forms';
-import { HttpEventType, HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-vehicle-details',
@@ -15,7 +14,7 @@ export class VehicleDetailsComponent implements OnInit {
 
   @Input() userId: number = 0;
 
-  vehicle?: VehicleResponse;
+  vehicle: VehicleResponse | undefined;
   vehicleIsEmpty: boolean = false;
   vehicleId: string = '';
 
@@ -91,7 +90,9 @@ export class VehicleDetailsComponent implements OnInit {
       if (result) {
         this.vehicleService.deleteVehicleInformation(this.vehicleId)
           .subscribe(() => {
+            console.log(this.vehicle);
             this.vehicle = undefined;
+            console.log(this.vehicle);
             this.vehicleIsEmpty = true;
           })
       }

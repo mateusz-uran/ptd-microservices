@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class TrailerDTO {
-    private String id;
-    private String type;
-    private String licensePlate;
-    private Integer fuelCapacity;
+    private String trailerType;
+    private String trailerLicensePlate;
+    private Integer trailerFuelCapacity;
 }

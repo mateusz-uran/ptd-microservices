@@ -64,19 +64,19 @@ public class VehicleController {
         return ResponseEntity.ok().body(service.sendToPdf(userId));
     }
 
-    @PatchMapping
-    public ResponseEntity<VehicleDTO> updateVehicleInfo(@RequestBody VehicleDTO vehicleDTO) {
-        return ResponseEntity.ok(service.editVehicleInformation(vehicleDTO));
+    @PatchMapping("/truck/{vehicleId}")
+    public ResponseEntity<VehicleDTO> updateVehicleInfo(@RequestBody VehicleDTO vehicleDTO, @PathVariable String vehicleId) {
+        return ResponseEntity.ok(service.editVehicleInfo(vehicleDTO, vehicleId));
     }
 
     @PatchMapping("/trailer/{vehicleId}")
     public ResponseEntity<TrailerDTO> updateTrailerInfo(@RequestBody TrailerDTO trailerDTO, @PathVariable String vehicleId) {
-        return ResponseEntity.ok(service.editTrailerInformation(trailerDTO, vehicleId));
+        return ResponseEntity.ok(service.editVehicleInfo(trailerDTO, vehicleId));
     }
 
     @PatchMapping("/image-info/{vehicleId}")
     public ResponseEntity<VehicleImageDTO> updateVehicleImageInfo(@RequestBody VehicleImageDTO vehicleImageDTO, @PathVariable String vehicleId) {
-        return ResponseEntity.ok(service.editVehicleImageInformation(vehicleImageDTO, vehicleId));
+        return ResponseEntity.ok(service.editVehicleInfo(vehicleImageDTO, vehicleId));
     }
 
     @PostMapping("/single-image/{vehicleId}")
