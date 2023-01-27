@@ -16,7 +16,7 @@ public class TrailerService {
                 .trailerLicensePlate(trailerDTO.getTrailerLicensePlate())
                 .trailerFuelCapacity(trailerDTO.getTrailerFuelCapacity())
                 .build();
-        service.updateVehicleWithTrailerData(trailer, vehicleId);
+        service.updateVehicleWithTrailer(trailer, vehicleId);
         return TrailerDTO.builder()
                 .trailerType(trailer.getTrailerType())
                 .trailerLicensePlate(trailer.getTrailerLicensePlate())

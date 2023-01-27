@@ -38,6 +38,10 @@ public class VehicleMapper {
         return mapper.modelMapper().map(vehicle, VehicleDTO.class);
     }
 
+    public Vehicle mapToVehicle(VehicleDTO vehicleDTO) {
+        return mapper.modelMapper().map(vehicleDTO, Vehicle.class);
+    }
+
     public <T, V> T mapToDto(V object, T objectToMap) {
         mapper.modelMapper().map(object, objectToMap);
         return objectToMap;

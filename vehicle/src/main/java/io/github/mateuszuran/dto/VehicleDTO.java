@@ -17,5 +17,6 @@ public class VehicleDTO {
     private String truckLicensePlate;
     private Integer leftTankFuelCapacity;
     private Integer rightTankFuelCapacity;
+    private Integer fullTankCapacity;
     private Integer adBlueCapacity;
 }

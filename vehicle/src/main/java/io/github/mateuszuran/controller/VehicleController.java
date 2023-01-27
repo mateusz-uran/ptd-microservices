@@ -30,7 +30,7 @@ public class VehicleController {
 
     @PostMapping("/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<VehicleResponse> addVehicle(@RequestBody VehicleDTO vehicleDTO, @PathVariable Long userId) {
+    public ResponseEntity<VehicleDTO> addVehicle(@RequestBody VehicleDTO vehicleDTO, @PathVariable Long userId) {
         return ResponseEntity.ok()
                 .body(service.addVehicleInformation(vehicleDTO, userId));
     }

@@ -5,7 +5,6 @@ import io.github.mateuszuran.dto.VehicleDTO;
 import io.github.mateuszuran.dto.VehicleImageDTO;
 import io.github.mateuszuran.dto.VehicleResponseDTO;
 import io.github.mateuszuran.dto.response.VehiclePDFResponse;
-import io.github.mateuszuran.dto.response.VehicleResponse;
 import io.github.mateuszuran.filestore.CloudinaryManager;
 import io.github.mateuszuran.mapper.VehicleMapper;
 import io.github.mateuszuran.model.Trailer;
@@ -14,7 +13,6 @@ import io.github.mateuszuran.model.VehicleImage;
 import io.github.mateuszuran.repository.VehicleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -27,31 +25,23 @@ public class VehicleService {
     private final CloudinaryManager cloudinary;
     private final VehicleMapper mapper;
 
-    public VehicleResponse addVehicleInformation(VehicleDTO vehicleDTO, Long userId) {
-        Vehicle vehicle = Vehicle.builder()
-                .model(vehicleDTO.getModel())
-                .truckType(vehicleDTO.getTruckType())
-                .truckLicensePlate(vehicleDTO.getTruckLicensePlate())
-                .leftTankFuelCapacity(vehicleDTO.getLeftTankFuelCapacity())
-                .rightTankFuelCapacity(vehicleDTO.getRightTankFuelCapacity())
-                .fullTankCapacity(vehicleDTO.getLeftTankFuelCapacity() + vehicleDTO.getRightTankFuelCapacity())
-                .adBlueCapacity(vehicleDTO.getAdBlueCapacity())
-                .userId(userId)
-                .build();
-        repository.save(vehicle);
-        return mapper.mapToVehicleResponse(vehicle);
+    public VehicleDTO addVehicleInformation(VehicleDTO vehicleDTO, Long userId) {
+        var result = mapper.mapToVehicle(vehicleDTO);
+        result.setUserId(userId);
+        repository.save(result);
+        return mapper.mapToVehicleDTO(result);
     }
 
-    public void updateVehicleWithTrailerData(Trailer trailer, String vehicleId) {
+    public Vehicle updateVehicleWithTrailer(Trailer trailer, String vehicleId) {
         var vehicleToUpdate = getVehicleById(vehicleId);
         vehicleToUpdate.setTrailer(trailer);
-        repository.save(vehicleToUpdate);
+        return repository.save(vehicleToUpdate);
     }
 
-    public void updateVehicleWithImageData(VehicleImage vehicleImage, String vehicleId) {
+    public Vehicle updateVehicleWithImageData(VehicleImage vehicleImage, String vehicleId) {
         var vehicleToUpdate = getVehicleById(vehicleId);
         vehicleToUpdate.setImage(vehicleImage);
-        repository.save(vehicleToUpdate);
+        return repository.save(vehicleToUpdate);
     }
 
     public VehicleResponseDTO retrieveVehicleInformation(Long userId) {
@@ -106,6 +96,6 @@ public class VehicleService {
 
     public Vehicle getVehicleById(String vehicleId) {
         return repository.findById(vehicleId)
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
     }
 }
