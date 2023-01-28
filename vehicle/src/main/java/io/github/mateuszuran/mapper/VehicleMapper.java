@@ -47,6 +47,10 @@ public class VehicleMapper {
         return objectToMap;
     }
 
+    public VehicleImage mapToVehicleImage(VehicleImageDTO vehicleImageDTO) {
+        return mapper.modelMapper().map(vehicleImageDTO, VehicleImage.class);
+    }
+
     public VehicleImageDTO mapToVehicleImageDTO(VehicleImage vehicleImage) {
         return mapper.modelMapper().map(vehicleImage, VehicleImageDTO.class);
     }
