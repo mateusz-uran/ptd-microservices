@@ -42,8 +42,7 @@
 PTD Manager is system that helps professional truck driver to manage data during his trip.
 All funcionalities are similar to the previous version but design is different. Application is built with microservices architecture
 which means system is divided into services. Some are independent but some requeire the action of others. Like for example card service
-is calling user service to check if User exists in system. When user-service is down, card service cant do any operations. But for example
-Card and PDF services are managed by one Frontend Application written in react and User and Vehicle services are working with angular app.
+is calling user service to check if User exists in system. When user-service is down, card service cant do any operations. Card and PDF services are managed by one Frontend Application written in react and User and Vehicle services are working with angular app.
 
 
 ### Built With
