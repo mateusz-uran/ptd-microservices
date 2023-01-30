@@ -85,6 +85,9 @@ Run this command in each service directory so Dockerfile can then get this JAR f
 
 ### Installation
 
+As application is still developed I havent configured all services with Dockerfile yet, but in docker branch there are available
+two configurations - for card and user service.
+
 In root directory run:
 ```
 docker compose up -d
