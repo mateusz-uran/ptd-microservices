@@ -32,6 +32,20 @@ services:
       - "5432:5432"
     restart: unless-stopped
 
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "8282:80"
+    restart: unless-stopped
+
+  ## MongoDB for Vehicle Service
   mongodb-vehicle:
     container_name: mongodb-vehicle
     image: mongo
@@ -46,20 +60,7 @@ services:
       - '27017:27017'
     restart: unless-stopped
 
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin@pgadmin.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    volumes:
-      - pgadmin:/var/lib/pgadmin
-    ports:
-      - "8282:80"
-    restart: unless-stopped
-
-  ## Broker
+  ## Broker, Kafka Configuration
   zookeeper:
     image: confluentinc/cp-zookeeper:5.4.10-1-ubi8
     container_name: zookeeper
@@ -116,6 +117,37 @@ services:
     depends_on:
       - zipkin
       - discovery-server
+
+  ## PDF Generator Service
+  ## Card Service
+  card-service:
+    container_name: card
+    build:
+      context: ./card/
+      dockerfile: Dockerfile
+    image: card
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - discovery-server
+      - api-gateway
+      - postgres-card
+  ## Vehicle Service
+  ## User Service
+  user-service:
+    container_name: user
+    build:
+      context: ./user/
+      dockerfile: Dockerfile
+    image: user
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - discovery-server
+      - api-gateway
+      - postgres-user
+  ## Notification Service
+
 volumes:
   postgres-user:
   postgres-card:
