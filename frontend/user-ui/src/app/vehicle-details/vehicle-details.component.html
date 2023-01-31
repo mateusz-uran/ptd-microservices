@@ -15,7 +15,7 @@
             </span>
             <span class="card-header-spacer"></span>
             <span>
-                <button mat-flat-button color="accent" class="vehicle-button" (click)="editTruck()"
+                <button mat-flat-button color="accent" class="vehicle-button" (click)="editModeTruck=true"
                     [disabled]="editModeTruck">edit</button>
             </span>
         </mat-card-header>
@@ -27,11 +27,11 @@
             </span>
             <span>
                 <p class="vehicle-data-headers">Type</p>
-                <p class="vehicle-data">{{vehicle.truck.type}}</p>
+                <p class="vehicle-data">{{vehicle.truck.truckType}}</p>
             </span>
             <span>
                 <p class="vehicle-data-headers">License Plate</p>
-                <p class="vehicle-data">{{vehicle.truck.licensePlate}}</p>
+                <p class="vehicle-data">{{vehicle.truck.truckLicensePlate}}</p>
             </span>
             <span>
                 <p class="vehicle-data-headers">Fuel Tanks (left/right)</p>
@@ -46,39 +46,7 @@
 
         <div class="truck" *ngIf="vehicle.truck && editModeTruck">
 
-            <form [formGroup]="truckEditForm" (ngSubmit)="saveEditedTruck()">
-                <span>
-                    <p class="vehicle-data-headers">Model</p>
-                    <p class="vehicle-data"><input formControlName="model" required></p>
-                </span>
-                <span>
-                    <p class="vehicle-data-headers">Type</p>
-                    <p class="vehicle-data"><input formControlName="type" required></p>
-                </span>
-                <span>
-                    <p class="vehicle-data-headers">License Plate</p>
-                    <p class="vehicle-data"><input formControlName="licensePlate" required></p>
-                </span>
-                <span>
-                    <p class="vehicle-data-headers">Left Fuel Tank</p>
-                    <p class="vehicle-data"><input formControlName="leftTankFuelCapacity" required></p>
-                </span>
-                <span>
-                    <p class="vehicle-data-headers">Right Fuel Tank</p>
-                    <p class="vehicle-data"><input formControlName="rightTankFuelCapacity" required></p>
-                </span>
-                <span>
-                    <p class="vehicle-data-headers">Adblue Tank</p>
-                    <p class="vehicle-data"><input formControlName="adBlueCapacity" required></p>
-                </span>
-                <span>
-                    <p>&nbsp;</p>
-                    <p>
-                        <button mat-flat-button (click)="editModeTruck = false">Cancel</button>
-                        <button mat-flat-button>Submit</button>
-                    </p>
-                </span>
-            </form>
+            <app-edit-truck [truck]="vehicle.truck" (mode)="editModeTruck = $event" (updatedTruck)="vehicle.truck = $event"></app-edit-truck>
 
         </div>
 
@@ -91,7 +59,7 @@
             <span>
                 <button mat-flat-button color="accent" class="vehicle-button" *ngIf="validateTrailerFrom"
                     [routerLink]="['add-trailer', vehicleId]">add</button>
-                <button mat-flat-button color="accent" class="vehicle-button" (click)="editTrailer()"
+                <button mat-flat-button color="accent" class="vehicle-button" (click)="editModeTrailer=true"
                     [disabled]="editModeTrailer">edit</button>
             </span>
         </mat-card-header>
@@ -99,41 +67,21 @@
         <div class="trailer" *ngIf="vehicle.trailer && !editModeTrailer">
             <span>
                 <p class="vehicle-data-headers">Type</p>
-                <p class="vehicle-data">{{vehicle.trailer.type}}</p>
+                <p class="vehicle-data">{{vehicle.trailer.trailerType}}</p>
             </span>
             <span>
                 <p class="vehicle-data-headers">License Plate</p>
-                <p class="vehicle-data">{{vehicle.trailer.licensePlate}}</p>
+                <p class="vehicle-data">{{vehicle.trailer.trailerLicensePlate}}</p>
             </span>
             <span>
                 <p class="vehicle-data-headers">Fuel Tank</p>
-                <p class="vehicle-data">{{vehicle.trailer.fuelCapacity}}</p>
+                <p class="vehicle-data">{{vehicle.trailer.trailerFuelCapacity}}</p>
             </span>
         </div>
 
         <div class="truck" *ngIf="vehicle.truck && editModeTrailer">
 
-            <form [formGroup]="trailerEditForm" (ngSubmit)="saveEditedTrailer()">
-                <span>
-                    <p class="vehicle-data-headers">Type</p>
-                    <p class="vehicle-data"><input formControlName="type" required></p>
-                </span>
-                <span>
-                    <p class="vehicle-data-headers">License Plate</p>
-                    <p class="vehicle-data"><input formControlName="licensePlate" required></p>
-                </span>
-                <span>
-                    <p class="vehicle-data-headers">Fuel Tank</p>
-                    <p class="vehicle-data"><input formControlName="fuelCapacity" required></p>
-                </span>
-                <span>
-                    <p>&nbsp;</p>
-                    <p>
-                        <button mat-flat-button (click)="editModeTrailer = false">Cancel</button>
-                        <button mat-flat-button>Submit</button>
-                    </p>
-                </span>
-            </form>
+            <app-edit-trailer [trailer]="vehicle.trailer" [vehicleId]="vehicleId" (mode)="editModeTrailer = $event" (updatedTrailer)="vehicle.trailer = $event"></app-edit-trailer>
 
         </div>
 
@@ -154,17 +102,17 @@
         <div class="truck-image" *ngIf="vehicle.image && !editModeImageInfo">
             <span>
                 <p class="vehicle-data-headers">Name</p>
-                <p class="vehicle-data">{{vehicle.image.name}}</p>&nbsp;
+                <p class="vehicle-data">{{vehicle.image.vehicleImageName}}</p>&nbsp;
             </span>
             <span>
                 <p class="vehicle-data-headers">Description</p>
-                <p class="vehicle-data">{{vehicle.image.description}}</p>&nbsp;
+                <p class="vehicle-data">{{vehicle.image.vehicleImageDescription}}</p>&nbsp;
             </span>
             <span>
                 <p class="vehicle-data-headers">Image</p>
                 <div class="image-wrapper">
-                    <div *ngIf="vehicle.image.link; else elseBlock">
-                        <img src={{vehicle.image.link}}>
+                    <div *ngIf="vehicle.image.vehicleImageDirectLink; else elseBlock">
+                        <img src={{vehicle.image.vehicleImageDirectLink}}>
                         <button mat-mini-fab color="accent" (click)="deleteVehicleImage()">
                             <mat-icon>delete_sweep</mat-icon>
                         </button>

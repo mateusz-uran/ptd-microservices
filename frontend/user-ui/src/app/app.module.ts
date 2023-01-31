@@ -19,12 +19,15 @@ import { VehicleDetailsComponent } from './vehicle-details/vehicle-details.compo
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AddTruckDetailsComponent } from './add-truck-details/add-truck-details.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatFormFieldControl, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { AddTrailerDetailsComponent } from './add-trailer-details/add-trailer-details.component';
 import { AddImageDetailsComponent } from './add-image-details/add-image-details.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DialogContentComponent } from './dialog-content/dialog-content.component';
+import { EditControlsComponent } from './edit-controls/edit-controls.component';
+import { EditTruckComponent } from './edit-truck/edit-truck.component';
+import { EditTrailerComponent } from './edit-trailer/edit-trailer.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +40,10 @@ import { DialogContentComponent } from './dialog-content/dialog-content.componen
     AddTruckDetailsComponent,
     AddTrailerDetailsComponent,
     AddImageDetailsComponent,
-    DialogContentComponent
+    DialogContentComponent,
+    EditControlsComponent,
+    EditTruckComponent,
+    EditTrailerComponent
   ],
   imports: [
     BrowserModule,

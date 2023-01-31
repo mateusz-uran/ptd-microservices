@@ -33,8 +33,8 @@ export class VehicleService {
     return this.httpClient.delete("http://localhost:8080/api/vehicle/delete/" + vehicleId)
   }
 
-  updateTruckInformation(truck: Truck): Observable<Truck> {
-    return this.httpClient.patch<Truck>("http://localhost:8080/api/vehicle", truck);
+  updateTruckInformation(vehicleId: string, truck: Truck): Observable<Truck> {
+    return this.httpClient.patch<Truck>("http://localhost:8080/api/vehicle/truck/" + vehicleId, truck);
   }
 
   updateTrailerInformation(vehicleId: string, trailer: Trailer): Observable<Trailer> {
