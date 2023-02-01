@@ -29,8 +29,8 @@ export class AddImageDetailsComponent implements OnInit {
     })
 
     this.imageForm = new FormGroup({
-      name: new FormControl(''),
-      description: new FormControl(''),
+      vehicleImageName: new FormControl(''),
+      vehicleImageDescription: new FormControl(''),
     });
   }
 

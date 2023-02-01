@@ -25,6 +25,12 @@ import { AddTrailerDetailsComponent } from './add-trailer-details/add-trailer-de
 import { AddImageDetailsComponent } from './add-image-details/add-image-details.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DialogContentComponent } from './dialog-content/dialog-content.component';
+import { EditControlsComponent } from './edit-controls/edit-controls.component';
+import { EditTruckComponent } from './edit-truck/edit-truck.component';
+import { EditTrailerComponent } from './edit-trailer/edit-trailer.component';
+import { EditImageInfoComponent } from './edit-image-info/edit-image-info.component';
+import { ImageUploadComponent } from './image-upload/image-upload.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -37,7 +43,12 @@ import { DialogContentComponent } from './dialog-content/dialog-content.componen
     AddTruckDetailsComponent,
     AddTrailerDetailsComponent,
     AddImageDetailsComponent,
-    DialogContentComponent
+    DialogContentComponent,
+    EditControlsComponent,
+    EditTruckComponent,
+    EditTrailerComponent,
+    EditImageInfoComponent,
+    ImageUploadComponent
   ],
   imports: [
     BrowserModule,
@@ -55,7 +66,8 @@ import { DialogContentComponent } from './dialog-content/dialog-content.componen
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

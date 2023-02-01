@@ -12,15 +12,15 @@ public class TrailerService {
 
     public TrailerDTO addTrailerToVehicle(TrailerDTO trailerDTO, String vehicleId) {
         Trailer trailer = Trailer.builder()
-                .type(trailerDTO.getType())
-                .licensePlate(trailerDTO.getLicensePlate())
-                .fuelCapacity(trailerDTO.getFuelCapacity())
+                .trailerType(trailerDTO.getTrailerType())
+                .trailerLicensePlate(trailerDTO.getTrailerLicensePlate())
+                .trailerFuelCapacity(trailerDTO.getTrailerFuelCapacity())
                 .build();
         service.updateVehicleWithTrailerData(trailer, vehicleId);
         return TrailerDTO.builder()
-                .type(trailer.getType())
-                .licensePlate(trailer.getLicensePlate())
-                .fuelCapacity(trailer.getFuelCapacity())
+                .trailerType(trailer.getTrailerType())
+                .trailerLicensePlate(trailer.getTrailerLicensePlate())
+                .trailerFuelCapacity(trailer.getTrailerFuelCapacity())
                 .build();
     }
 }

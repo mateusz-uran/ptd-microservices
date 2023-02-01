@@ -33,8 +33,8 @@ export class VehicleService {
     return this.httpClient.delete("http://localhost:8080/api/vehicle/delete/" + vehicleId)
   }
 
-  updateTruckInformation(truck: Truck): Observable<Truck> {
-    return this.httpClient.patch<Truck>("http://localhost:8080/api/vehicle", truck);
+  updateTruckInformation(vehicleId: string, truck: Truck): Observable<Truck> {
+    return this.httpClient.patch<Truck>("http://localhost:8080/api/vehicle/truck/" + vehicleId, truck);
   }
 
   updateTrailerInformation(vehicleId: string, trailer: Trailer): Observable<Trailer> {
@@ -45,8 +45,11 @@ export class VehicleService {
     return this.httpClient.patch<VehicleImage>("http://localhost:8080/api/vehicle/image-info/" + vehicleId, imageInfo);
   }
 
-  uploadOnlyImage(vehicleId: string, file: FormData): Observable<VehicleImage> {
-    return this.httpClient.post<VehicleImage>("http://localhost:8080/api/vehicle/single-image/" + vehicleId, file);
+  uploadOnlyImage(vehicleId: string, file: FormData): Observable<HttpEvent<VehicleImage>> {
+    return this.httpClient.post<VehicleImage>("http://localhost:8080/api/vehicle/single-image/" + vehicleId, file, {
+      reportProgress: true,
+      observe: 'events',
+    });
   }
 
   deleteVehicleImage(vehicleId: string) {

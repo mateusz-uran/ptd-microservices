@@ -15,7 +15,7 @@
             </span>
             <span class="card-header-spacer"></span>
             <span>
-                <button mat-flat-button color="accent" class="vehicle-button" (click)="editTruck()"
+                <button mat-flat-button color="accent" class="vehicle-button" (click)="editModeTruck=true"
                     [disabled]="editModeTruck">edit</button>
             </span>
         </mat-card-header>
@@ -23,15 +23,18 @@
         <div class="truck" *ngIf="vehicle.truck && !editModeTruck">
             <span>
                 <p class="vehicle-data-headers">Model</p>
-                <p class="vehicle-data">{{vehicle.truck.model}}</p>
+                <p class="vehicle-data" *ngIf="vehicle.truck.model; else showEmptyValue">{{vehicle.truck.model}}</p>
+                <ng-template #showEmptyValue>      
+                    <p class="vehicle-data">&nbsp;</p>
+                </ng-template>
             </span>
             <span>
                 <p class="vehicle-data-headers">Type</p>
-                <p class="vehicle-data">{{vehicle.truck.type}}</p>
+                <p class="vehicle-data">{{vehicle.truck.truckType}}</p>
             </span>
             <span>
                 <p class="vehicle-data-headers">License Plate</p>
-                <p class="vehicle-data">{{vehicle.truck.licensePlate}}</p>
+                <p class="vehicle-data">{{vehicle.truck.truckLicensePlate}}</p>
             </span>
             <span>
                 <p class="vehicle-data-headers">Fuel Tanks (left/right)</p>
@@ -46,39 +49,8 @@
 
         <div class="truck" *ngIf="vehicle.truck && editModeTruck">
 
-            <form [formGroup]="truckEditForm" (ngSubmit)="saveEditedTruck()">
-                <span>
-                    <p class="vehicle-data-headers">Model</p>
-                    <p class="vehicle-data"><input formControlName="model" required></p>
-                </span>
-                <span>
-                    <p class="vehicle-data-headers">Type</p>
-                    <p class="vehicle-data"><input formControlName="type" required></p>
-                </span>
-                <span>
-                    <p class="vehicle-data-headers">License Plate</p>
-                    <p class="vehicle-data"><input formControlName="licensePlate" required></p>
-                </span>
-                <span>
-                    <p class="vehicle-data-headers">Left Fuel Tank</p>
-                    <p class="vehicle-data"><input formControlName="leftTankFuelCapacity" required></p>
-                </span>
-                <span>
-                    <p class="vehicle-data-headers">Right Fuel Tank</p>
-                    <p class="vehicle-data"><input formControlName="rightTankFuelCapacity" required></p>
-                </span>
-                <span>
-                    <p class="vehicle-data-headers">Adblue Tank</p>
-                    <p class="vehicle-data"><input formControlName="adBlueCapacity" required></p>
-                </span>
-                <span>
-                    <p>&nbsp;</p>
-                    <p>
-                        <button mat-flat-button (click)="editModeTruck = false">Cancel</button>
-                        <button mat-flat-button>Submit</button>
-                    </p>
-                </span>
-            </form>
+            <app-edit-truck [truck]="vehicle.truck" (mode)="editModeTruck = $event"
+                (updatedTruck)="vehicle.truck = $event"></app-edit-truck>
 
         </div>
 
@@ -89,9 +61,9 @@
             </span>
             <span class="card-header-spacer"></span>
             <span>
-                <button mat-flat-button color="accent" class="vehicle-button" *ngIf="validateTrailerFrom"
+                <button mat-flat-button color="accent" class="vehicle-button" *ngIf="validateTrailerForm"
                     [routerLink]="['add-trailer', vehicleId]">add</button>
-                <button mat-flat-button color="accent" class="vehicle-button" (click)="editTrailer()"
+                <button mat-flat-button color="accent" class="vehicle-button" *ngIf="!validateTrailerForm" (click)="editModeTrailer=true"
                     [disabled]="editModeTrailer">edit</button>
             </span>
         </mat-card-header>
@@ -99,41 +71,31 @@
         <div class="trailer" *ngIf="vehicle.trailer && !editModeTrailer">
             <span>
                 <p class="vehicle-data-headers">Type</p>
-                <p class="vehicle-data">{{vehicle.trailer.type}}</p>
+                <p class="vehicle-data" *ngIf="vehicle.trailer.trailerType; else showEmptyValue">{{vehicle.trailer.trailerType}}</p>
+                <ng-template #showEmptyValue>
+                    <p class="vehicle-data">&nbsp;</p>
+                </ng-template>
             </span>
             <span>
                 <p class="vehicle-data-headers">License Plate</p>
-                <p class="vehicle-data">{{vehicle.trailer.licensePlate}}</p>
+                <p class="vehicle-data" *ngIf="vehicle.trailer.trailerLicensePlate; else showEmptyValue">{{vehicle.trailer.trailerLicensePlate}}</p>
+                <ng-template #showEmptyValue>
+                    <p class="vehicle-data">&nbsp;</p>
+                </ng-template>
             </span>
             <span>
                 <p class="vehicle-data-headers">Fuel Tank</p>
-                <p class="vehicle-data">{{vehicle.trailer.fuelCapacity}}</p>
+                <p class="vehicle-data" *ngIf="vehicle.trailer.trailerFuelCapacity; else showEmptyValue">{{vehicle.trailer.trailerFuelCapacity}}</p>
+                <ng-template #showEmptyValue>
+                    <p class="vehicle-data">&nbsp;</p>
+                </ng-template>
             </span>
         </div>
 
         <div class="truck" *ngIf="vehicle.truck && editModeTrailer">
 
-            <form [formGroup]="trailerEditForm" (ngSubmit)="saveEditedTrailer()">
-                <span>
-                    <p class="vehicle-data-headers">Type</p>
-                    <p class="vehicle-data"><input formControlName="type" required></p>
-                </span>
-                <span>
-                    <p class="vehicle-data-headers">License Plate</p>
-                    <p class="vehicle-data"><input formControlName="licensePlate" required></p>
-                </span>
-                <span>
-                    <p class="vehicle-data-headers">Fuel Tank</p>
-                    <p class="vehicle-data"><input formControlName="fuelCapacity" required></p>
-                </span>
-                <span>
-                    <p>&nbsp;</p>
-                    <p>
-                        <button mat-flat-button (click)="editModeTrailer = false">Cancel</button>
-                        <button mat-flat-button>Submit</button>
-                    </p>
-                </span>
-            </form>
+            <app-edit-trailer [trailer]="vehicle.trailer" [vehicleId]="vehicleId" (mode)="editModeTrailer = $event"
+                (updatedTrailer)="vehicle.trailer = $event"></app-edit-trailer>
 
         </div>
 
@@ -144,9 +106,9 @@
             </span>
             <span class="card-header-spacer"></span>
             <span>
-                <button mat-flat-button color="accent" class="vehicle-button" *ngIf="validateImageFrom"
+                <button mat-flat-button color="accent" class="vehicle-button" *ngIf="validateImageForm"
                     [routerLink]="['add-image', vehicleId]">add</button>
-                <button mat-flat-button color="accent" class="vehicle-button" (click)="editImageInfo()"
+                <button mat-flat-button color="accent" class="vehicle-button" *ngIf="!validateImageForm" (click)="editModeImageInfo = true"
                     [disabled]="editModeImageInfo">edit</button>
             </span>
         </mat-card-header>
@@ -154,57 +116,41 @@
         <div class="truck-image" *ngIf="vehicle.image && !editModeImageInfo">
             <span>
                 <p class="vehicle-data-headers">Name</p>
-                <p class="vehicle-data">{{vehicle.image.name}}</p>&nbsp;
+                <p class="vehicle-data" *ngIf="vehicle.image.vehicleImageName; else showEmptyValue">{{vehicle.image.vehicleImageName}}</p>&nbsp;
+                <ng-template #showEmptyValue>
+                    <p class="vehicle-data">&nbsp;</p>
+                </ng-template>
             </span>
             <span>
                 <p class="vehicle-data-headers">Description</p>
-                <p class="vehicle-data">{{vehicle.image.description}}</p>&nbsp;
+                <p class="vehicle-data" *ngIf="vehicle.image.vehicleImageDescription; else showEmptyValue">{{vehicle.image.vehicleImageDescription}}</p>&nbsp;
+                <ng-template #showEmptyValue>
+                    <p class="vehicle-data">&nbsp;</p>
+                </ng-template>
             </span>
             <span>
                 <p class="vehicle-data-headers">Image</p>
-                <div class="image-wrapper">
-                    <div *ngIf="vehicle.image.link; else elseBlock">
-                        <img src={{vehicle.image.link}}>
-                        <button mat-icon-button (click)="deleteVehicleImage()">
-                            <mat-icon>delete_sweep</mat-icon>
-                        </button>
-                    </div>
-                    <ng-template #elseBlock>
-                        <input (change)="onChange($event)" type="file">
-                        <button mat-icon-button (click)="uploadImage()">
-                            <mat-icon>cloud_upload</mat-icon>
-                        </button>
-                        <div>
-                            <img src="http://res.cloudinary.com/dzwnsabwr/image/upload/v1674478194/akiizaq8ftpw8bpgq3hb.png">
+                <app-image-upload *ngIf="!vehicle.image.vehicleImageDirectLink" [vehicleId]="vehicleId"
+                    (uploadedImage)="vehicle.image.vehicleImageDirectLink = $event"></app-image-upload>
+                <div class="image-wrapper" *ngIf="vehicle.image.vehicleImageDirectLink">
+                    <div class="image-container">
+                        <div *ngIf="vehicle.image.vehicleImageDirectLink">
+                            <img src={{vehicle.image.vehicleImageDirectLink}}>
+                            <mat-icon (click)="deleteVehicleImage()">close</mat-icon>
                         </div>
-                    </ng-template>
+                    </div>
                 </div>
             </span>
         </div>
 
         <div class="truck-image" *ngIf="vehicle.image && editModeImageInfo">
 
-            <form [formGroup]="imageInfoEditForm" (ngSubmit)="saveEditedImageInfo()">
-                <span>
-                    <p class="vehicle-data-headers">Name</p>
-                    <p class="vehicle-data"><input formControlName="name" required></p>
-                </span>
-                <span>
-                    <p class="vehicle-data-headers">Description</p>
-                    <p class="vehicle-data"><input formControlName="description" required></p>
-                </span>
-                <span>
-                    <p>&nbsp;</p>
-                    <p>
-                        <button mat-flat-button (click)="editModeImageInfo = false">Cancel</button>
-                        <button mat-flat-button>Submit</button>
-                    </p>
-                </span>
-            </form>
+            <app-edit-image-info [imageInfo]="vehicle.image" [vehicleId]="vehicleId" (mode)="editModeImageInfo = $event"
+                (updatedImageInfo)="vehicle.image = $event"></app-edit-image-info>
 
         </div>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-button *ngIf="vehicle" (click)="deleteVehicle()">DELETE</button>
+        <button mat-button *ngIf="!vehicleIsEmpty" (click)="deleteVehicle()">DELETE</button>
     </mat-card-actions>
 </mat-card>

@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 public class VehicleDTO {
     private String id;
     private String model;
-    private String type;
-    private String licensePlate;
+    private String truckType;
+    private String truckLicensePlate;
     private Integer leftTankFuelCapacity;
     private Integer rightTankFuelCapacity;
     private Integer adBlueCapacity;

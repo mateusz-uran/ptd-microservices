@@ -16,9 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -28,13 +26,12 @@ public class VehicleService {
     private final VehicleRepository repository;
     private final CloudinaryManager cloudinary;
     private final VehicleMapper mapper;
-    private final ModelMapper modelMapper;
 
     public VehicleResponse addVehicleInformation(VehicleDTO vehicleDTO, Long userId) {
         Vehicle vehicle = Vehicle.builder()
                 .model(vehicleDTO.getModel())
-                .type(vehicleDTO.getType())
-                .licensePlate(vehicleDTO.getLicensePlate())
+                .truckType(vehicleDTO.getTruckType())
+                .truckLicensePlate(vehicleDTO.getTruckLicensePlate())
                 .leftTankFuelCapacity(vehicleDTO.getLeftTankFuelCapacity())
                 .rightTankFuelCapacity(vehicleDTO.getRightTankFuelCapacity())
                 .fullTankCapacity(vehicleDTO.getLeftTankFuelCapacity() + vehicleDTO.getRightTankFuelCapacity())
@@ -59,8 +56,12 @@ public class VehicleService {
 
     public VehicleResponseDTO retrieveVehicleInformation(Long userId) {
         var vehicle = repository.findByUserId(userId).orElseThrow();
-        var optionalTrailer = validateVehicleTrailer(vehicle, mapper).orElse(TrailerDTO.builder().build());
-        var optionalImage = validateVehicleImage(vehicle, mapper).orElse(VehicleImageDTO.builder().build());
+
+        var optionalTrailer = validate(vehicle.getTrailer(), new TrailerDTO(), mapper)
+                .orElse(TrailerDTO.builder().build());
+        var optionalImage = validate(vehicle.getImage(), new VehicleImageDTO(), mapper)
+                .orElse(VehicleImageDTO.builder().build());
+
         return VehicleResponseDTO.builder()
                 .truck(mapper.mapToVehicleDTO(vehicle))
                 .trailer(optionalTrailer)
@@ -68,25 +69,17 @@ public class VehicleService {
                 .build();
     }
 
-    public VehicleDTO editVehicleInformation(VehicleDTO vehicleDTO) {
-        var vehicleToUpdate = getVehicleById(vehicleDTO.getId());
-        modelMapper.map(vehicleDTO, vehicleToUpdate);
-        repository.save(vehicleToUpdate);
-        return mapper.mapToVehicleDTO(vehicleToUpdate);
+    private <T, V> Optional<T> validate(V vehicleElement, T vehicleElementDto, VehicleMapper vehicleMapper) {
+        if (vehicleElement != null) {
+            return Optional.of(vehicleMapper.mapToDto(vehicleElement, vehicleElementDto));
+        } else return Optional.empty();
     }
 
-    public TrailerDTO editTrailerInformation(TrailerDTO trailerDTO, String vehicleId) {
-        var trailerToUpdate = getVehicleById(vehicleId);
-        modelMapper.map(trailerDTO, trailerToUpdate);
-        repository.save(trailerToUpdate);
-        return mapper.mapToTrailerDTO(trailerToUpdate.getTrailer());
-    }
-
-    public VehicleImageDTO editVehicleImageInformation(VehicleImageDTO vehicleImageDTO, String vehicleId) {
-        var vehicleImageToUpdate = getVehicleById(vehicleId);
-        modelMapper.map(vehicleImageDTO, vehicleImageToUpdate);
-        repository.save(vehicleImageToUpdate);
-        return mapper.mapToVehicleImageDTO(vehicleImageToUpdate.getImage());
+    public <T> T editVehicleInfo(T objectDto, String vehicleId) {
+        var vehicleInfoToUpdate = getVehicleById(vehicleId);
+        mapper.mapToDto(objectDto, vehicleInfoToUpdate);
+        repository.save(vehicleInfoToUpdate);
+        return mapper.mapToDto(vehicleInfoToUpdate, objectDto);
     }
 
     public VehiclePDFResponse sendToPdf(Long id) {
@@ -104,8 +97,8 @@ public class VehicleService {
     public void delete(String vehicleId) {
         repository.findById(vehicleId)
                 .ifPresent(vehicle -> {
-                    if(vehicle.getImage() != null) {
-                        cloudinary.deleteImage(vehicle.getImage().getPublicImageId());
+                    if (vehicle.getImage() != null) {
+                        cloudinary.deleteImage(vehicle.getImage().getVehicleImagePublicId());
                     }
                     repository.deleteById(vehicle.getId());
                 });
@@ -114,17 +107,5 @@ public class VehicleService {
     public Vehicle getVehicleById(String vehicleId) {
         return repository.findById(vehicleId)
                 .orElseThrow();
-    }
-
-    private Optional<TrailerDTO> validateVehicleTrailer(Vehicle vehicle, VehicleMapper vehicleMapper) {
-        if (vehicle.getTrailer() != null) {
-            return Optional.of(vehicleMapper.mapToTrailerDTO(vehicle.getTrailer()));
-        } else return Optional.empty();
-    }
-
-    private Optional<VehicleImageDTO> validateVehicleImage(Vehicle vehicle, VehicleMapper vehicleMapper) {
-        if (vehicle.getImage() != null) {
-            return Optional.of(vehicleMapper.mapToVehicleImageDTO(vehicle.getImage()));
-        } else return Optional.empty();
     }
 }

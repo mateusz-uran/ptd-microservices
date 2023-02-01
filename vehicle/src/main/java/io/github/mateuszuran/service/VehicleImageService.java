@@ -28,17 +28,17 @@ public class VehicleImageService {
         var imageInfo = uploadImage(file);
 
         VehicleImage vehicleImage = VehicleImage.builder()
-                .name(vehicleImageRequest.getName())
-                .description(vehicleImageRequest.getDescription())
-                .publicImageId(imageInfo.get("publicLink").toString())
-                .link(imageInfo.get("imageUrl").toString())
+                .vehicleImageName(vehicleImageRequest.getVehicleImageName())
+                .vehicleImageDescription(vehicleImageRequest.getVehicleImageDescription())
+                .vehicleImagePublicId(imageInfo.get("publicLink").toString())
+                .vehicleImageDirectLink(imageInfo.get("imageUrl").toString())
                 .build();
         vehicleService.updateVehicleWithImageData(vehicleImage, vehicleId);
         return VehicleImageDTO.builder()
-                .name(vehicleImage.getName())
-                .description(vehicleImage.getDescription())
-                .publicImageId(vehicleImage.getPublicImageId())
-                .link(vehicleImage.getLink())
+                .vehicleImageName(vehicleImage.getVehicleImageName())
+                .vehicleImageDescription(vehicleImage.getVehicleImageDescription())
+                .vehicleImagePublicId(vehicleImage.getVehicleImagePublicId())
+                .vehicleImageDirectLink(vehicleImage.getVehicleImageDirectLink())
                 .build();
     }
 
@@ -49,8 +49,8 @@ public class VehicleImageService {
             var imageInfo = uploadImage(file);
 
             var imageInfoToUpdate = vehicleToUpdate.getImage();
-            imageInfoToUpdate.setPublicImageId(imageInfo.get("publicLink").toString());
-            imageInfoToUpdate.setLink(imageInfo.get("imageUrl").toString());
+            imageInfoToUpdate.setVehicleImagePublicId(imageInfo.get("publicLink").toString());
+            imageInfoToUpdate.setVehicleImageDirectLink(imageInfo.get("imageUrl").toString());
 
             vehicleService.updateVehicleWithImageData(imageInfoToUpdate, vehicleId);
 
@@ -62,12 +62,12 @@ public class VehicleImageService {
     public void deleteVehicleImage(String vehicleId) {
         var vehicleToUpdate = vehicleService.getVehicleById(vehicleId);
 
-        if(vehicleToUpdate.getImage().getPublicImageId() != null) {
-            cloudinary.deleteImage(vehicleToUpdate.getImage().getPublicImageId());
+        if(vehicleToUpdate.getImage().getVehicleImagePublicId() != null) {
+            cloudinary.deleteImage(vehicleToUpdate.getImage().getVehicleImagePublicId());
 
             var imageInfoToUpdate = vehicleToUpdate.getImage();
-            imageInfoToUpdate.setPublicImageId("");
-            imageInfoToUpdate.setLink("");
+            imageInfoToUpdate.setVehicleImagePublicId("");
+            imageInfoToUpdate.setVehicleImageDirectLink("");
 
             vehicleService.updateVehicleWithImageData(imageInfoToUpdate, vehicleId);
 

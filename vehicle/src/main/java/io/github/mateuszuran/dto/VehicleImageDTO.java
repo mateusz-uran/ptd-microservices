@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class VehicleImageDTO {
-    private String name;
-    private String description;
-    private String publicImageId;
-    private String link;
+    private String vehicleImageName;
+    private String vehicleImageDescription;
+    private String vehicleImagePublicId;
+    private String vehicleImageDirectLink;
 }

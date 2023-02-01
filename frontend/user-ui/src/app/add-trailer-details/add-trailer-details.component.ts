@@ -24,9 +24,9 @@ export class AddTrailerDetailsComponent implements OnInit {
     })
 
     this.trailerForm = new FormGroup({
-      type: new FormControl(''),
-      licensePlate: new FormControl(''),
-      fuelCapacity: new FormControl(''),
+      trailerType: new FormControl(''),
+      trailerLicensePlate: new FormControl(''),
+      trailerFuelCapacity: new FormControl(''),
     });
   }
 
