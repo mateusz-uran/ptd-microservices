@@ -17,7 +17,7 @@ export class ImageUploadComponent {
   progress: number = 0;
   value = 0;
 
-  constructor(private vehicleService: VehicleService, private _snackBar: MatSnackBar) { }
+  constructor(private vehicleService: VehicleService, private snackBar: MatSnackBar) { }
 
 
   onChange(event: any) {
@@ -36,7 +36,7 @@ export class ImageUploadComponent {
             this.progress = Math.round(100 * data.loaded / data.total);
           } else if (data instanceof HttpResponse) {
             if (data.body.vehicleImageDirectLink == null) {
-              this._snackBar.open("Add image information first!", "OK");
+              this.snackBar.open("Add image information first!", "OK");
             } else {
               this.uploadedImage.emit(data.body.vehicleImageDirectLink);
             }
