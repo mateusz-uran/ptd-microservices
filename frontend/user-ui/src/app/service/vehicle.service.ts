@@ -45,8 +45,11 @@ export class VehicleService {
     return this.httpClient.patch<VehicleImage>("http://localhost:8080/api/vehicle/image-info/" + vehicleId, imageInfo);
   }
 
-  uploadOnlyImage(vehicleId: string, file: FormData): Observable<VehicleImage> {
-    return this.httpClient.post<VehicleImage>("http://localhost:8080/api/vehicle/single-image/" + vehicleId, file);
+  uploadOnlyImage(vehicleId: string, file: FormData): Observable<HttpEvent<VehicleImage>> {
+    return this.httpClient.post<VehicleImage>("http://localhost:8080/api/vehicle/single-image/" + vehicleId, file, {
+      reportProgress: true,
+      observe: 'events',
+    });
   }
 
   deleteVehicleImage(vehicleId: string) {

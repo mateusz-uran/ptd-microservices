@@ -1,24 +1,32 @@
 <mat-card>
-    <mat-progress-bar
-          color="primary"
-          [value]="progress">
+    <mat-progress-bar color="primary" [value]="progress">
     </mat-progress-bar>
     <form [formGroup]="imageForm" (ngSubmit)="submitImage()">
 
         <mat-form-field appearance="fill">
             <mat-label>Name</mat-label>
-            <input matInput formControlName="name" required>
+            <input matInput formControlName="vehicleImageName" required>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
             <mat-label>Description</mat-label>
-            <input matInput formControlName="description" required>
+            <input matInput formControlName="vehicleImageDescription" required>
         </mat-form-field>
 
-        <input (change)="onChange($event)" type="file">
+        <div class="input-wrapper">
+            <div class="span-wrapper">
+                <span>
+                    <label for="file-upload" *ngIf="!currentFile" class="file-span">Choose a file...</label>
+                    <label *ngIf="currentFile">{{currentFile.name}}</label>
+                    <input id="file-upload" type="file" (change)="onChange($event)" />
+                </span>
+                <span><mat-icon>cloud_upload</mat-icon></span>
+            </div>
+        </div>
 
         <div class="submit-wrapper">
             <button mat-flat-button color="primary" [disabled]="!currentFile">Submit</button>
         </div>
+
     </form>
 </mat-card>

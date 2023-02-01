@@ -19,8 +19,8 @@ export class VehicleDetailsComponent implements OnInit {
   vehicleIsEmpty: boolean = false;
   vehicleId: string = '';
 
-  validateTrailerFrom: boolean = false;
-  validateImageFrom: boolean = false;
+  validateTrailerForm: boolean = false;
+  validateImageForm: boolean = false;
 
   editModeTruck: boolean = false;
 
@@ -55,8 +55,8 @@ export class VehicleDetailsComponent implements OnInit {
           this.vehicle = data;
           this.vehicleIsEmpty = false;
           this.vehicleId = data.truck.id;
-          this.validateTrailerFrom = Object.values(data.trailer).every(o => o === null);
-          this.validateImageFrom = Object.values(data.image).every(o => o === null);
+          this.validateTrailerForm = Object.values(data.trailer).every(o => o === null);
+          this.validateImageForm = Object.values(data.image).every(o => o === null);
         },
         error: (e) => {
           this.vehicleIsEmpty = true;
@@ -75,52 +75,6 @@ export class VehicleDetailsComponent implements OnInit {
           })
       }
     });
-  }
-
-  editImageInfo() {
-    this.editModeImageInfo = true;
-    this.imageInfoEditForm.setValue({
-      name: this.vehicle?.image.vehicleImageName,
-      description: this.vehicle?.image.vehicleImageDescription,
-    })
-  }
-
-  saveEditedImageInfo() {
-    this.editModeImageInfo = true;
-    this.vehicleService.updateImageInformation(this.vehicleId, this.imageInfoEditForm.value)
-      .subscribe({
-        next: (data) => {
-          if (this.vehicle !== undefined) {
-            this.vehicle.image = data;
-          }
-          this.editModeImageInfo = false;
-        },
-        error: (e) => {
-          console.log(e);
-        }
-      })
-  }
-
-  onChange(event: any) {
-    this.currentFile = event.target.files[0];
-  }
-
-  uploadImage() {
-    const formData = new FormData();
-
-    formData.append('file', this.currentFile);
-
-    this.vehicleService.uploadOnlyImage(this.vehicleId, formData)
-      .subscribe({
-        next: (data) => {
-          if (this.vehicle !== undefined) {
-            this.vehicle.image = data;
-          }
-        },
-        error: (e) => {
-          console.log(e);
-        }
-      })
   }
 
   deleteVehicleImage() {

@@ -33,12 +33,27 @@
     padding: 5px;
     background-color: #6a6a6a;
     border-radius: 5px;
+    position: relative;
+}
+
+.image-container {
+    position: relative;
+}
+
+mat-icon {
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+}
+
+mat-icon:hover {
+    color: #6a6a6a;
 }
 
 img {
+    position: relative;
     vertical-align: middle;
-    width: 640px;
-    height: 360px;
+    max-width: 230px;
 }
 
 .card-header-spacer {

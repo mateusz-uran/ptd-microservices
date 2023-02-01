@@ -19,7 +19,7 @@ import { VehicleDetailsComponent } from './vehicle-details/vehicle-details.compo
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AddTruckDetailsComponent } from './add-truck-details/add-truck-details.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldControl, MatFormFieldModule } from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { AddTrailerDetailsComponent } from './add-trailer-details/add-trailer-details.component';
 import { AddImageDetailsComponent } from './add-image-details/add-image-details.component';
@@ -28,6 +28,9 @@ import { DialogContentComponent } from './dialog-content/dialog-content.componen
 import { EditControlsComponent } from './edit-controls/edit-controls.component';
 import { EditTruckComponent } from './edit-truck/edit-truck.component';
 import { EditTrailerComponent } from './edit-trailer/edit-trailer.component';
+import { EditImageInfoComponent } from './edit-image-info/edit-image-info.component';
+import { ImageUploadComponent } from './image-upload/image-upload.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -43,7 +46,9 @@ import { EditTrailerComponent } from './edit-trailer/edit-trailer.component';
     DialogContentComponent,
     EditControlsComponent,
     EditTruckComponent,
-    EditTrailerComponent
+    EditTrailerComponent,
+    EditImageInfoComponent,
+    ImageUploadComponent
   ],
   imports: [
     BrowserModule,
@@ -61,7 +66,8 @@ import { EditTrailerComponent } from './edit-trailer/edit-trailer.component';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

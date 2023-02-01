@@ -4,7 +4,37 @@ mat-card {
 }
 
 mat-form-field {
+    margin: 10px;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.input-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.span-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 10px;
+    width: 220px;
+    border-radius: 4px;
+    background-color: #4A4A4A;
+    border-bottom: 1px solid rgba(255, 255, 255, .4);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.span-wrapper:hover {
+    border-bottom: 1px solid rgba(255, 255, 255, 1);
+    background-color: #565656;
+}
+
+.file-span {
+    cursor: pointer;
 }
 
 .submit-wrapper {

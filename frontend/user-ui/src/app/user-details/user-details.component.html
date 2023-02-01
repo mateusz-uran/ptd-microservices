@@ -21,8 +21,5 @@
     <mat-card-actions>
         <button mat-raised-button (click)="toggleUser()">{{userDto.active ? 'Lock' : 'Unlock'}}</button>
     </mat-card-actions>
-    <mat-card-footer>
-        <mat-progress-bar mode="determinate" value="100" [color]="userDto.active ? '' : 'accent'"></mat-progress-bar>
-    </mat-card-footer>
 </mat-card>
 <app-vehicle-details *ngIf="userId" [userId]="userId"></app-vehicle-details>
