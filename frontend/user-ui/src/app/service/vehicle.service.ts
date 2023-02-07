@@ -19,9 +19,7 @@ export class VehicleService {
       'Authorization': `Bearer ${token}`
     });
 
-    const requestOptions = { headers: headers };
-
-    return this.httpClient.get<VehicleResponse>("http://localhost:8080/api/vehicle/info/" + userId, requestOptions);
+    return this.httpClient.get<VehicleResponse>("http://localhost:8080/api/vehicle/info/" + userId, { headers: headers });
   }
 
   submitTruckData(userId: number, truck: Truck): Observable<Truck> {

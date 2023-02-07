@@ -10,13 +10,22 @@ logging:
 spring:
   application.name: api-gateway
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8181/auth/realms/ptd-auth
+
   cloud:
     gateway:
       globalcors:
         corsConfigurations:
           '[/**]':
             allowedOrigins: "http://localhost:4200"
-            allowedHeaders: "*"
+            allowedHeaders:
+              - content-type
+              - x-requested-with
+              - Authorization
             allowedMethods:
               - GET
               - POST

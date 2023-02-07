@@ -71,7 +71,7 @@ import { OAuthModule } from "angular-oauth2-oidc";
     MatSnackBarModule,
     OAuthModule.forRoot({
       resourceServer: {
-          allowedUrls: ['http://localhost:8080/api/user'],
+          allowedUrls: ['http://localhost:8080/api/vehicle'],
           sendAccessToken: true
       }
   })
