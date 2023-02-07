@@ -2,22 +2,21 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
-
 logging:
   level:
     root: INFO
     org.springframework.cloud.gateway: TRACE
     org.springframework.cloud.gateway.route.RouteDefinitionLocator: INFO
-
 spring:
-  application:
-    name: api-gateway
+  application.name: api-gateway
+
   cloud:
     gateway:
       globalcors:
         corsConfigurations:
           '[/**]':
-            allowedOrigins: "*"
+            allowedOrigins: "http://localhost:4200"
+            allowedHeaders: "*"
             allowedMethods:
               - GET
               - POST

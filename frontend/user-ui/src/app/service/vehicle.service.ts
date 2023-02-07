@@ -2,16 +2,26 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { VehicleResponse, Truck, Trailer, VehicleImage } from '../model/vehicle-dto';
 import { Observable } from 'rxjs';
+import { OAuthService } from 'angular-oauth2-oidc';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VehicleService {
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private oauthService: OAuthService) { }
 
   retrieveVehicleInformation(userId: number): Observable<VehicleResponse> {
-    return this.httpClient.get<VehicleResponse>("http://localhost:8080/api/vehicle/info/" + userId);
+    let token = this.oauthService.getAccessToken();
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+
+    const requestOptions = { headers: headers };
+
+    return this.httpClient.get<VehicleResponse>("http://localhost:8080/api/vehicle/info/" + userId, requestOptions);
   }
 
   submitTruckData(userId: number, truck: Truck): Observable<Truck> {

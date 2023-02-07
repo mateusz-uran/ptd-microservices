@@ -31,6 +31,7 @@ import { EditTrailerComponent } from './edit-trailer/edit-trailer.component';
 import { EditImageInfoComponent } from './edit-image-info/edit-image-info.component';
 import { ImageUploadComponent } from './image-upload/image-upload.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { OAuthModule } from "angular-oauth2-oidc";
 
 @NgModule({
   declarations: [
@@ -67,7 +68,13 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatFormFieldModule,
     MatInputModule,
     MatDialogModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    OAuthModule.forRoot({
+      resourceServer: {
+          allowedUrls: ['http://localhost:8080/api/user'],
+          sendAccessToken: true
+      }
+  })
   ],
   providers: [],
   bootstrap: [AppComponent]
