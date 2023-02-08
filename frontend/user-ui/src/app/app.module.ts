@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { UserListComponent } from './user-list/user-list.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,6 +32,7 @@ import { EditImageInfoComponent } from './edit-image-info/edit-image-info.compon
 import { ImageUploadComponent } from './image-upload/image-upload.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { OAuthModule } from "angular-oauth2-oidc";
+import { AuthService } from './service/auth.service';
 
 @NgModule({
   declarations: [
@@ -71,10 +72,10 @@ import { OAuthModule } from "angular-oauth2-oidc";
     MatSnackBarModule,
     OAuthModule.forRoot({
       resourceServer: {
-          allowedUrls: ['http://localhost:8080/api/vehicle'],
-          sendAccessToken: true
+        allowedUrls: ['http://localhost:8080/api/vehicle'],
+        sendAccessToken: true
       }
-  })
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

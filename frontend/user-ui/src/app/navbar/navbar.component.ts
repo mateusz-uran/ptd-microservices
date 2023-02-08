@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { NullValidationHandler, OAuthService } from 'angular-oauth2-oidc';
-import { authConfig } from '../auth.config';
+import { AuthService } from '../service/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -9,26 +8,13 @@ import { authConfig } from '../auth.config';
 })
 export class NavbarComponent {
 
-  constructor(private oauthService: OAuthService) {
-    this.configure();
-  }
+  constructor(private authService: AuthService) {}
 
-  extractToken() {
-    let token = this.oauthService.getAccessToken();
-    console.log(token);
-  }
-
-  login() {
-    this.oauthService.initLoginFlow();
+  public login() {
+    this.authService.loginUser();
   }
 
   public logoff() {
-    this.oauthService.logOut();
-  }
-
-  private configure() {
-    this.oauthService.configure(authConfig);
-    this.oauthService.tokenValidationHandler = new NullValidationHandler();
-    this.oauthService.loadDiscoveryDocumentAndTryLogin();
+    this.authService.logoutUser();
   }
 }
