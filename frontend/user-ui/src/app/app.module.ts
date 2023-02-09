@@ -32,7 +32,7 @@ import { EditImageInfoComponent } from './edit-image-info/edit-image-info.compon
 import { ImageUploadComponent } from './image-upload/image-upload.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { OAuthModule } from "angular-oauth2-oidc";
-import { AuthService } from './service/auth.service';
+import { InterceptorService } from './service/interceptor.service';
 
 @NgModule({
   declarations: [
@@ -73,11 +73,13 @@ import { AuthService } from './service/auth.service';
     OAuthModule.forRoot({
       resourceServer: {
         allowedUrls: ['http://localhost:8080/api/vehicle'],
-        sendAccessToken: true
+        sendAccessToken: true,
       }
-    })
+    }),
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

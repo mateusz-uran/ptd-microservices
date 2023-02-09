@@ -25,7 +25,7 @@ public class SecurityConfig {
         http
                 .authorizeExchange()
                 .pathMatchers("/api/user/**").permitAll()
-                .pathMatchers("/api/vehicle/**").hasAuthority("SCOPE_message_read")
+                .pathMatchers("/api/vehicle/**").hasAuthority("SCOPE_user.read")
                 .anyExchange().authenticated()
                 .and()
                 .oauth2ResourceServer()

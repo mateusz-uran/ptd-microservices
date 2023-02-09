@@ -5,5 +5,5 @@ export const authConfig: AuthConfig = {
     redirectUri: window.location.origin,
     clientId: 'angular-user-ui-client',
     responseType: 'code',
-    scope: 'openid profile email offline_access message_read message_write',
+    scope: 'openid profile email offline_access user.read',
 }
