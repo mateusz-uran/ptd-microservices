@@ -2,26 +2,37 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
-
 logging:
   level:
     root: INFO
     org.springframework.cloud.gateway: TRACE
     org.springframework.cloud.gateway.route.RouteDefinitionLocator: INFO
-
 spring:
-  application:
-    name: api-gateway
+  application.name: api-gateway
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8181/auth/realms/ptd-auth
+
   cloud:
     gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
       globalcors:
         corsConfigurations:
           '[/**]':
-            allowedOrigins: "*"
+            allowedOrigins: "http://localhost:4200"
+            allowedHeaders:
+              - content-type
+              - x-requested-with
+              - Authorization
             allowedMethods:
               - GET
               - POST
               - PUT
+              - PATCH
               - DELETE
       routes:
         - id: user-service

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpEvent } from '@angular/common/http';
 import { VehicleResponse, Truck, Trailer, VehicleImage } from '../model/vehicle-dto';
 import { Observable } from 'rxjs';
 

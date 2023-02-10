@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { UserListComponent } from './user-list/user-list.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,6 +31,8 @@ import { EditTrailerComponent } from './edit-trailer/edit-trailer.component';
 import { EditImageInfoComponent } from './edit-image-info/edit-image-info.component';
 import { ImageUploadComponent } from './image-upload/image-upload.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { OAuthModule } from "angular-oauth2-oidc";
+import { InterceptorService } from './service/interceptor.service';
 
 @NgModule({
   declarations: [
@@ -67,9 +69,17 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatFormFieldModule,
     MatInputModule,
     MatDialogModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    OAuthModule.forRoot({
+      resourceServer: {
+        allowedUrls: ['http://localhost:8080/api/'],
+        sendAccessToken: true,
+      }
+    }),
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
