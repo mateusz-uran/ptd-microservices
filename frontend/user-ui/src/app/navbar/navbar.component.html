@@ -1,8 +1,10 @@
 <mat-toolbar>
     <span>PTD</span>
     <span class="toolbar-spacer"></span>
-    <span>
+    <span class="auth">
         <button mat-raised-button color="primary" (click)="login()">Login</button>
-        <button mat-raised-button color="primary" (click)="logoff()">Logout</button>
+        <button mat-icon-button (click)="logoff()">
+            <mat-icon>exit_to_app</mat-icon>
+        </button>
     </span>
 </mat-toolbar>

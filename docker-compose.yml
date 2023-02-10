@@ -135,7 +135,7 @@ services:
     build:
       context: ./api-gateway/
       dockerfile: Dockerfile
-    image: api-gateway
+    image: api-gateway:latest
     container_name: api-gateway
     ports:
       - "8080:8080"

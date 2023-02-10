@@ -72,7 +72,7 @@ import { InterceptorService } from './service/interceptor.service';
     MatSnackBarModule,
     OAuthModule.forRoot({
       resourceServer: {
-        allowedUrls: ['http://localhost:8080/api/vehicle'],
+        allowedUrls: ['http://localhost:8080/api/'],
         sendAccessToken: true,
       }
     }),

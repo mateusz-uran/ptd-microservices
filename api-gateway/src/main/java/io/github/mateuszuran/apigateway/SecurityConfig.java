@@ -9,14 +9,22 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
+import java.util.List;
+
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfig = new CorsConfiguration();
+        corsConfig.setAllowedOrigins(List.of("http://localhost:4200"));
+        corsConfig.setMaxAge(8000L);
+        corsConfig.addAllowedMethod("*");
+        corsConfig.addAllowedHeader("*");
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+        source.registerCorsConfiguration("/**", corsConfig);
         return source;
     }
 
@@ -24,7 +32,7 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) throws Exception {
         http
                 .authorizeExchange()
-                .pathMatchers("/api/user/**").permitAll()
+                .pathMatchers("/api/user/**", "/api/card/**", "/api/pdf/**").permitAll()
                 .pathMatchers("/api/vehicle/**").hasAuthority("SCOPE_user.read")
                 .anyExchange().authenticated()
                 .and()

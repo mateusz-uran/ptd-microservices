@@ -32,6 +32,7 @@ spring:
               - GET
               - POST
               - PUT
+              - PATCH
               - DELETE
       routes:
         - id: user-service
