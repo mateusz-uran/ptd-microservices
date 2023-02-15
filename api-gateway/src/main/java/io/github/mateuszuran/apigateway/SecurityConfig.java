@@ -1,7 +1,9 @@
 package io.github.mateuszuran.apigateway;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -10,7 +12,8 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-@Configuration
+@Slf4j
+@EnableWebFluxSecurity
 public class SecurityConfig {
 
     @Bean
@@ -27,11 +30,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) throws Exception {
+    public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
         http
                 .authorizeExchange()
                 .pathMatchers("/api/user/**", "/api/card/**", "/api/pdf/**").permitAll()
-                .pathMatchers("/api/vehicle/**").hasAuthority("SCOPE_user.read")
                 .anyExchange().authenticated()
                 .and()
                 .oauth2ResourceServer()

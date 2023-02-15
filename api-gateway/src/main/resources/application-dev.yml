@@ -16,7 +16,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:8080/auth/realms/ptd-auth/protocol/openid-connect/certs
+          issuer-uri: http://localhost:8080/auth/realms/ptd-auth
 
   cloud:
     gateway:
