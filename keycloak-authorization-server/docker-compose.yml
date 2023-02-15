@@ -6,6 +6,8 @@ services:
     image: mysql:5.7
     volumes:
       - ./mysql_keycloak_data:/var/lib/mysql
+    networks:
+      - auth-network
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: keycloak
@@ -23,7 +25,13 @@ services:
       DB_PASSWORD: password
       KEYCLOAK_USER: ptd-admin
       KEYCLOAK_PASSWORD: admin
+    networks:
+      - auth-network
     ports:
       - "8080:8080"
     depends_on:
       - keycloak-mysql
+
+networks:
+  auth-network:
+    external: true

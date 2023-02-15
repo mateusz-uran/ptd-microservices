@@ -125,6 +125,8 @@ services:
     image: discovery-server
     container_name: discovery-server
     hostname: discovery-server
+    networks:
+      - auth-network
     ports:
       - "8761:8761"
     depends_on:
@@ -136,6 +138,8 @@ services:
       dockerfile: Dockerfile
     image: api-gateway:1.1
     container_name: api-gateway
+    networks:
+      - auth-network
     ports:
       - "8181:8080"
     environment:
@@ -148,3 +152,7 @@ volumes:
   postgres-card:
   pgadmin:
   mongodb-vehicle:
+
+networks:
+  auth-network:
+    external: true
