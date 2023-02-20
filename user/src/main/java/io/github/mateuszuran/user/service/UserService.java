@@ -30,29 +30,16 @@ public class UserService {
         return mapToUserResponse(user);
     }
 
-    // TODO: 19.01.2023
-    //  Change return type to Long as card service only needs user id.
-    public UserResponseDto getUserByUsernameFromDB(String username) {
+    public Long getUserByUsernameFromDB(String username) {
         var user = repository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
-        return UserResponseDto.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .active(user.isActive())
-                .build();
+        return user.getId();
     }
 
     public UserResponseDto getUserInformation(String username) {
         var user = repository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
         return mapToUserResponse(user);
-    }
-
-    public List<UserResponseDto> getAllUsersFromDB() {
-        var users = repository.findAll();
-        return users.stream()
-                .map(this::mapToUserResponse)
-                .collect(Collectors.toList());
     }
 
     public List<String> getAllUsersUsername() {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpEvent, HttpResponse, HttpRequest, HttpHandler } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpInterceptor, HttpEvent, HttpResponse, HttpRequest, HttpHandler, HttpErrorResponse } from '@angular/common/http';
+import { catchError, Observable, throwError } from 'rxjs';
 import { OAuthService } from 'angular-oauth2-oidc';
 
 @Injectable({
@@ -16,12 +16,10 @@ export class InterceptorService implements HttpInterceptor {
 
   addAuthToken(request: HttpRequest<any>) {
     const token = this.oauthService.getAccessToken();
-    if (token && request.url.endsWith('/api/vehicle')) {
-      return request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-    } else return request;
+    return request.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    })
   }
 }
