@@ -8,12 +8,10 @@ import { AuthService } from '../service/auth.service';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
-  checkIfUserIsLoggedIn: boolean = false;
 
-  constructor(private authService: AuthService, private oauthService: OAuthService) { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.checkIfUserIsLoggedIn = this.oauthService.hasValidAccessToken();
   }
 
   public login() {

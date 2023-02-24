@@ -6,7 +6,8 @@ export const authConfig: AuthConfig = {
     requireHttps: false,
     redirectUri: window.location.origin,
     clientId: 'angular-user-ui-client',
-    strictDiscoveryDocumentValidation: true,
     responseType: 'code',
     scope: 'openid profile email offline_access',
+    showDebugInformation: true,
+    clearHashAfterLogin: true,
 }
