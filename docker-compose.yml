@@ -59,6 +59,7 @@ services:
       - "8282:80"
     restart: unless-stopped
 
+
   ## Keycloak configuration
   keycloak-mysql:
     container_name: keycloak-mysql
@@ -83,9 +84,7 @@ services:
       KEYCLOAK_USER: ptd-admin
       KEYCLOAK_PASSWORD: admin
     ports:
-      - "8181:8080"
-    expose:
-      - "8181"
+      - "8080:8080"
     depends_on:
       - keycloak-mysql
 
@@ -126,6 +125,8 @@ services:
     image: discovery-server
     container_name: discovery-server
     hostname: discovery-server
+    networks:
+      - auth-network
     ports:
       - "8761:8761"
     depends_on:
@@ -135,12 +136,12 @@ services:
     build:
       context: ./api-gateway/
       dockerfile: Dockerfile
-    image: api-gateway:latest
+    image: api-gateway:1.1
     container_name: api-gateway
+    networks:
+      - auth-network
     ports:
-      - "8080:8080"
-    expose:
-      - "8080"
+      - "8181:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
@@ -151,3 +152,7 @@ volumes:
   postgres-card:
   pgadmin:
   mongodb-vehicle:
+
+networks:
+  auth-network:
+    external: true

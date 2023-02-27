@@ -8,51 +8,53 @@ import { Observable } from 'rxjs';
 })
 export class VehicleService {
 
+  private baseURL: string = 'http://localhost:8181/api/vehicle';
+
   constructor(private httpClient: HttpClient) { }
 
   retrieveVehicleInformation(userId: number): Observable<VehicleResponse> {
-    return this.httpClient.get<VehicleResponse>("http://localhost:8080/api/vehicle/info/" + userId);
+    return this.httpClient.get<VehicleResponse>(this.baseURL + "/info/" + userId);
   }
 
   submitTruckData(userId: number, truck: Truck): Observable<Truck> {
-    return this.httpClient.post<Truck>("http://localhost:8080/api/vehicle/" + userId, truck);
+    return this.httpClient.post<Truck>(this.baseURL + "/" + userId, truck);
   }
 
   submitTrailerData(vehicleId: string, trailer: Trailer): Observable<Trailer> {
-    return this.httpClient.post<Trailer>("http://localhost:8080/api/vehicle/trailer/" + vehicleId, trailer);
+    return this.httpClient.post<Trailer>(this.baseURL + "/trailer/" + vehicleId, trailer);
   }
 
   submitImageData(vehicleId: string, vehicleImage: FormData): Observable<HttpEvent<VehicleImage>> {
-    return this.httpClient.post<VehicleImage>("http://localhost:8080/api/vehicle/image/" + vehicleId, vehicleImage, {
+    return this.httpClient.post<VehicleImage>(this.baseURL + "/image/" + vehicleId, vehicleImage, {
       reportProgress: true,
       observe: 'events',
     });
   }
 
   deleteVehicleInformation(vehicleId: string) {
-    return this.httpClient.delete("http://localhost:8080/api/vehicle/delete/" + vehicleId)
+    return this.httpClient.delete(this.baseURL + "/delete/" + vehicleId)
   }
 
   updateTruckInformation(vehicleId: string, truck: Truck): Observable<Truck> {
-    return this.httpClient.patch<Truck>("http://localhost:8080/api/vehicle/truck/" + vehicleId, truck);
+    return this.httpClient.patch<Truck>(this.baseURL + "/truck/" + vehicleId, truck);
   }
 
   updateTrailerInformation(vehicleId: string, trailer: Trailer): Observable<Trailer> {
-    return this.httpClient.patch<Trailer>("http://localhost:8080/api/vehicle/trailer/" + vehicleId, trailer);
+    return this.httpClient.patch<Trailer>(this.baseURL + "/trailer/" + vehicleId, trailer);
   }
 
   updateImageInformation(vehicleId: string, imageInfo: VehicleImage): Observable<VehicleImage> {
-    return this.httpClient.patch<VehicleImage>("http://localhost:8080/api/vehicle/image-info/" + vehicleId, imageInfo);
+    return this.httpClient.patch<VehicleImage>(this.baseURL + "/image-info/" + vehicleId, imageInfo);
   }
 
   uploadOnlyImage(vehicleId: string, file: FormData): Observable<HttpEvent<VehicleImage>> {
-    return this.httpClient.post<VehicleImage>("http://localhost:8080/api/vehicle/single-image/" + vehicleId, file, {
+    return this.httpClient.post<VehicleImage>(this.baseURL + "/single-image/" + vehicleId, file, {
       reportProgress: true,
       observe: 'events',
     });
   }
 
   deleteVehicleImage(vehicleId: string) {
-    return this.httpClient.delete("http://localhost:8080/api/vehicle/delete-image/" + vehicleId)
+    return this.httpClient.delete(this.baseURL + "/delete-image/" + vehicleId)
   }
 }

@@ -1,3 +1,5 @@
+server.port: 8181
+
 eureka:
   client:
     serviceUrl:
@@ -14,7 +16,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8181/auth/realms/ptd-auth
+          issuer-uri: http://localhost:8080/auth/realms/ptd-auth
 
   cloud:
     gateway:

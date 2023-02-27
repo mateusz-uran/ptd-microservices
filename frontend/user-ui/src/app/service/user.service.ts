@@ -8,17 +8,19 @@ import { UserDto } from '../model/user-dto';
 })
 export class UserService {
 
+  private baseURL: string = 'http://localhost:8181/api/user';
+
   constructor(private httpClient: HttpClient) { }
 
   getAllUsers(): Observable<Array<string>> {
-    return this.httpClient.get<Array<string>>("http://localhost:8080/api/user/all");
+    return this.httpClient.get<Array<string>>(this.baseURL + "/all");
   }
 
   getUserInformation(username: string): Observable<UserDto> {
-    return this.httpClient.get<UserDto>("http://localhost:8080/api/user/" + username);
+    return this.httpClient.get<UserDto>(this.baseURL + "/" + username);
   }
 
   toggleUserActiveStatus(userId: number): Observable<boolean> {
-    return this.httpClient.post<boolean>("http://localhost:8080/api/user/" +  userId, null);
+    return this.httpClient.post<boolean>(this.baseURL + "/" +  userId, null);
   }
 }

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -31,8 +31,11 @@ import { EditTrailerComponent } from './edit-trailer/edit-trailer.component';
 import { EditImageInfoComponent } from './edit-image-info/edit-image-info.component';
 import { ImageUploadComponent } from './image-upload/image-upload.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { OAuthModule } from "angular-oauth2-oidc";
+import { AuthConfig, OAuthModule, OAuthService } from "angular-oauth2-oidc";
 import { InterceptorService } from './service/interceptor.service';
+import { CachingInterceptorService } from './service/caching.interceptor.service';
+import { authConfig } from './auth.config';
+import { AuthService } from './service/auth.service';
 
 @NgModule({
   declarations: [
@@ -70,15 +73,19 @@ import { InterceptorService } from './service/interceptor.service';
     MatInputModule,
     MatDialogModule,
     MatSnackBarModule,
-    OAuthModule.forRoot({
-      resourceServer: {
-        allowedUrls: ['http://localhost:8080/api/'],
-        sendAccessToken: true,
-      }
-    }),
+    OAuthModule.forRoot(),
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true }
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: InterceptorService,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: CachingInterceptorService,
+      multi: true
+    },
   ],
   bootstrap: [AppComponent]
 })

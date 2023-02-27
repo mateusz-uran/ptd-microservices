@@ -28,8 +28,8 @@ public class UserController {
         return ResponseEntity.ok().body(service.getAllUsersUsername());
     }
 
-    @GetMapping
-    public ResponseEntity<UserResponseDto> getSingleUser(@RequestParam String username) {
+    @GetMapping("/get/{username}")
+    public ResponseEntity<Long> getSingleUser(@PathVariable String username) {
         return ResponseEntity.ok().body(service.getUserByUsernameFromDB(username));
     }
 

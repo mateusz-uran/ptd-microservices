@@ -4,11 +4,13 @@ import { AddImageDetailsComponent } from './add-image-details/add-image-details.
 import { AddTrailerDetailsComponent } from './add-trailer-details/add-trailer-details.component';
 import { AddTruckDetailsComponent } from './add-truck-details/add-truck-details.component';
 import { HomeComponent } from './home/home.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { AuthGuardService } from './service/auth-guard.service';
 import { UserDetailsComponent } from './user-details/user-details.component';
 
 const routes: Routes = [
   {
-    path: '', component: HomeComponent,
+    path: '', component: HomeComponent, canActivate: [AuthGuardService],
     children: [
       {
         path: 'user-details/:username', component: UserDetailsComponent,
