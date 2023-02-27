@@ -2,6 +2,7 @@ package io.github.mateuszuran.user.service;
 
 import io.github.mateuszuran.user.dto.UserRequestDto;
 import io.github.mateuszuran.user.dto.UserResponseDto;
+import io.github.mateuszuran.user.mapper.UserMapper;
 import io.github.mateuszuran.user.model.User;
 import io.github.mateuszuran.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +18,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository repository;
+    private final UserMapper mapper;
 
     public UserResponseDto addUserToDB(UserRequestDto userDto) {
-        User user = User.builder()
-                .firstName(userDto.getFirstName())
-                .lastName(userDto.getLastName())
-                .username(userDto.getUsername())
-                .email(userDto.getEmail())
-                .active(true)
-                .build();
+        var user = mapper.mapToUser(userDto);
         repository.save(user);
-        return mapToUserResponse(user);
+        return mapper.mapToDto(user);
     }
 
     public Long getUserByUsernameFromDB(String username) {
@@ -39,7 +35,7 @@ public class UserService {
     public UserResponseDto getUserInformation(String username) {
         var user = repository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
-        return mapToUserResponse(user);
+        return mapper.mapToDto(user);
     }
 
     public List<String> getAllUsersUsername() {
@@ -51,16 +47,5 @@ public class UserService {
         user.setActive(!user.isActive());
         repository.save(user);
         return user.isActive();
-    }
-
-    private UserResponseDto mapToUserResponse(User user) {
-        return UserResponseDto.builder()
-                .id(user.getId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .active(user.isActive())
-                .build();
     }
 }
