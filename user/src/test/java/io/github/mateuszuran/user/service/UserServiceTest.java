@@ -10,17 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.reactivestreams.Publisher;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -100,5 +94,20 @@ class UserServiceTest {
         var result = service.toggleUserLock(user.getId());
         //then
         assertThat(result).isFalse();
+    }
+
+    @Test
+    void editUser() {
+        //given
+        UserRequestDto userDto = UserRequestDto.builder().firstName("John").lastName("Woo").build();
+        User user = User.builder().firstName("John").lastName("Woo").build();
+        UserResponseDto updatedUser = UserResponseDto.builder().firstName("Adam").lastName("Woo").build();
+        //when
+        when(repository.findByUsername(userDto.getUsername())).thenReturn(Optional.of(user));
+        when(repository.save(user)).thenReturn(user);
+        when(mapper.mapToDto(user)).thenReturn(updatedUser);
+        var result = service.updateUser(userDto);
+        //then
+        assertThat(result.getFirstName()).isEqualTo(updatedUser.getFirstName());
     }
 }

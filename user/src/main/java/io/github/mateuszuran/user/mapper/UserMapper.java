@@ -19,4 +19,8 @@ public class UserMapper {
     public User mapToUser(UserRequestDto userDto) {
         return mapper.map(userDto, User.class);
     }
+
+    public void mapToUpdate(UserRequestDto userRequestDto, User user) {
+        mapper.map(userRequestDto, user);
+    }
 }

@@ -7,6 +7,7 @@ import io.github.mateuszuran.user.model.User;
 import io.github.mateuszuran.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -47,5 +48,12 @@ public class UserService {
         user.setActive(!user.isActive());
         repository.save(user);
         return user.isActive();
+    }
+
+    public UserResponseDto updateUser(UserRequestDto userDto) {
+        var result = repository.findByUsername(userDto.getUsername()).orElseThrow();
+        mapper.mapToUpdate(userDto, result);
+        repository.save(result);
+        return mapper.mapToDto(result);
     }
 }
