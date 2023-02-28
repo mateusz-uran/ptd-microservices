@@ -37,3 +37,7 @@ img {
     background-color: #c2185b;
     border-radius: 5px;
 }
+
+.button-wrapper {
+    padding: 5px;
+}

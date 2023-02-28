@@ -42,4 +42,9 @@ public class UserController {
     public ResponseEntity<UserResponseDto> getUserInformation(@PathVariable String username) {
         return ResponseEntity.ok().body(service.getUserInformation(username));
     }
+
+    @PatchMapping("/update")
+    public ResponseEntity<UserResponseDto> editUser(@RequestBody UserRequestDto user) {
+        return ResponseEntity.ok().body(service.updateUser(user));
+    }
 }

@@ -1,5 +1,9 @@
 <mat-sidenav mode="side" opened class="sidenav">
 
+    <div class="button-wrapper">
+        <button mat-stroked-button color="primary" [routerLink]="['new-user']">Add user</button>
+    </div>
+
     <mat-nav-list role="list" *ngFor="let user of username">
         <mat-list-item [routerLink]="['/user-details', user]" routerLinkActive="active">
             <div class="element">
