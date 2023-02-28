@@ -35,6 +35,7 @@ import { OAuthModule } from "angular-oauth2-oidc";
 import { InterceptorService } from './service/interceptor.service';
 import { CachingInterceptorService } from './service/caching.interceptor.service';
 import { AddUserComponent } from './add-user/add-user.component';
+import { EditUserComponent } from './edit-user/edit-user.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { AddUserComponent } from './add-user/add-user.component';
     EditTrailerComponent,
     EditImageInfoComponent,
     ImageUploadComponent,
-    AddUserComponent
+    AddUserComponent,
+    EditUserComponent
   ],
   imports: [
     BrowserModule,

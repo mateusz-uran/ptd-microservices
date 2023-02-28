@@ -18,6 +18,8 @@ export class UserDetailsComponent implements OnInit {
     username: ''
   };
 
+  editModeUser: boolean = false;
+
   constructor(private route: ActivatedRoute, private userService: UserService, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
