@@ -10,7 +10,7 @@ import { VehicleService } from '../service/vehicle.service';
 })
 export class EditTruckComponent implements OnInit {
 
-  @Input() truck!: Truck  
+  @Input() truck!: Truck
   @Output() mode = new EventEmitter<boolean>();
   @Output() updatedTruck = new EventEmitter<Truck>();
   truckEditForm!: FormGroup;
