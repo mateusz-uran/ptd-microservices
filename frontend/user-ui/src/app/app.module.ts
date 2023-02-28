@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -31,11 +31,10 @@ import { EditTrailerComponent } from './edit-trailer/edit-trailer.component';
 import { EditImageInfoComponent } from './edit-image-info/edit-image-info.component';
 import { ImageUploadComponent } from './image-upload/image-upload.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { AuthConfig, OAuthModule, OAuthService } from "angular-oauth2-oidc";
+import { OAuthModule } from "angular-oauth2-oidc";
 import { InterceptorService } from './service/interceptor.service';
 import { CachingInterceptorService } from './service/caching.interceptor.service';
-import { authConfig } from './auth.config';
-import { AuthService } from './service/auth.service';
+import { AddUserComponent } from './add-user/add-user.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +52,8 @@ import { AuthService } from './service/auth.service';
     EditTruckComponent,
     EditTrailerComponent,
     EditImageInfoComponent,
-    ImageUploadComponent
+    ImageUploadComponent,
+    AddUserComponent
   ],
   imports: [
     BrowserModule,

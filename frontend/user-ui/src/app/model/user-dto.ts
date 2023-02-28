@@ -6,3 +6,10 @@ export interface UserDto {
     email?: string;
     active?: boolean;
 }
+
+export interface UserFormDto {
+    firstName?: string;
+    lastName?: string;
+    username: string;
+    email?: string;
+}
