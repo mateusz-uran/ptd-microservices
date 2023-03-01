@@ -1,5 +1,6 @@
 package io.github.mateuszuran.user.service;
 
+import io.github.mateuszuran.user.dto.UserInfoDto;
 import io.github.mateuszuran.user.dto.UserRequestDto;
 import io.github.mateuszuran.user.dto.UserResponseDto;
 import io.github.mateuszuran.user.mapper.UserMapper;
@@ -11,7 +12,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -41,6 +44,18 @@ public class UserService {
 
     public List<String> getAllUsersUsername() {
         return repository.getUsernameList();
+    }
+
+    public List<UserInfoDto> getUsernamesAndNames() {
+        var userList = repository.findAll();
+        List<UserInfoDto> userInfoDtoList = new ArrayList<>();
+        for (User user : userList) {
+            userInfoDtoList.add(UserInfoDto.builder()
+                    .username(user.getUsername())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName()).build());
+        }
+        return userInfoDtoList;
     }
 
     public boolean toggleUserLock(Long userId) {

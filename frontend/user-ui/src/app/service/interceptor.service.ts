@@ -11,7 +11,6 @@ export class InterceptorService implements HttpInterceptor {
   constructor(private oauthService: OAuthService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log("interceptor")
     const token = this.oauthService.getAccessToken()
     const isApiUrlUser = request.url.includes("user");
     const isApiUrlVehicle = request.url.includes("vehicle");

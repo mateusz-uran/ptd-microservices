@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { UserDto, UserFormDto } from '../model/user-dto';
+import { UserDto, UserFormDto, UserInfoDto } from '../model/user-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +19,10 @@ export class UserService {
       .pipe(tap((users: Array<string>) => {
         this.usersList.next(users);
       }));
+  }
+
+  getAllUsersInfo(): Observable<Array<UserInfoDto>> {
+    return this.httpClient.get<Array<UserInfoDto>>(this.baseURL + "/all-info");
   }
 
   getUserInformation(username: string): Observable<UserDto> {
