@@ -1,5 +1,6 @@
 package io.github.mateuszuran.user.controller;
 
+import io.github.mateuszuran.user.dto.UserInfoDto;
 import io.github.mateuszuran.user.dto.UserRequestDto;
 import io.github.mateuszuran.user.dto.UserResponseDto;
 import io.github.mateuszuran.user.service.UserService;
@@ -26,6 +27,11 @@ public class UserController {
     @GetMapping("/all")
     public ResponseEntity<List<String>> getUsersNicknames() {
         return ResponseEntity.ok().body(service.getAllUsersUsername());
+    }
+
+    @GetMapping("/all-info")
+    public ResponseEntity<List<UserInfoDto>> getUsersInformation() {
+        return ResponseEntity.ok().body(service.getUsernamesAndNames());
     }
 
     @GetMapping("/get/{username}")
