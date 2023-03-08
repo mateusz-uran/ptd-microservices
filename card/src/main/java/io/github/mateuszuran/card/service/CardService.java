@@ -47,16 +47,25 @@ public class CardService {
                 .block();
     }
 
+    public Long getUser(String username) {
+        return  webClientBuilder.build().get()
+                .uri("http://user-service/api/user",
+                        uriBuilder -> uriBuilder.path("/get/{username}").build(username))
+                .retrieve()
+                .bodyToMono(Long.class)
+                .block();
+    }
+
     public CardResponse saveCard(CardRequest cardDto, int year, int month, int dayOfMonth) {
         if (repository.existsByNumber(cardDto.getNumber())) {
             throw new CardExistsException(cardDto.getNumber());
         } else {
-            var username = getUsername(cardDto.getAuthorUsername());
+            var receivedUserId = getUser(cardDto.getAuthorUsername());
             var actualDate = LocalDateTime.now();
             var date = LocalDateTime.of(year, month, dayOfMonth, actualDate.getHour(), actualDate.getMinute(), actualDate.getSecond());
             Card card = Card.builder()
                     .number(cardDto.getNumber())
-                    .userId(username.getId())
+                    .userId(receivedUserId)
                     .creationTime(date)
                     .build();
             repository.save(card);
@@ -70,13 +79,13 @@ public class CardService {
     }
 
     public List<CardResponse> getAllCardByUserAndDate(String username, int year, int month) {
-        var user = getUsername(username);
+        var user = getUser(username);
         var actualDate = LocalDate.of(year, month, 1);
 
         LocalDateTime startDate = actualDate.with(firstDayOfMonth()).atStartOfDay();
         LocalDateTime endDate = actualDate.with(lastDayOfMonth()).atStartOfDay();
 
-        var result = repository.findAllByUserIdAndCreationTimeBetween(user.getId(), startDate, endDate);
+        var result = repository.findAllByUserIdAndCreationTimeBetween(user, startDate, endDate);
         return result.stream().map(cardMapper::mapToCardResponseWithFormattedCreationTime)
                 .sorted(Comparator.comparing(CardResponse::getCreationTime).reversed())
                 .toList();

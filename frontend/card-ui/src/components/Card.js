@@ -214,7 +214,8 @@ function Card() {
     }
 
     const retrieveUserInfo = () => {
-        UserService.getUserByUsername(JSON.parse(localStorage.getItem('user')))
+        let username = JSON.parse(localStorage.getItem('user'));
+        UserService.getUser(username)
             .then(response => {
                 setStoredUserId(response.data.id);
             })
