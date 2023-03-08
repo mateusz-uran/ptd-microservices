@@ -7,6 +7,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { MdDarkMode } from 'react-icons/md';
 import { BsFillSunFill } from 'react-icons/bs';
 import CardsList from './CardsList';
+import Divider from '@mui/material/Divider';
 
 function Home(props) {
     const [darkMode, setDarkMode] = useState(false);
@@ -69,10 +70,12 @@ function Home(props) {
                         <MdDarkMode className={darkMode ? 'text-white' : ''} />
                     </div>
                 </div>
-                {renderCardListHandler && 
-                <CardsList
-                    user={username}
-                />}
+                <Divider sx={{ borderBottomWidth: 2, marginBottom: 2 }} />
+                {renderCardListHandler &&
+                    <CardsList
+                        user={username}
+                        mode={darkMode}
+                    />}
             </ThemeProvider>
         </div>
     );
