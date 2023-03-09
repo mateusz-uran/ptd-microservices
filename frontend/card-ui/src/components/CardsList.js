@@ -49,6 +49,7 @@ function CardsList(props) {
 
     const handleCardInformation = (id) => {
         setCardId(id);
+        localStorage.setItem('selectedCard', JSON.stringify(id));
         if (renderCardInfoHandler === true && cardId !== 0) {
             setRenderCardInfoHandler(false);
             setRenderCardInfoHandler(true);
@@ -64,13 +65,22 @@ function CardsList(props) {
             })
     }
 
+    function checkStorage() {
+        let storedCardId = JSON.parse(localStorage.getItem('selectedCard'));
+        if (storedCardId !== undefined && storedCardId !== null) {
+            setCardId(storedCardId);
+            setRenderCardInfoHandler(true);
+        }
+    }
+
     useEffect(() => {
         retrieveCardByUserAndDate();
+        checkStorage();
     }, [])
 
     return (
         <div className={`flex flex-row px-4 ${mode ? 'text-white' : ''}`}>
-            <div>
+            <div className='w-1/6'>
                 <form>
                     <div className='flex items-center'>
                         <TextField
@@ -106,7 +116,7 @@ function CardsList(props) {
                     )
                 })}
             </div>
-            <div className='w-full'>{renderCardInfoHandler &&
+            <div className='w-full'>{renderCardInfoHandler && cardId &&
                 <CardSpecification id={cardId} />
             }
             </div>

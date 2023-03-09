@@ -8,6 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import TableHead from '@mui/material/TableHead';
 import CardService from '../services/CardService';
 import { TableFooter } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 function CardSpecification(props) {
     const { id } = props;
@@ -37,8 +38,11 @@ function CardSpecification(props) {
 
     return (
         <div className='px-5'>
+            <div>
+                <Link to="/addtrip">add trip</Link>
+            </div>
             <TableContainer>
-                <Table>
+                <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
                             <TableCell align="center" colSpan={5}>
@@ -66,18 +70,18 @@ function CardSpecification(props) {
                             ? trips.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             : trips
                         ).map((row) => (
-                        <TableRow key={row.id} hover >
-                            <TableCell>{row.dayStart}</TableCell>
-                            <TableCell>{row.hourStart}</TableCell>
-                            <TableCell>{row.locationStart}</TableCell>
-                            <TableCell>{row.countryStart}</TableCell>
-                            <TableCell>{row.counterStart}</TableCell>
-                            <TableCell>{row.dayEnd}</TableCell>
-                            <TableCell>{row.hourEnd}</TableCell>
-                            <TableCell>{row.locationEnd}</TableCell>
-                            <TableCell>{row.countryEnd}</TableCell>
-                            <TableCell>{row.counterEnd}</TableCell>
-                        </TableRow>
+                            <TableRow key={row.id} hover >
+                                <TableCell>{row.dayStart}</TableCell>
+                                <TableCell>{row.hourStart}</TableCell>
+                                <TableCell>{row.locationStart}</TableCell>
+                                <TableCell>{row.countryStart}</TableCell>
+                                <TableCell>{row.counterStart}</TableCell>
+                                <TableCell>{row.dayEnd}</TableCell>
+                                <TableCell>{row.hourEnd}</TableCell>
+                                <TableCell>{row.locationEnd}</TableCell>
+                                <TableCell>{row.countryEnd}</TableCell>
+                                <TableCell>{row.counterEnd}</TableCell>
+                            </TableRow>
                         ))}
                         {emptyRows > 0 && (
                             <TableRow style={{ height: 53 * emptyRows }}>

@@ -22,6 +22,7 @@ function Home(props) {
     const handleSubmit = (event) => {
         event.preventDefault();
         setRenderCardListHandler(true);
+        localStorage.setItem('username', JSON.stringify(username));
     }
 
     const darkTheme = createTheme(darkMode ?
@@ -36,7 +37,16 @@ function Home(props) {
         }
     )
 
+    function checkStorage() {
+        let user = JSON.parse(localStorage.getItem('username'));
+        if (user !== undefined && user !== null) {
+            setUsername(user);
+            setRenderCardListHandler(true);
+        }
+    }
+
     useEffect(() => {
+        checkStorage();
         setDarkMode(JSON.parse(localStorage.getItem('theme')));
     }, []);
 
@@ -44,7 +54,7 @@ function Home(props) {
         <div className={darkMode ? 'dark bg-slate-900' : 'bg-blue-200'}>
             <ThemeProvider theme={darkTheme}>
                 <div className='p-4 flex justify-between items-center'>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit} className='w-1/6'>
                         <div className='flex items-center'>
                             <TextField
                                 className={darkMode ? 'text-white' : ''}
@@ -71,7 +81,7 @@ function Home(props) {
                     </div>
                 </div>
                 <Divider sx={{ borderBottomWidth: 2, marginBottom: 2 }} />
-                {renderCardListHandler &&
+                {renderCardListHandler && username &&
                     <CardsList
                         user={username}
                         mode={darkMode}
