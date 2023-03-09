@@ -106,7 +106,7 @@ function CardsList(props) {
                     )
                 })}
             </div>
-            <div>{renderCardInfoHandler &&
+            <div className='w-full'>{renderCardInfoHandler &&
                 <CardSpecification id={cardId} />
             }
             </div>
