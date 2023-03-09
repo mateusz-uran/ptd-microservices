@@ -11,6 +11,7 @@ import io.github.mateuszuran.card.mapper.CardMapper;
 import io.github.mateuszuran.card.mapper.FuelMapper;
 import io.github.mateuszuran.card.mapper.TripMapper;
 import io.github.mateuszuran.card.model.Card;
+import io.github.mateuszuran.card.repository.CardProjections;
 import io.github.mateuszuran.card.repository.CardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
@@ -89,6 +92,16 @@ public class CardService {
         return result.stream().map(cardMapper::mapToCardResponseWithFormattedCreationTime)
                 .sorted(Comparator.comparing(CardResponse::getCreationTime).reversed())
                 .toList();
+    }
+
+    public List<CardProjections> getCardInfo(String username, int year, int month) {
+        var user = getUser(username);
+        var actualDate = LocalDate.of(year, month, 1);
+
+        LocalDateTime startDate = actualDate.with(firstDayOfMonth()).atStartOfDay();
+        LocalDateTime endDate = actualDate.with(lastDayOfMonth()).atStartOfDay();
+
+        return repository.findCardsInfo(user,startDate, endDate);
     }
 
     public List<FuelResponse> getFuelsFromCard(Long id) {

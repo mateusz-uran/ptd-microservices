@@ -11,7 +11,6 @@ import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CardSpecification from './CardSpecification';
-import styled from '@emotion/styled';
 
 function CardsList(props) {
     const { user, mode } = props;
@@ -50,7 +49,7 @@ function CardsList(props) {
 
     const handleCardInformation = (id) => {
         setCardId(id);
-        if (renderCardInfoHandler == true && cardId !== 0) {
+        if (renderCardInfoHandler === true && cardId !== 0) {
             setRenderCardInfoHandler(false);
             setRenderCardInfoHandler(true);
         } else {
@@ -93,7 +92,7 @@ function CardsList(props) {
                         <div key={index}>
                             <List>
                                 <ListItemButton
-                                    selected={renderCardInfoHandler && cardId == card.id}
+                                    selected={renderCardInfoHandler && cardId === card.id}
                                     onClick={() => handleCardInformation(card.id)}
                                 >
                                     <ListItemText primary={card.number} />
