@@ -19,8 +19,8 @@ public class TripController {
     private final TripService service;
 
     @PostMapping
-    public ResponseEntity<?> addTripsList(@RequestBody List<TripValues> trips, @RequestParam Long id) {
-        service.addManyTips(trips, id);
+    public ResponseEntity<?> addTripsList(@RequestBody List<TripValues> trips, @RequestParam Long cardId) {
+        service.addManyTips(trips, cardId);
         return ResponseEntity.ok().body(HttpStatus.CREATED);
     }
 

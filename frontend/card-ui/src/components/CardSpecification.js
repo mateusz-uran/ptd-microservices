@@ -7,15 +7,17 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TableHead from '@mui/material/TableHead';
 import CardService from '../services/CardService';
-import { TableFooter } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Button, TableFooter } from '@mui/material';
+import { Link, useOutletContext } from 'react-router-dom';
 
 function CardSpecification(props) {
-    const { id } = props;
+    const [cardId, setCardId] = useOutletContext();
 
     const [trips, setTrips] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+
+    const [cardDisabled, setCardDisabled] = useState(false);
 
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - trips.length) : 0;
@@ -29,20 +31,36 @@ function CardSpecification(props) {
         setPage(0);
     };
 
+    const handleFinishCard = (cardId) => {
+        CardService.toggleCard(cardId)
+            .then((response) => {
+                if (response.data == true) {
+                    setCardDisabled(true);
+                } else {
+                    setCardDisabled(false);
+                }
+            }, (error) => {
+                console.log(error);
+            })
+    }
+
     useEffect(() => {
-        CardService.getTripFromCard(id)
+        CardService.getTripFromCard(cardId)
             .then(response => {
                 setTrips(response.data);
             })
-    }, [id])
+    }, [cardId])
 
     return (
-        <div className='px-5'>
-            <div>
-                <Link to="/addtrip">add trip</Link>
+        <div className='lg:px-5'>
+            <div className='flex pb-1'>
+                <Button variant="contained" onClick={cardId ? () => handleFinishCard(cardId) : null} sx={{ fontWeight: 'bold', marginRight: 1 }}>Finish Card</Button>
+                <Link to={`../${cardId}/add`} relative="path">
+                    <Button variant="contained" sx={{ fontWeight: 'bold' }}>Add Trip</Button>
+                </Link>
             </div>
             <TableContainer>
-                <Table stickyHeader aria-label="sticky table">
+                <Table stickyHeader aria-label="sticky table" sx={cardDisabled ? { opacity: .7 } : null}>
                     <TableHead>
                         <TableRow>
                             <TableCell align="center" colSpan={5}>

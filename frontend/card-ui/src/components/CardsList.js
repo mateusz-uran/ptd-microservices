@@ -6,11 +6,13 @@ import Divider from '@mui/material/Divider';
 import CardService from '../services/CardService';
 import { getCurrentDay, getCurrentMonth, getCurrentYear } from './utils';
 import { ListItemButton } from '@mui/material';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CardSpecification from './CardSpecification';
+import { Link, Outlet } from 'react-router-dom';
 
 function CardsList(props) {
     const { user, mode } = props;
@@ -74,13 +76,13 @@ function CardsList(props) {
     }
 
     useEffect(() => {
-        retrieveCardByUserAndDate();
+        user && retrieveCardByUserAndDate();
         checkStorage();
     }, [])
 
     return (
-        <div className={`flex flex-row px-4 ${mode ? 'text-white' : ''}`}>
-            <div className='w-1/6'>
+        <div className={`flex lg:flex-row flex-col px-4 ${mode ? 'text-white' : ''}`}>
+            <div className='lg:w-1/6'>
                 <form>
                     <div className='flex items-center'>
                         <TextField
@@ -97,27 +99,41 @@ function CardsList(props) {
                         </IconButton>
                     </div>
                 </form>
-                {cardsList && cardsList.length > 0 && cardsList.map((card, index) => {
+                {cardsList && cardsList.length > 0 ? (cardsList.map((card, index) => {
                     return (
                         <div key={index}>
                             <List>
-                                <ListItemButton
-                                    selected={renderCardInfoHandler && cardId === card.id}
-                                    onClick={() => handleCardInformation(card.id)}
-                                >
-                                    <ListItemText primary={card.number} />
-                                    <IconButton edge="end" onClick={() => handleDelete(card.id)}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </ListItemButton>
+                                <Link to={`card/${card.id}`}>
+                                    <ListItemButton
+                                        selected={renderCardInfoHandler && cardId === card.id}
+                                        onClick={() => handleCardInformation(card.id)}
+                                        sx={card.done ?
+                                            { borderLeft: 1, borderColor: 'green' } :
+                                            { borderLeft: 1, borderColor: 'transparent' }
+                                        }
+                                    >
+                                        <ListItemText primary={card.number} />
+                                        <IconButton edge="end" sx={{padding: 2}}>
+                                            <PictureAsPdfIcon />
+                                        </IconButton>
+                                        <IconButton edge="end" sx={{padding: 2}} onClick={() => handleDelete(card.id)}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </ListItemButton>
+                                </Link>
                                 <Divider sx={{ borderBottomWidth: 2 }} />
                             </List>
                         </div>
                     )
-                })}
+                })) :
+                    (<List>
+                        <ListItemButton>
+                            <ListItemText>No cards found</ListItemText>
+                        </ListItemButton>
+                    </List>)}
             </div>
             <div className='w-full'>{renderCardInfoHandler && cardId &&
-                <CardSpecification id={cardId} />
+                <Outlet context={[cardId, setCardId]} />
             }
             </div>
         </div>
