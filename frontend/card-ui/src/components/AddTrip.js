@@ -5,7 +5,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import SendIcon from '@mui/icons-material/Send';
-import TripService from '../services/TripService';
+import * as Yup from "yup";
+import { tripSchema } from '../validation/schema';
 
 function AddTrip(props) {
     const navigate = useNavigate();
@@ -22,18 +23,19 @@ function AddTrip(props) {
         const values = [...inputFields];
         values[index][event.target.name] = event.target.value;
         setInputFields(values);
+        console.log(event)
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        TripService.createFixed(cardId, inputFields).then(
-            (response) => {
-                console.log(response);
-            },
-            (error) => {
-                console.log(error);
-            }
-        )
+        // TripService.createFixed(cardId, inputFields).then(
+        //     (response) => {
+        //         console.log(response);
+        //     },
+        //     (error) => {
+        //         console.log(error);
+        //     }
+        // )
     };
 
     const handleAddFields = (locationEnd, countryEnd, counterEnd) => {
@@ -58,6 +60,7 @@ function AddTrip(props) {
         <div>
             <button onClick={() => navigate(-1)}>Go back</button>
             <div className='flex justify-center'>
+
                 <form onSubmit={handleSubmit}>
                     {inputFields.map((inputField, index) => (
                         <div key={index}>
@@ -163,6 +166,7 @@ function AddTrip(props) {
                         Send
                     </Button>
                 </form>
+
             </div>
         </div>
     );

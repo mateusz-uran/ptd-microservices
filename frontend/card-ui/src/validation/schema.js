@@ -42,3 +42,16 @@ export const trips = yup.object({
         })
     )
 })
+
+export const tripFormikValidation = yup.object().shape({
+    fields: yup.array().of(
+        yup.object().shape({
+            dayStart: yup.string().min(2, 'Must be longer then 2 characters').required("Day start cannot be empty"),
+            hourStart: yup.string().required("Hour start cannot be empty"),
+
+            dayEnd: yup.string().min(2, 'Must be longer then 2 characters').required("Day start cannot be empty"),
+            hourEnd: yup.string().required("Hour end cannot be empty"),
+        })
+    )
+        .required("You must have at least one field"),
+});

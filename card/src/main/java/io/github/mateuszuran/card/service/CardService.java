@@ -62,6 +62,8 @@ public class CardService {
     public CardResponse saveCard(CardRequest cardDto, int year, int month, int dayOfMonth) {
         if (repository.existsByNumber(cardDto.getNumber())) {
             throw new CardExistsException(cardDto.getNumber());
+        } else if (cardDto.getNumber().isEmpty()) {
+            throw new CardEmptyException();
         } else {
             var receivedUserId = getUser(cardDto.getAuthorUsername());
             var actualDate = LocalDateTime.now();

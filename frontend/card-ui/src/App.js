@@ -1,18 +1,12 @@
-import { Switch } from '@mui/material';
 import {
-  BrowserRouter,
-  Route,
-  Router,
-  Routes,
   createBrowserRouter,
   RouterProvider
 } from 'react-router-dom';
 import './App.css';
 import AddTrip from './components/AddTrip';
-import Card from './components/Card';
+import AddTripFormikUI from './components/AddTripFormikUI';
 import CardSpecification from './components/CardSpecification';
 import ErrorPage from './components/ErrorPage';
-import Home from './components/Home';
 import Navbar from './components/Navbar';
 
 const router = createBrowserRouter([
@@ -26,8 +20,8 @@ const router = createBrowserRouter([
         element: <CardSpecification />,
       },
       {
-        path: "card/:cardId/add",
-        element: <AddTrip />,
+        path: "card/:cardId/add-trip",
+        element: <AddTripFormikUI />,
       },
     ],
   },

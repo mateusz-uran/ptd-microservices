@@ -11,13 +11,12 @@ import { Button, TableFooter } from '@mui/material';
 import { Link, useOutletContext } from 'react-router-dom';
 
 function CardSpecification(props) {
-    const [cardId, setCardId] = useOutletContext();
+
+    const [cardId] = useOutletContext();
 
     const [trips, setTrips] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-
-    const [cardDisabled, setCardDisabled] = useState(false);
 
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - trips.length) : 0;
@@ -31,19 +30,6 @@ function CardSpecification(props) {
         setPage(0);
     };
 
-    const handleFinishCard = (cardId) => {
-        CardService.toggleCard(cardId)
-            .then((response) => {
-                if (response.data == true) {
-                    setCardDisabled(true);
-                } else {
-                    setCardDisabled(false);
-                }
-            }, (error) => {
-                console.log(error);
-            })
-    }
-
     useEffect(() => {
         CardService.getTripFromCard(cardId)
             .then(response => {
@@ -52,15 +38,14 @@ function CardSpecification(props) {
     }, [cardId])
 
     return (
-        <div className='lg:px-5'>
+        <div className='lg:px-5 my-2'>
             <div className='flex pb-1'>
-                <Button variant="contained" onClick={cardId ? () => handleFinishCard(cardId) : null} sx={{ fontWeight: 'bold', marginRight: 1 }}>Finish Card</Button>
-                <Link to={`../${cardId}/add`} relative="path">
-                    <Button variant="contained" sx={{ fontWeight: 'bold' }}>Add Trip</Button>
+                <Link to={`../${cardId}/add-trip`} relative="path">
+                    <Button variant="outlined" sx={{ fontWeight: 'bold' }}>Add Trip</Button>
                 </Link>
             </div>
             <TableContainer>
-                <Table stickyHeader aria-label="sticky table" sx={cardDisabled ? { opacity: .7 } : null}>
+                <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
                             <TableCell align="center" colSpan={5}>

@@ -8,6 +8,7 @@ import { MdDarkMode } from 'react-icons/md';
 import { BsFillSunFill } from 'react-icons/bs';
 import Divider from '@mui/material/Divider';
 import CardsList from './CardsList';
+import { ThemeContext } from '@emotion/react';
 
 function Navbar(props) {
     const [darkMode, setDarkMode] = useState(false);
@@ -56,7 +57,7 @@ function Navbar(props) {
     }, []);
 
     return (
-        <div className={darkMode ? 'dark bg-slate-900' : 'bg-blue-200'}>
+        <div className={`${darkMode ? 'dark bg-slate-700' : 'bg-blue-200'}`}>
             <ThemeProvider theme={darkTheme}>
                 <div className='p-4 flex justify-between items-center'>
                     <form onSubmit={handleSubmit} className='lg:w-1/6'>
@@ -82,7 +83,7 @@ function Navbar(props) {
                         <MdDarkMode className={darkMode ? 'text-white' : ''} />
                     </div>
                 </div>
-                <Divider sx={{ borderBottomWidth: 2, marginBottom: 2 }} />
+                <Divider sx={{ borderBottomWidth: 2, marginBottom: 0 }} />
                 {renderCardListHandler &&
                     <CardsList
                         user={username}

@@ -5,14 +5,14 @@ import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import CardService from '../services/CardService';
 import { getCurrentDay, getCurrentMonth, getCurrentYear } from './utils';
-import { ListItemButton } from '@mui/material';
+import { ListItemButton, ToggleButton } from '@mui/material';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-import CardSpecification from './CardSpecification';
 import { Link, Outlet } from 'react-router-dom';
+import CheckIcon from '@mui/icons-material/Check';
 
 function CardsList(props) {
     const { user, mode } = props;
@@ -49,6 +49,28 @@ function CardsList(props) {
             })
     }
 
+    const handleFinishCard = (id) => {
+        CardService.toggleCard(id)
+            .then(() => {
+                toggleSelectedCard(id)
+            }, (error) => {
+                console.log(error);
+            })
+    }
+
+    function toggleSelectedCard(id) {
+        setCardsList(prevState => {
+            const updatedCards = prevState.map(card => {
+                if (card.id === id) {
+                    return { ...card, done: !card.done };
+                } else {
+                    return card;
+                }
+            });
+            return updatedCards;
+        });
+    }
+
     const handleCardInformation = (id) => {
         setCardId(id);
         localStorage.setItem('selectedCard', JSON.stringify(id));
@@ -82,7 +104,7 @@ function CardsList(props) {
 
     return (
         <div className={`flex lg:flex-row flex-col px-4 ${mode ? 'text-white' : ''}`}>
-            <div className='lg:w-1/6'>
+            <div className='lg:w-1/6 my-2'>
                 <form>
                     <div className='flex items-center'>
                         <TextField
@@ -107,16 +129,20 @@ function CardsList(props) {
                                     <ListItemButton
                                         selected={renderCardInfoHandler && cardId === card.id}
                                         onClick={() => handleCardInformation(card.id)}
-                                        sx={card.done ?
-                                            { borderLeft: 1, borderColor: 'green' } :
-                                            { borderLeft: 1, borderColor: 'transparent' }
-                                        }
                                     >
-                                        <ListItemText primary={card.number} />
-                                        <IconButton edge="end" sx={{padding: 2}}>
+                                        <ToggleButton
+                                            value="check"
+                                            selected={card.done}
+                                            onClick={() => handleFinishCard(card.id)}
+                                            sx={{ marginX: 1 }}
+                                        >
+                                            <CheckIcon />
+                                        </ToggleButton>
+                                        <ListItemText sx={{ textTransform: 'uppercase' }} primary={card.number} />
+                                        <IconButton edge="end" sx={{ marginX: 1 }}>
                                             <PictureAsPdfIcon />
                                         </IconButton>
-                                        <IconButton edge="end" sx={{padding: 2}} onClick={() => handleDelete(card.id)}>
+                                        <IconButton edge="end" onClick={() => handleDelete(card.id)}>
                                             <DeleteIcon />
                                         </IconButton>
                                     </ListItemButton>
@@ -132,8 +158,9 @@ function CardsList(props) {
                         </ListItemButton>
                     </List>)}
             </div>
+            <Divider orientation="vertical" flexItem sx={{ borderWidth: 1 }} />
             <div className='w-full'>{renderCardInfoHandler && cardId &&
-                <Outlet context={[cardId, setCardId]} />
+                <Outlet context={[cardId]} />
             }
             </div>
         </div>
