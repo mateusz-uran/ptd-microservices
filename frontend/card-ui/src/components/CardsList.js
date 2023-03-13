@@ -15,12 +15,13 @@ import { Link, Outlet } from 'react-router-dom';
 import CheckIcon from '@mui/icons-material/Check';
 import { useFormik } from 'formik';
 import * as yup from "yup";
+import CardCalendar from './CardCalendar';
 
 function CardsList(props) {
     const { user, mode } = props;
 
-    const year = getCurrentYear();
-    const month = getCurrentMonth();
+    const [year, setYear] = useState(getCurrentYear());
+    const [month, setMonth] = useState(getCurrentMonth());
     const day = getCurrentDay();
 
     const [cardsList, setCardsList] = useState([]);
@@ -108,7 +109,7 @@ function CardsList(props) {
     useEffect(() => {
         user && retrieveCardByUserAndDate();
         checkStorage();
-    }, [])
+    }, [year, month])
 
     return (
         <div className={`flex lg:flex-row flex-col px-4 ${mode ? 'text-white' : ''}`}>
@@ -130,6 +131,16 @@ function CardsList(props) {
                         </IconButton>
                     </div>
                 </form>
+
+                <div>
+                    <CardCalendar
+                        year={year}
+                        setYear={setYear}
+                        month={month}
+                        setMonth={setMonth}
+                    />
+                </div>
+
                 {cardsList && cardsList.length > 0 ? (cardsList.map((card, index) => {
                     return (
                         <div key={index}>

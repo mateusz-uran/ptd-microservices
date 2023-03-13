@@ -100,7 +100,11 @@ function CardSpecification(props) {
                     <TableHead>
                         <TableRow>
                             <TableCell>
-                                <IconButton edge="start" onClick={() => handleDeleteSelectedTrips()}>
+                                <IconButton
+                                    disabled={selected.length <= 0}
+                                    edge="start"
+                                    onClick={() => handleDeleteSelectedTrips()}
+                                >
                                     <DeleteIcon />
                                 </IconButton>
                             </TableCell>
