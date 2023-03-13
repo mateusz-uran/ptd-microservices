@@ -136,7 +136,7 @@ services:
     build:
       context: ./api-gateway/
       dockerfile: Dockerfile
-    image: api-gateway:1.1
+    image: api-gateway:1.2
     container_name: api-gateway
     networks:
       - auth-network

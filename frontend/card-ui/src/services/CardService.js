@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const http = axios.create({
-    baseURL: "http://localhost:8080/api/card",
+    baseURL: "http://localhost:8181/api/card",
     headers: {
         "Content-type": "application/json"
     }
@@ -13,6 +13,17 @@ const getCardByUser = username => {
 
 const getCardByUserAndMonth = (username, year, month) => {
     return http.get('/all', {
+        params:
+        {
+            username: username,
+            year: year,
+            month: month
+        }
+    })
+}
+
+const getCardInfoByUserAndMonth = (username, year, month) => {
+    return http.get('/all-info', {
         params:
         {
             username: username,
@@ -56,6 +67,7 @@ const singleCard = id => {
 const CardService = {
     getCardByUser,
     getCardByUserAndMonth,
+    getCardInfoByUserAndMonth,
     create,
     getTripFromCard,
     getFuelFromCard,

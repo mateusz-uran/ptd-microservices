@@ -22,7 +22,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.setAllowedOrigins(List.of("http://localhost:4200"));
+        corsConfig.setAllowedOrigins(List.of("http://localhost:4200", "http://localhost:3000"));
         corsConfig.setMaxAge(8000L);
         corsConfig.addAllowedMethod("*");
         corsConfig.addAllowedHeader("*");
@@ -34,10 +34,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
-        http
+        http.csrf().disable()
                 .authorizeExchange()
                 .pathMatchers("/api/user/get/{username}").permitAll()
-                .pathMatchers("/api/card/**", "/api/pdf/**").permitAll()
+                .pathMatchers("/api/card/**", "/api/trip/**", "/api/fuel/**", "/api/pdf/**").permitAll()
                 .anyExchange().authenticated()
                 .and()
                 .oauth2ResourceServer()
