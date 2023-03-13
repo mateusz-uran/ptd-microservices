@@ -40,4 +40,10 @@ public class TripController {
         service.delete(id);
         return ResponseEntity.ok().body(HttpStatus.NO_CONTENT);
     }
+
+    @DeleteMapping("/list")
+    public ResponseEntity<?> deleteAll(@RequestBody List<Long> selectedTripId) {
+        service.deleteSelected(selectedTripId);
+        return ResponseEntity.ok().body(HttpStatus.NO_CONTENT);
+    }
 }

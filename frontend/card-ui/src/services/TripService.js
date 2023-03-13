@@ -31,12 +31,17 @@ const deleteTrip = (id) => {
     return http.delete("/", { params: { id: id } });
 }
 
+const deleteManyTrips = (selectedTripId) => {
+    return http.delete("/list", { data: selectedTripId });
+}
+
 const TripService = {
     create,
     createFixed,
     retrieveSingle,
     editTrip,
-    deleteTrip
+    deleteTrip,
+    deleteManyTrips
 };
 
 export default TripService;
