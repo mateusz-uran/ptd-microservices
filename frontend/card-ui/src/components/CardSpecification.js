@@ -24,79 +24,7 @@ function CardSpecification(props) {
 
     const [cardId] = useOutletContext();
 
-    const [trips, setTrips] = useState([]);
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
-
-    const [selected, setSelected] = useState([]);
-
-    const [open, setOpen] = useState(false);
-
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelected = trips.map((n) => n.id);
-            setSelected(newSelected);
-            return;
-        }
-        setSelected([]);
-    };
-
-    const handleClick = (event, name) => {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1),
-            );
-        }
-
-        setSelected(newSelected);
-    };
-
-    const isSelected = (tripId) => selected.indexOf(tripId) !== -1;
-
-    const handleDeleteSelectedTrips = () => {
-        TripService.deleteManyTrips(selected)
-            .then(() => {
-                setTrips((prevTrips) =>
-                    prevTrips.filter((trip) => !selected.includes(trip.id))
-                );
-                // Clear the selected state to reflect the successful delete
-                setSelected([]);
-            })
-    }
-
-    const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - trips.length) : 0;
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
-
     useEffect(() => {
-        setOpen(true);
-        CardService.getTripFromCard(cardId)
-            .then(response => {
-                setTrips(response.data);
-                setOpen(false);
-            }, (error) => {
-                setOpen(false);
-                console.log(error);
-            })
-        setSelected([]);
     }, [cardId])
 
     return (

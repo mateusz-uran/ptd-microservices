@@ -55,6 +55,7 @@ public class VehicleController {
         return ResponseEntity.ok().body(service.retrieveVehicleInformation(userId));
     }
 
+    /** PDF service is calling this endpoint to retrieve vehicle information required for PDF**/
     @GetMapping(params = "userId")
     public ResponseEntity<VehiclePDFResponse> sendToPdfService(@RequestParam Long userId) {
         return ResponseEntity.ok().body(service.sendToPdf(userId));

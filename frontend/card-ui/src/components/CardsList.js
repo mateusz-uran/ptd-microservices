@@ -5,8 +5,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import CardService from '../services/CardService';
 import { getCurrentDay, getCurrentMonth, getCurrentYear } from './utils';
-import { Alert, ListItemButton, Snackbar, ToggleButton } from '@mui/material';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import { ListItemButton, ToggleButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton';
@@ -20,6 +19,7 @@ import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import AlertDialog from './AlertDialog';
 import CustomSnackbar from './CustomSnackbar';
+import GeneratePDF from './GeneratePDF';
 
 function CardsList(props) {
     const navigate = useNavigate();
@@ -59,20 +59,6 @@ function CardsList(props) {
         type: '',
         message: ''
     });
-
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-    const handleClick = () => {
-        setSnackbarOpen(true);
-    };
-
-    const handleClose = (event, reason) => {
-        if (reason === "clickaway") {
-            return;
-        }
-
-        setSnackbarOpen(false);
-    };
 
     const formik = useFormik({
         initialValues: {
@@ -197,7 +183,7 @@ function CardsList(props) {
                     </div>
                 </form>
 
-                <div>
+                <div className='mt-2'>
                     <CardCalendar
                         year={year}
                         setYear={setYear}
@@ -219,14 +205,18 @@ function CardsList(props) {
                                             value="check"
                                             selected={card.done}
                                             onClick={() => handleFinishCard(card.id)}
-                                            sx={{ marginX: 1 }}
+                                            sx={{ marginRight: 1 }}
                                         >
                                             <CheckIcon />
                                         </ToggleButton>
                                         <ListItemText sx={{ textTransform: 'uppercase' }} primary={card.number} />
-                                        <IconButton edge="end" sx={{ marginX: 1 }}>
-                                            <PictureAsPdfIcon />
-                                        </IconButton>
+                                        <GeneratePDF
+                                            cardId={cardId}
+                                            cardDone={card.done}
+                                            user={user}
+                                            setOpenBackdrop={setOpenBackdrop}
+                                            setSnackbarInformation={setSnackbarInformation}
+                                        />
                                         <IconButton
                                             edge="end"
                                             onClick={() =>

@@ -8,9 +8,10 @@ import { MdDarkMode } from 'react-icons/md';
 import { BsFillSunFill } from 'react-icons/bs';
 import Divider from '@mui/material/Divider';
 import CardsList from './CardsList';
-import { ThemeContext } from '@emotion/react';
+import { useNavigate } from 'react-router-dom';
 
 function Navbar(props) {
+    const navigate = useNavigate();
     const [darkMode, setDarkMode] = useState(false);
     const [username, setUsername] = useState("");
     const [renderCardListHandler, setRenderCardListHandler] = useState(false);
@@ -23,6 +24,7 @@ function Navbar(props) {
     const handleChangeUsername = (event) => {
         setUsername(event.target.value);
         setRenderCardListHandler(false);
+        navigate("/");
     }
 
     const handleSubmit = (event) => {

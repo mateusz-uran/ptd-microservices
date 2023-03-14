@@ -13,6 +13,7 @@ import io.github.mateuszuran.card.mapper.TripMapper;
 import io.github.mateuszuran.card.model.Card;
 import io.github.mateuszuran.card.repository.CardProjections;
 import io.github.mateuszuran.card.repository.CardRepository;
+import io.github.mateuszuran.card.repository.UserProjections;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -59,6 +60,16 @@ public class CardService {
                 .block();
     }
 
+    public UserProjectionsResponse getUserInformation(String username) {
+        log.info("get user info called");
+        return webClientBuilder.build().get()
+                .uri("http://user-service/api/user",
+                        uriBuilder -> uriBuilder.path("/get/{username}").build(username))
+                .retrieve()
+                .bodyToMono(UserProjectionsResponse.class)
+                .block();
+    }
+
     public CardResponse saveCard(CardRequest cardDto, int year, int month, int dayOfMonth) {
         if (repository.existsByNumber(cardDto.getNumber())) {
             throw new CardExistsException(cardDto.getNumber());
@@ -84,26 +95,19 @@ public class CardService {
     }
 
     public List<CardResponse> getAllCardByUserAndDate(String username, int year, int month) {
-        var user = getUser(username);
+//        var user = getUser(username);
+        var userInfo = getUserInformation(username);
+        log.info(String.valueOf(userInfo));
+
         var actualDate = LocalDate.of(year, month, 1);
 
         LocalDateTime startDate = actualDate.with(firstDayOfMonth()).atStartOfDay();
         LocalDateTime endDate = actualDate.with(lastDayOfMonth()).atStartOfDay();
 
-        var result = repository.findAllByUserIdAndCreationTimeBetween(user, startDate, endDate);
+        var result = repository.findAllByUserIdAndCreationTimeBetween(userInfo.getId(), startDate, endDate);
         return result.stream().map(cardMapper::mapToCardResponseWithFormattedCreationTime)
                 .sorted(Comparator.comparing(CardResponse::getCreationTime).reversed())
                 .toList();
-    }
-
-    public List<CardProjections> getCardInfo(String username, int year, int month) {
-        var user = getUser(username);
-        var actualDate = LocalDate.of(year, month, 1);
-
-        LocalDateTime startDate = actualDate.with(firstDayOfMonth()).atStartOfDay();
-        LocalDateTime endDate = actualDate.with(lastDayOfMonth()).atStartOfDay();
-
-        return repository.findCardsInfo(user,startDate, endDate);
     }
 
     public List<FuelResponse> getFuelsFromCard(Long id) {
