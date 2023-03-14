@@ -11,13 +11,17 @@ import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import CheckIcon from '@mui/icons-material/Check';
 import { useFormik } from 'formik';
 import * as yup from "yup";
 import CardCalendar from './CardCalendar';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import AlertDialog from './AlertDialog';
 
 function CardsList(props) {
+    const navigate = useNavigate();
     const { user, mode } = props;
 
     const [year, setYear] = useState(getCurrentYear());
@@ -29,10 +33,23 @@ function CardsList(props) {
     const [cardId, setCardId] = useState(0);
     const [renderCardInfoHandler, setRenderCardInfoHandler] = useState(false);
 
+    const [openBackdrop, setOpenBackdrop] = useState(false);
+
+    const [confirmOpen, setConfirmOpen] = useState({ 
+        cardIdToDelete: 0, 
+        confirmation: false,
+        number: ''
+    });
+
     const retrieveCardByUserAndDate = () => {
+        setOpenBackdrop(true);
         CardService.getCardByUserAndMonth(user, year, month)
             .then(response => {
                 setCardsList(response.data);
+                setOpenBackdrop(false);
+            }, (error) => {
+                setOpenBackdrop(false);
+                console.log(error);
             });
     }
 
@@ -41,7 +58,7 @@ function CardsList(props) {
             number: '',
         },
         validationSchema: yup.object({
-            number: yup.string().required("Hour start cannot be empty"),
+            number: yup.string().required("Cannot be empty"),
         }),
         onSubmit: (values, { resetForm }) => {
             let cardPayload = {
@@ -95,6 +112,8 @@ function CardsList(props) {
         CardService.deleteCard(id)
             .then(() => {
                 setCardsList(cardsList.filter(card => card.id !== id));
+                setRenderCardInfoHandler(false);
+                navigate(-1);
             })
     }
 
@@ -109,10 +128,23 @@ function CardsList(props) {
     useEffect(() => {
         user && retrieveCardByUserAndDate();
         checkStorage();
+
     }, [year, month])
 
     return (
         <div className={`flex lg:flex-row flex-col px-4 ${mode ? 'text-white' : ''}`}>
+            <Backdrop
+                open={openBackdrop}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+            <AlertDialog
+                title={'Delete card number: ' + confirmOpen.number}
+                open={confirmOpen.confirmation}
+                cardToDelete={confirmOpen.cardIdToDelete}
+                setOpen={setConfirmOpen}
+                onConfirm={handleDelete}
+            ></AlertDialog>
             <div className='lg:w-1/6 my-2'>
                 <form onSubmit={formik.handleSubmit}>
                     <div className='flex items-center'>
@@ -162,7 +194,15 @@ function CardsList(props) {
                                         <IconButton edge="end" sx={{ marginX: 1 }}>
                                             <PictureAsPdfIcon />
                                         </IconButton>
-                                        <IconButton edge="end" onClick={() => handleDelete(card.id)}>
+                                        <IconButton
+                                            edge="end"
+                                            onClick={() =>
+                                                setConfirmOpen(prevState => ({
+                                                    ...prevState,
+                                                    confirmation: true,
+                                                    cardIdToDelete: card.id,
+                                                    number: card.number,
+                                                }))}>
                                             <DeleteIcon />
                                         </IconButton>
                                     </ListItemButton>

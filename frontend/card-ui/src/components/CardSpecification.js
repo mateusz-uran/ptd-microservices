@@ -13,6 +13,9 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TripService from '../services/TripService';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import AlertDialog from './AlertDialog';
 
 
 function CardSpecification(props) {
@@ -24,6 +27,8 @@ function CardSpecification(props) {
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
     const [selected, setSelected] = useState([]);
+
+    const [open, setOpen] = useState(false);
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
@@ -81,9 +86,14 @@ function CardSpecification(props) {
     };
 
     useEffect(() => {
+        setOpen(true);
         CardService.getTripFromCard(cardId)
             .then(response => {
                 setTrips(response.data);
+                setOpen(false);
+            }, (error) => {
+                setOpen(false);
+                console.log(error);
             })
         setSelected([]);
     }, [cardId])
@@ -95,6 +105,11 @@ function CardSpecification(props) {
                     <Button variant="outlined" sx={{ fontWeight: 'bold' }}>Add Trip</Button>
                 </Link>
             </div>
+            <Backdrop
+                open={open}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <TableContainer>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
