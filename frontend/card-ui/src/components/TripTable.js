@@ -15,14 +15,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import TripService from '../services/TripService';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import AlertDialog from './AlertDialog';
-import TripTable from './TripTable';
-import FuelTable from './FuelTable';
 
-
-function CardSpecification(props) {
-
-    const [cardId] = useOutletContext();
+function TripTable(props) {
+    const { cardId } = props;
 
     const [trips, setTrips] = useState([]);
     const [page, setPage] = useState(0);
@@ -98,17 +93,9 @@ function CardSpecification(props) {
             })
         setSelected([]);
     }, [cardId])
-
     return (
-        <div className='lg:px-5 my-2'>
-            <div className='flex pb-1'>
-                <Link to={`../${cardId}/add-trip`} relative="path">
-                    <Button variant="outlined" sx={{ fontWeight: 'bold' }}>Add Trip</Button>
-                </Link>
-            </div>
-            <TripTable cardId={cardId} />
-            <FuelTable cardId={cardId} />
-            {/* <Backdrop
+        <div>
+            <Backdrop
                 open={open}
             >
                 <CircularProgress color="inherit" />
@@ -199,9 +186,9 @@ function CardSpecification(props) {
                         </TableRow>
                     </TableFooter>
                 </Table>
-            </TableContainer> */}
+            </TableContainer>
         </div>
     );
 }
 
-export default CardSpecification;
+export default TripTable;
