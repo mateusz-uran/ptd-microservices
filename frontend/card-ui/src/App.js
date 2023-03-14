@@ -3,6 +3,7 @@ import {
   RouterProvider
 } from 'react-router-dom';
 import './App.css';
+import AddFuel from './components/AddFuel';
 import AddTrip from './components/AddTrip';
 import AddTripFormikUI from './components/AddTripFormikUI';
 import CardSpecification from './components/CardSpecification';
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
       {
         path: "card/:cardId/add-trip",
         element: <AddTripFormikUI />,
+      },
+      {
+        path: "card/:cardId/add-fuel",
+        element: <AddFuel />,
       },
     ],
   },
