@@ -8,8 +8,8 @@ const http = axios.create({
     responseType: "blob"
 });
 
-const getPdf = (id, userId) => {
-    return http.get('/', { params: { id: id, userId: userId } })
+const getPdf = (cardId, userId) => {
+    return http.get('/', { params: { cardId: cardId, userId: userId } })
 };
 
 const PdfService = {

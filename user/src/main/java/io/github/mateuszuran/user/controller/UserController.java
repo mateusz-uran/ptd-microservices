@@ -3,6 +3,7 @@ package io.github.mateuszuran.user.controller;
 import io.github.mateuszuran.user.dto.UserInfoDto;
 import io.github.mateuszuran.user.dto.UserRequestDto;
 import io.github.mateuszuran.user.dto.UserResponseDto;
+import io.github.mateuszuran.user.repository.UserProjections;
 import io.github.mateuszuran.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,9 +35,14 @@ public class UserController {
         return ResponseEntity.ok().body(service.getUsernamesAndNames());
     }
 
-    @GetMapping("/get/{username}")
+/*    @GetMapping("/get/{username}")
     public ResponseEntity<Long> getSingleUser(@PathVariable String username) {
         return ResponseEntity.ok().body(service.getUserByUsernameFromDB(username));
+    }*/
+
+    @GetMapping("/get/{username}")
+    public ResponseEntity<UserProjections> getSingleUserInformation(@PathVariable String username) {
+        return ResponseEntity.ok().body(service.getUserInfo(username));
     }
 
     @PostMapping("/{userId}")

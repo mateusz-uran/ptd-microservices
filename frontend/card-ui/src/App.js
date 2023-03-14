@@ -3,8 +3,8 @@ import {
   RouterProvider
 } from 'react-router-dom';
 import './App.css';
+import AddFuel from './components/AddFuel';
 import AddTrip from './components/AddTrip';
-import AddTripFormikUI from './components/AddTripFormikUI';
 import CardSpecification from './components/CardSpecification';
 import ErrorPage from './components/ErrorPage';
 import Navbar from './components/Navbar';
@@ -21,7 +21,11 @@ const router = createBrowserRouter([
       },
       {
         path: "card/:cardId/add-trip",
-        element: <AddTripFormikUI />,
+        element: <AddTrip />,
+      },
+      {
+        path: "card/:cardId/add-fuel",
+        element: <AddFuel />,
       },
     ],
   },

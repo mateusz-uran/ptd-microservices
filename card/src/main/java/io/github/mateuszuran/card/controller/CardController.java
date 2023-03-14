@@ -38,13 +38,6 @@ public class CardController {
         return ResponseEntity.ok().body(service.getAllCardByUserAndDate(username, year, month));
     }
 
-    @GetMapping("/all-info")
-    @CircuitBreaker(name = "user")
-    public ResponseEntity<List<CardProjections>> getCardsInfo(
-            @RequestParam String username, @RequestParam int year, @RequestParam int month) {
-        return ResponseEntity.ok(service.getCardInfo(username, year, month));
-    }
-
     @GetMapping("/fuel")
     public ResponseEntity<List<FuelResponse>> getFuelsFromCard(@RequestParam Long id) {
         return ResponseEntity.ok()

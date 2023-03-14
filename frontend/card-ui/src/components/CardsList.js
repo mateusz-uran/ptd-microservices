@@ -6,18 +6,23 @@ import Divider from '@mui/material/Divider';
 import CardService from '../services/CardService';
 import { getCurrentDay, getCurrentMonth, getCurrentYear } from './utils';
 import { ListItemButton, ToggleButton } from '@mui/material';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import CheckIcon from '@mui/icons-material/Check';
 import { useFormik } from 'formik';
 import * as yup from "yup";
 import CardCalendar from './CardCalendar';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import AlertDialog from './AlertDialog';
+import CustomSnackbar from './CustomSnackbar';
+import GeneratePDF from './GeneratePDF';
 
 function CardsList(props) {
+    const navigate = useNavigate();
     const { user, mode } = props;
 
     const [year, setYear] = useState(getCurrentYear());
@@ -29,19 +34,38 @@ function CardsList(props) {
     const [cardId, setCardId] = useState(0);
     const [renderCardInfoHandler, setRenderCardInfoHandler] = useState(false);
 
+    const [openBackdrop, setOpenBackdrop] = useState(false);
+
+    const [confirmOpen, setConfirmOpen] = useState({
+        cardIdToDelete: 0,
+        confirmation: false,
+        number: ''
+    });
+
     const retrieveCardByUserAndDate = () => {
+        setOpenBackdrop(true);
         CardService.getCardByUserAndMonth(user, year, month)
             .then(response => {
                 setCardsList(response.data);
+                setOpenBackdrop(false);
+            }, (error) => {
+                setOpenBackdrop(false);
+                console.log(error);
             });
     }
+
+    const [snackBarInformation, setSnackbarInformation] = useState({
+        open: false,
+        type: '',
+        message: ''
+    });
 
     const formik = useFormik({
         initialValues: {
             number: '',
         },
         validationSchema: yup.object({
-            number: yup.string().required("Hour start cannot be empty"),
+            number: yup.string().required("Cannot be empty"),
         }),
         onSubmit: (values, { resetForm }) => {
             let cardPayload = {
@@ -54,6 +78,12 @@ function CardsList(props) {
                     resetForm();
                 }, (error) => {
                     console.log(error)
+                    setSnackbarInformation(prevState => ({
+                        ...prevState,
+                        open: true,
+                        type: 'warning',
+                        message: error.response.data.description
+                    }))
                 })
         },
     });
@@ -95,6 +125,8 @@ function CardsList(props) {
         CardService.deleteCard(id)
             .then(() => {
                 setCardsList(cardsList.filter(card => card.id !== id));
+                setRenderCardInfoHandler(false);
+                navigate(-1);
             })
     }
 
@@ -109,10 +141,29 @@ function CardsList(props) {
     useEffect(() => {
         user && retrieveCardByUserAndDate();
         checkStorage();
+
     }, [year, month])
 
     return (
         <div className={`flex lg:flex-row flex-col px-4 ${mode ? 'text-white' : ''}`}>
+            <Backdrop
+                open={openBackdrop}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+            <AlertDialog
+                title={'Delete card number: ' + confirmOpen.number}
+                open={confirmOpen.confirmation}
+                cardToDelete={confirmOpen.cardIdToDelete}
+                setOpen={setConfirmOpen}
+                onConfirm={handleDelete}
+            ></AlertDialog>
+            <CustomSnackbar
+                open={snackBarInformation.open}
+                description={snackBarInformation.message}
+                severity={snackBarInformation.type}
+                setOpen={setSnackbarInformation}
+            />
             <div className='lg:w-1/6 my-2'>
                 <form onSubmit={formik.handleSubmit}>
                     <div className='flex items-center'>
@@ -132,7 +183,7 @@ function CardsList(props) {
                     </div>
                 </form>
 
-                <div>
+                <div className='mt-2'>
                     <CardCalendar
                         year={year}
                         setYear={setYear}
@@ -154,15 +205,27 @@ function CardsList(props) {
                                             value="check"
                                             selected={card.done}
                                             onClick={() => handleFinishCard(card.id)}
-                                            sx={{ marginX: 1 }}
+                                            sx={{ marginRight: 1 }}
                                         >
                                             <CheckIcon />
                                         </ToggleButton>
                                         <ListItemText sx={{ textTransform: 'uppercase' }} primary={card.number} />
-                                        <IconButton edge="end" sx={{ marginX: 1 }}>
-                                            <PictureAsPdfIcon />
-                                        </IconButton>
-                                        <IconButton edge="end" onClick={() => handleDelete(card.id)}>
+                                        <GeneratePDF
+                                            cardId={cardId}
+                                            cardDone={card.done}
+                                            user={user}
+                                            setOpenBackdrop={setOpenBackdrop}
+                                            setSnackbarInformation={setSnackbarInformation}
+                                        />
+                                        <IconButton
+                                            edge="end"
+                                            onClick={() =>
+                                                setConfirmOpen(prevState => ({
+                                                    ...prevState,
+                                                    confirmation: true,
+                                                    cardIdToDelete: card.id,
+                                                    number: card.number,
+                                                }))}>
                                             <DeleteIcon />
                                         </IconButton>
                                     </ListItemButton>

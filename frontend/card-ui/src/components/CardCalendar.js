@@ -26,7 +26,6 @@ function CardCalendar({ year, setYear, month, setMonth, }) {
     };
 
     useEffect(() => {
-        console.log(generatedMonths);
     }, [currentYear, currentMonth])
 
     return (

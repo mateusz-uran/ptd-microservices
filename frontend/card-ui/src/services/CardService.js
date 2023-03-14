@@ -22,17 +22,6 @@ const getCardByUserAndMonth = (username, year, month) => {
     })
 }
 
-const getCardInfoByUserAndMonth = (username, year, month) => {
-    return http.get('/all-info', {
-        params:
-        {
-            username: username,
-            year: year,
-            month: month
-        }
-    })
-}
-
 const create = (card, year, month, dayOfMonth) => {
     return http.post('/', card, {
         params:
@@ -67,7 +56,6 @@ const singleCard = id => {
 const CardService = {
     getCardByUser,
     getCardByUserAndMonth,
-    getCardInfoByUserAndMonth,
     create,
     getTripFromCard,
     getFuelFromCard,

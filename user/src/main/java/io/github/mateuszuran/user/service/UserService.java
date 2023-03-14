@@ -5,6 +5,7 @@ import io.github.mateuszuran.user.dto.UserRequestDto;
 import io.github.mateuszuran.user.dto.UserResponseDto;
 import io.github.mateuszuran.user.mapper.UserMapper;
 import io.github.mateuszuran.user.model.User;
+import io.github.mateuszuran.user.repository.UserProjections;
 import io.github.mateuszuran.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,10 @@ public class UserService {
         var user = repository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
         return user.getId();
+    }
+
+    public UserProjections getUserInfo(String username) {
+        return repository.findUserInfo(username);
     }
 
     public UserResponseDto getUserInformation(String username) {
