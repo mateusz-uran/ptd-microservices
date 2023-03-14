@@ -5,7 +5,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import CardService from '../services/CardService';
 import { getCurrentDay, getCurrentMonth, getCurrentYear } from './utils';
-import { ListItemButton, ToggleButton } from '@mui/material';
+import { Alert, ListItemButton, Snackbar, ToggleButton } from '@mui/material';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField'
@@ -19,6 +19,7 @@ import CardCalendar from './CardCalendar';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import AlertDialog from './AlertDialog';
+import CustomSnackbar from './CustomSnackbar';
 
 function CardsList(props) {
     const navigate = useNavigate();
@@ -35,8 +36,8 @@ function CardsList(props) {
 
     const [openBackdrop, setOpenBackdrop] = useState(false);
 
-    const [confirmOpen, setConfirmOpen] = useState({ 
-        cardIdToDelete: 0, 
+    const [confirmOpen, setConfirmOpen] = useState({
+        cardIdToDelete: 0,
         confirmation: false,
         number: ''
     });
@@ -52,6 +53,26 @@ function CardsList(props) {
                 console.log(error);
             });
     }
+
+    const [snackBarInformation, setSnackbarInformation] = useState({
+        open: false,
+        type: '',
+        message: ''
+    });
+
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+    const handleClick = () => {
+        setSnackbarOpen(true);
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === "clickaway") {
+            return;
+        }
+
+        setSnackbarOpen(false);
+    };
 
     const formik = useFormik({
         initialValues: {
@@ -71,6 +92,12 @@ function CardsList(props) {
                     resetForm();
                 }, (error) => {
                     console.log(error)
+                    setSnackbarInformation(prevState => ({
+                        ...prevState,
+                        open: true,
+                        type: 'warning',
+                        message: error.response.data.description
+                    }))
                 })
         },
     });
@@ -145,6 +172,12 @@ function CardsList(props) {
                 setOpen={setConfirmOpen}
                 onConfirm={handleDelete}
             ></AlertDialog>
+            <CustomSnackbar
+                open={snackBarInformation.open}
+                description={snackBarInformation.message}
+                severity={snackBarInformation.type}
+                setOpen={setSnackbarInformation}
+            />
             <div className='lg:w-1/6 my-2'>
                 <form onSubmit={formik.handleSubmit}>
                     <div className='flex items-center'>
