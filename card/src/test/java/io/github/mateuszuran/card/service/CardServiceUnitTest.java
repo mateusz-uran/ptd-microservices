@@ -108,7 +108,7 @@ class CardServiceUnitTest {
                         .refuelingAmount(500).build()))
                 .build();
         when(repository.findById(card.getId())).thenReturn(Optional.of(card));
-        assertThatThrownBy(() -> service.toggleCard(card.getId()))
+        assertThatThrownBy(() -> service.toggleCard(card.getId(), "user123"))
                 .isInstanceOf(CardEmptyException.class)
                 .hasMessageContaining("Card is empty.");
     }
@@ -128,12 +128,13 @@ class CardServiceUnitTest {
                         .refuelingAmount(500).build()))
                 .build();
         when(repository.findById(card.getId())).thenReturn(Optional.of(card));
-        var result = service.toggleCard(card.getId());
+        var result = service.toggleCard(card.getId(), "user123");
         assertTrue(result);
     }
 
     @Test
     void givenCardId_whenToggle_thenSendNotification() {
+        String username = "user123";
         Card card = Card.builder()
                 .id(anyLong())
                 .done(false)
@@ -152,12 +153,12 @@ class CardServiceUnitTest {
         ArgumentCaptor<CardToggledEvent> argumentCaptor = ArgumentCaptor.forClass(CardToggledEvent.class);
         when(kafkaTemplate.send(eq("notificationTopic"), argumentCaptor.capture())).thenReturn(null);
 
-        assertTrue(service.toggleCard(card.getId()));
+        assertTrue(service.toggleCard(card.getId(), username));
         assertTrue(card.isDone());
 
         CardToggledEvent event = argumentCaptor.getValue();
         assertEquals("123456", event.getCardNumber());
-        assertEquals("Card is ready.", event.getMessage());
+        assertEquals("Card ready", event.getCardEvent());
     }
 
     @Test
@@ -171,7 +172,7 @@ class CardServiceUnitTest {
                 .fuels(Collections.emptyList())
                 .build();
         when(repository.findById(card.getId())).thenReturn(Optional.of(card));
-        assertThatThrownBy(() -> service.toggleCard(card.getId()))
+        assertThatThrownBy(() -> service.toggleCard(card.getId(), "user123"))
                 .isInstanceOf(CardEmptyException.class)
                 .hasMessageContaining("Card is empty.");
     }
