@@ -46,6 +46,7 @@ export class VehicleDetailsComponent implements OnInit {
       name: new FormControl(''),
       description: new FormControl('')
     });
+    console.log("rendered vehicle details comp")
   }
 
   getVehicleInfo(id: any) {

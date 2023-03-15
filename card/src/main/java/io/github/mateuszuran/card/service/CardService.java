@@ -7,6 +7,7 @@ import io.github.mateuszuran.card.event.CardToggledEvent;
 import io.github.mateuszuran.card.exception.card.CardEmptyException;
 import io.github.mateuszuran.card.exception.card.CardExistsException;
 import io.github.mateuszuran.card.exception.card.CardNotFoundException;
+import io.github.mateuszuran.card.exception.card.UserNotReadyException;
 import io.github.mateuszuran.card.mapper.CardMapper;
 import io.github.mateuszuran.card.mapper.FuelMapper;
 import io.github.mateuszuran.card.mapper.TripMapper;
@@ -42,26 +43,7 @@ public class CardService {
     private final FuelMapper fuelMapper;
     private final CardMapper cardMapper;
 
-    public UserResponse getUsername(String username) {
-        return webClientBuilder.build().get()
-                .uri("http://user-service/api/user",
-                        uriBuilder -> uriBuilder.queryParam("username", username).build())
-                .retrieve()
-                .bodyToMono(UserResponse.class)
-                .block();
-    }
-
-    public Long getUser(String username) {
-        return  webClientBuilder.build().get()
-                .uri("http://user-service/api/user",
-                        uriBuilder -> uriBuilder.path("/get/{username}").build(username))
-                .retrieve()
-                .bodyToMono(Long.class)
-                .block();
-    }
-
     public UserProjectionsResponse getUserInformation(String username) {
-        log.info("get user info called");
         return webClientBuilder.build().get()
                 .uri("http://user-service/api/user",
                         uriBuilder -> uriBuilder.path("/get/{username}").build(username))
@@ -73,20 +55,30 @@ public class CardService {
     public CardResponse saveCard(CardRequest cardDto, int year, int month, int dayOfMonth) {
         if (repository.existsByNumber(cardDto.getNumber())) {
             throw new CardExistsException(cardDto.getNumber());
-        } else if (cardDto.getNumber().isEmpty()) {
-            throw new CardEmptyException();
-        } else {
-            var receivedUserId = getUser(cardDto.getAuthorUsername());
-            var actualDate = LocalDateTime.now();
-            var date = LocalDateTime.of(year, month, dayOfMonth, actualDate.getHour(), actualDate.getMinute(), actualDate.getSecond());
-            Card card = Card.builder()
-                    .number(cardDto.getNumber())
-                    .userId(receivedUserId)
-                    .creationTime(date)
-                    .build();
-            repository.save(card);
-            return cardMapper.mapToCardResponseWithModelMapper(card);
         }
+
+        if (cardDto.getNumber().isEmpty()) {
+            throw new CardEmptyException();
+        }
+
+        var user = getUserInformation(cardDto.getAuthorUsername());
+
+        if (!user.isActive()) {
+            throw new UserNotReadyException();
+        }
+
+        var now = LocalDateTime.now();
+        var date = LocalDateTime.of(year, month, dayOfMonth, now.getHour(), now.getMinute(), now.getSecond());
+
+        var card = Card.builder()
+                .number(cardDto.getNumber())
+                .userId(user.getId())
+                .creationTime(date)
+                .build();
+
+        repository.save(card);
+
+        return cardMapper.mapToCardResponseWithModelMapper(card);
     }
 
     public Card checkIfCardExists(Long id) {
@@ -95,9 +87,11 @@ public class CardService {
     }
 
     public List<CardResponse> getAllCardByUserAndDate(String username, int year, int month) {
-//        var user = getUser(username);
         var userInfo = getUserInformation(username);
-        log.info(String.valueOf(userInfo));
+
+        if (!userInfo.isActive()) {
+            throw new UserNotReadyException();
+        }
 
         var actualDate = LocalDate.of(year, month, 1);
 
@@ -131,19 +125,16 @@ public class CardService {
     public boolean toggleCard(Long id) {
         var result = repository.findById(id).orElseThrow();
 
-        if (result.getFuels().isEmpty()) {
+        if (result.getFuels().isEmpty() || result.getTrips().isEmpty()) {
             throw new CardEmptyException();
-        } else if (result.getTrips().isEmpty()) {
-            throw new CardEmptyException();
-        } else {
-            result.setDone(!result.isDone());
-            repository.save(result);
-            if (result.isDone()) {
-                kafkaTemplate.send("notificationTopic", new CardToggledEvent(result.getNumber(), "Card is ready."));
-            } else {
-                kafkaTemplate.send("notificationTopic", new CardToggledEvent(result.getNumber(), "Card is not ready yet."));
-            }
         }
+
+        result.setDone(!result.isDone());
+        repository.save(result);
+
+        String message = result.isDone() ? "Card is ready." : "Card is not ready yet.";
+        kafkaTemplate.send("notificationTopic", new CardToggledEvent(result.getNumber(), message));
+
         return result.isDone();
     }
 
