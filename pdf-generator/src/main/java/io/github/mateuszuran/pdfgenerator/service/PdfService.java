@@ -20,10 +20,10 @@ import java.util.NoSuchElementException;
 public class PdfService {
     private final WebClient.Builder webClientBuilder;
 
-    private CardPDFResponse getCardValues(Long id) {
+    private CardPDFResponse getCardValues(Long cardId) {
         return webClientBuilder.build().get()
                 .uri("http://card-service/api/card",
-                        uriBuilder -> uriBuilder.queryParam("id", id).build())
+                        uriBuilder -> uriBuilder.queryParam("id", cardId).build())
                 .retrieve()
                 .bodyToMono(CardPDFResponse.class)
                 .block();
@@ -38,8 +38,8 @@ public class PdfService {
                 .block();
     }
 
-    public VehiclePDFResponse retrieveVehicleDataForPdf(Long id) {
-        return getVehicleValues(id);
+    public VehiclePDFResponse retrieveVehicleDataForPdf(Long userId) {
+        return getVehicleValues(userId);
     }
 
     public CardPDFResponse calculateCardDataForPdf(Long id) {

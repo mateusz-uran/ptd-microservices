@@ -5,23 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "vehicle_image")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
 public class VehicleImage {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private String description;
-    private String publicImageId;
-    private String link;
-
-    @OneToOne(mappedBy = "image")
-    private Vehicle vehicle;
+    private String vehicleImageName;
+    private String vehicleImageDescription;
+    private String vehicleImagePublicId;
+    private String vehicleImageDirectLink;
 }

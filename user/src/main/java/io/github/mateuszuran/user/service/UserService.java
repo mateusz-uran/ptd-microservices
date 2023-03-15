@@ -1,14 +1,21 @@
 package io.github.mateuszuran.user.service;
 
+import io.github.mateuszuran.user.dto.UserInfoDto;
 import io.github.mateuszuran.user.dto.UserRequestDto;
-import io.github.mateuszuran.user.dto.UserResponse;
+import io.github.mateuszuran.user.dto.UserResponseDto;
+import io.github.mateuszuran.user.mapper.UserMapper;
 import io.github.mateuszuran.user.model.User;
+import io.github.mateuszuran.user.repository.UserProjections;
 import io.github.mateuszuran.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -16,47 +23,57 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository repository;
+    private final UserMapper mapper;
 
-    public void addUserToDB(UserRequestDto userDto) {
-        if(repository.existsByUsername(userDto.getUsername())) {
-            log.info("User {} with given name already exists.", userDto.getUsername());
-            throw new IllegalArgumentException("User with given name already exists.");
-        } else if (userDto.getUsername() == null && userDto.getPassword() == null) {
-            log.info("User or password is empty.");
-            throw new IllegalArgumentException("User or password is empty.");
-        } else {
-            User user = User.builder()
-                    .username(userDto.getUsername())
-                    .password(userDto.getPassword())
-                    .active(true)
-                    .build();
-            repository.save(user);
-            log.info("User {} added successfully", user.getUsername());
-        }
+    public UserResponseDto addUserToDB(UserRequestDto userDto) {
+        var user = mapper.mapToUser(userDto);
+        repository.save(user);
+        return mapper.mapToDto(user);
     }
 
-    public UserResponse getUserByUsernameFromDB(String username) {
+    public Long getUserByUsernameFromDB(String username) {
         var user = repository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
-        return UserResponse.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .active(user.isActive())
-                .build();
+        return user.getId();
     }
 
-    public List<UserResponse> getAllUsersFromDB() {
-        var users = repository.findAll();
-        return users.stream()
-                .map(this::mapToUserResponse)
-                .collect(Collectors.toList());
+    public UserProjections getUserInfo(String username) {
+        return repository.findUserInfo(username);
     }
 
-    private UserResponse mapToUserResponse(User user) {
-        return UserResponse.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .active(user.isActive())
-                .build();
+    public UserResponseDto getUserInformation(String username) {
+        var user = repository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+        return mapper.mapToDto(user);
+    }
+
+    public List<String> getAllUsersUsername() {
+        return repository.getUsernameList();
+    }
+
+    public List<UserInfoDto> getUsernamesAndNames() {
+        var userList = repository.findAll();
+        List<UserInfoDto> userInfoDtoList = new ArrayList<>();
+        for (User user : userList) {
+            userInfoDtoList.add(UserInfoDto.builder()
+                    .username(user.getUsername())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName()).build());
+        }
+        return userInfoDtoList;
+    }
+
+    public boolean toggleUserLock(Long userId) {
+        var user = repository.findById(userId).orElseThrow();
+        user.setActive(!user.isActive());
+        repository.save(user);
+        return user.isActive();
+    }
+
+    public UserResponseDto updateUser(UserRequestDto userDto) {
+        var result = repository.findByUsername(userDto.getUsername()).orElseThrow();
+        mapper.mapToUpdate(userDto, result);
+        repository.save(result);
+        return mapper.mapToDto(result);
     }
 }

@@ -1,0 +1,38 @@
+<mat-card>
+    <form [formGroup]="truckForm" (ngSubmit)="submitTruck()">
+
+        <mat-form-field appearance="fill">
+            <mat-label>Model</mat-label>
+            <input matInput formControlName="model" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Type</mat-label>
+            <input matInput formControlName="truckType" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>License Plate</mat-label>
+            <input matInput formControlName="truckLicensePlate" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Left tank</mat-label>
+            <input matInput formControlName="leftTankFuelCapacity" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Right Tank</mat-label>
+            <input matInput formControlName="rightTankFuelCapacity" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>AdBlue</mat-label>
+            <input matInput formControlName="adBlueCapacity" required>
+        </mat-form-field>
+
+        <div class="submit-wrapper">
+            <button mat-flat-button color="primary">Submit</button>
+        </div>
+    </form>
+</mat-card>

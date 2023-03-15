@@ -1,0 +1,89 @@
+.card {
+    margin: 10px 0;
+    text-align: center;
+}
+
+.truck {
+    display: flex;
+}
+
+.trailer {
+    display: flex;
+}
+
+.truck-image {
+    display: flex;
+}
+
+.vehicle-data-headers {
+    color: #ccc;
+    font-size: smaller;
+}
+
+.vehicle-data {
+    background-color: #6a6a6a;
+    border-radius: 5px;
+    width: 150px;
+    color: #fff;
+    padding: 5px;
+    margin-right: 5px;
+}
+
+.image-wrapper {
+    padding: 5px;
+    background-color: #6a6a6a;
+    border-radius: 5px;
+    position: relative;
+}
+
+.image-container {
+    position: relative;
+}
+
+mat-icon {
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+}
+
+mat-icon:hover {
+    color: #6a6a6a;
+}
+
+img {
+    position: relative;
+    vertical-align: middle;
+    max-width: 230px;
+}
+
+.card-header-spacer {
+    flex: 1 1 auto;
+}
+
+.sub-header {
+    padding: 16px 0;
+}
+
+.vehicle-button {
+    font-size: 11px;
+    text-transform: uppercase;
+    min-width: 80px;
+    margin: 0 3px;
+    font-weight: bold;
+}
+
+form {
+    display: flex;
+    align-items: center;
+}
+
+input {
+    border: 0;
+    background-color: transparent;
+    color: #fff;
+    width: 150px;
+    padding: 0;
+    height: 100%;
+    outline: 0;
+    text-align: center;
+}

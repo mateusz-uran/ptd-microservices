@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class VehicleResponse {
-    private Long id;
+    private String id;
     private String model;
     private String type;
     private String licensePlate;

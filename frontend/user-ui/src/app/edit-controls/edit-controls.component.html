@@ -1,0 +1,12 @@
+<mat-card *ngIf="truckProperties">
+    <form [formGroup]="truckEditForm" (ngSubmit)="saveEditedTruck()">
+
+        <div *ngFor="let property of truckProperties">
+
+            <mat-form-field appearance="fill">
+                <mat-label>{{property}}</mat-label>
+                <input matInput formControlName="{{property}}" required>
+            </mat-form-field>
+        </div>
+    </form>
+</mat-card>

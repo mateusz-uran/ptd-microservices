@@ -1,0 +1,12 @@
+server:
+  port: 0
+spring:
+  application:
+    name: vehicle-service
+  data:
+    mongodb:
+      port: 27017
+      host: mongodb-vehicle
+      database: mongo-vehicle
+      username: mateuszuran
+      password: password123

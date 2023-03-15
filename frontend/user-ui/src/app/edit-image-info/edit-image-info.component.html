@@ -1,0 +1,19 @@
+<mat-card>
+    <form [formGroup]="imageInfoEditForm" (ngSubmit)="saveEditedImageInfo()">
+
+        <mat-form-field appearance="fill">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="vehicleImageName" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Description</mat-label>
+            <input matInput formControlName="vehicleImageDescription" required>
+        </mat-form-field>
+
+        <div class="submit-wrapper">
+            <button mat-flat-button (click)="mode.emit(false)">Cancel</button>
+            <button mat-flat-button>Submit</button>
+        </div>
+    </form>
+</mat-card>

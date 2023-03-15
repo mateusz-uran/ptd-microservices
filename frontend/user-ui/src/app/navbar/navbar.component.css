@@ -1,0 +1,12 @@
+.toolbar-spacer {
+    flex: 1 1 auto;
+}
+
+span {
+    padding: 0 5px;
+}
+
+.auth {
+    display: flex;
+    align-items: center;
+}

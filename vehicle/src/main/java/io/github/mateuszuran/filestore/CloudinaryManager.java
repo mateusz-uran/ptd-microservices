@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -15,11 +16,15 @@ import java.util.Map;
 public class CloudinaryManager {
     private final CloudinaryConfig cloudinary;
 
-    public Map upload(MultipartFile file) {
+    public Map<String, Object> upload(MultipartFile file) {
         try {
-           return cloudinary.cloud().uploader().upload(file.getBytes(),
+            var result = cloudinary.cloud().uploader().upload(file.getBytes(),
                     ObjectUtils.asMap("transformation",
                             new Transformation().width(640).height(360).crop("limit")));
+            Map<String, Object> imageInfo = new HashMap<>();
+            imageInfo.put("publicLink", result.get("public_id"));
+            imageInfo.put("imageUrl", result.get("url"));
+            return imageInfo;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

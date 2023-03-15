@@ -1,9 +1,11 @@
 package io.github.mateuszuran.controller;
 
-import io.github.mateuszuran.dto.request.TrailerRequest;
-import io.github.mateuszuran.dto.request.VehicleImageRequest;
-import io.github.mateuszuran.dto.request.VehicleRequest;
+import io.github.mateuszuran.dto.TrailerDTO;
+import io.github.mateuszuran.dto.VehicleDTO;
+import io.github.mateuszuran.dto.VehicleImageDTO;
+import io.github.mateuszuran.dto.VehicleResponseDTO;
 import io.github.mateuszuran.dto.response.VehiclePDFResponse;
+import io.github.mateuszuran.dto.response.VehicleResponse;
 import io.github.mateuszuran.service.TrailerService;
 import io.github.mateuszuran.service.VehicleImageService;
 import io.github.mateuszuran.service.VehicleService;
@@ -22,52 +24,72 @@ public class VehicleController {
     private final TrailerService trailerService;
     private final VehicleImageService vehicleImageService;
 
-    @PostMapping
-    public ResponseEntity<?> add(@RequestBody VehicleRequest vehicleRequest) {
-        service.addVehicle(vehicleRequest);
-        return ResponseEntity.ok().body(HttpStatus.CREATED);
+    @PostMapping("/{userId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<VehicleResponse> addVehicle(@RequestBody VehicleDTO vehicleDTO, @PathVariable Long userId) {
+        return ResponseEntity.ok()
+                .body(service.addVehicleInformation(vehicleDTO, userId));
     }
 
-    @PostMapping(params = "trailer")
-    public ResponseEntity<?> addTrailer(@RequestParam Long id, @RequestBody TrailerRequest trailerRequest) {
-        trailerService.addTrailer(id, trailerRequest);
-        return ResponseEntity.ok().body(HttpStatus.CREATED);
+    @PostMapping("/trailer/{vehicleId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<TrailerDTO> addTrailer(@RequestBody TrailerDTO trailerDTO, @PathVariable String vehicleId) {
+        return ResponseEntity.ok()
+                .body(trailerService.addTrailerToVehicle(trailerDTO, vehicleId));
     }
 
-    @PostMapping(params = "image_info")
-    public ResponseEntity<?> addImageInfo(@RequestParam Long id, @RequestBody VehicleImageRequest vehicleImageRequest) {
-        vehicleImageService.addImageInformation(id, vehicleImageRequest);
-        return ResponseEntity.ok().body(HttpStatus.CREATED);
+    @PostMapping(value = "/image/{vehicleId}", consumes = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<VehicleImageDTO> addImage(
+            @RequestPart("description") VehicleImageDTO vehicleImageRequest,
+            @PathVariable String vehicleId,
+            @RequestPart("image") MultipartFile file
+    ) throws Exception {
+        return ResponseEntity.ok()
+                .body(vehicleImageService.addVehicleImage(vehicleImageRequest, vehicleId, file));
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateVehicle(@RequestParam Long id, @RequestBody VehicleRequest vehicleRequest) {
-        service.updateVehicle(id, vehicleRequest);
-        return ResponseEntity.ok().body(HttpStatus.CREATED);
+    @GetMapping("/info/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<VehicleResponseDTO> retrieveInformation(@PathVariable Long userId) {
+        return ResponseEntity.ok().body(service.retrieveVehicleInformation(userId));
     }
 
-    @PutMapping(params = "trailer")
-    public ResponseEntity<?> updateTrailer(@RequestParam Long id, @RequestBody TrailerRequest trailerRequest) {
-        trailerService.updateTrailer(id, trailerRequest);
-        return ResponseEntity.ok().body(HttpStatus.CREATED);
-    }
-
-    @PostMapping(path = "/upload",
-            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE},
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> uploadImageToPostByParam(@RequestParam Long id, @RequestParam MultipartFile file) throws Exception {
-        vehicleImageService.uploadVehicleImage(id, file);
-        return ResponseEntity.ok().body("Image uploaded");
-    }
-
+    /** PDF service is calling this endpoint to retrieve vehicle information required for PDF**/
     @GetMapping(params = "userId")
     public ResponseEntity<VehiclePDFResponse> sendToPdfService(@RequestParam Long userId) {
         return ResponseEntity.ok().body(service.sendToPdf(userId));
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteVehicle(@RequestParam Long id) {
-        service.delete(id);
-        return ResponseEntity.ok().body(HttpStatus.NO_CONTENT);
+    @PatchMapping("/truck/{vehicleId}")
+    public ResponseEntity<VehicleDTO> updateVehicleInfo(@RequestBody VehicleDTO vehicleDTO, @PathVariable String vehicleId) {
+        return ResponseEntity.ok(service.editVehicleInfo(vehicleDTO, vehicleId));
+    }
+
+    @PatchMapping("/trailer/{vehicleId}")
+    public ResponseEntity<TrailerDTO> updateTrailerInfo(@RequestBody TrailerDTO trailerDTO, @PathVariable String vehicleId) {
+        return ResponseEntity.ok(service.editVehicleInfo(trailerDTO, vehicleId));
+    }
+
+    @PatchMapping("/image-info/{vehicleId}")
+    public ResponseEntity<VehicleImageDTO> updateVehicleImageInfo(@RequestBody VehicleImageDTO vehicleImageDTO, @PathVariable String vehicleId) {
+        return ResponseEntity.ok(service.editVehicleInfo(vehicleImageDTO, vehicleId));
+    }
+
+    @PostMapping("/single-image/{vehicleId}")
+    public ResponseEntity<VehicleImageDTO> sendOnlyFile(@RequestParam("file") MultipartFile file, @PathVariable String vehicleId) throws Exception {
+        return ResponseEntity.ok(vehicleImageService.updateVehicleImage(vehicleId, file));
+    }
+
+    @DeleteMapping("/delete-image/{vehicleId}")
+    public ResponseEntity<?> deleteVehicleImage(@PathVariable String vehicleId) {
+        vehicleImageService.deleteVehicleImage(vehicleId);
+        return ResponseEntity.ok(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/delete/{vehicleId}")
+    public ResponseEntity<?> deleteVehicle(@PathVariable String vehicleId) {
+        service.delete(vehicleId);
+        return ResponseEntity.ok(HttpStatus.NO_CONTENT);
     }
 }

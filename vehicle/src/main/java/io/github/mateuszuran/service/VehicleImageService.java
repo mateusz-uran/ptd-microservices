@@ -1,9 +1,9 @@
 package io.github.mateuszuran.service;
 
-import io.github.mateuszuran.dto.request.VehicleImageRequest;
+import io.github.mateuszuran.dto.VehicleImageDTO;
 import io.github.mateuszuran.filestore.CloudinaryManager;
+import io.github.mateuszuran.mapper.VehicleMapper;
 import io.github.mateuszuran.model.VehicleImage;
-import io.github.mateuszuran.repository.VehicleImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -20,40 +20,68 @@ import static org.apache.http.entity.ContentType.IMAGE_PNG;
 @Service
 @RequiredArgsConstructor
 public class VehicleImageService {
-    private final VehicleImageRepository repository;
-    private final VehicleService service;
+    private final VehicleService vehicleService;
     private final CloudinaryManager cloudinary;
+    private final VehicleMapper mapper;
 
-    public void addImageInformation(Long id, VehicleImageRequest vehicleDto) {
-        var vehicle = service.getVehicle(id);
-        VehicleImage image = VehicleImage.builder()
-                .name(vehicleDto.getName())
-                .description(vehicleDto.getDescription())
-                .vehicle(vehicle)
+    public VehicleImageDTO addVehicleImage(VehicleImageDTO vehicleImageRequest, String vehicleId, MultipartFile file) throws Exception {
+        var imageInfo = uploadImage(file);
+
+        VehicleImage vehicleImage = VehicleImage.builder()
+                .vehicleImageName(vehicleImageRequest.getVehicleImageName())
+                .vehicleImageDescription(vehicleImageRequest.getVehicleImageDescription())
+                .vehicleImagePublicId(imageInfo.get("publicLink").toString())
+                .vehicleImageDirectLink(imageInfo.get("imageUrl").toString())
                 .build();
-        repository.save(image);
-        service.updateVehicleWithImage(id, image);
+        vehicleService.updateVehicleWithImageData(vehicleImage, vehicleId);
+        return VehicleImageDTO.builder()
+                .vehicleImageName(vehicleImage.getVehicleImageName())
+                .vehicleImageDescription(vehicleImage.getVehicleImageDescription())
+                .vehicleImagePublicId(vehicleImage.getVehicleImagePublicId())
+                .vehicleImageDirectLink(vehicleImage.getVehicleImageDirectLink())
+                .build();
     }
 
-    public void uploadVehicleImage(final Long id, MultipartFile file) throws Exception {
+    public VehicleImageDTO updateVehicleImage(String vehicleId, MultipartFile file) throws Exception {
+        var vehicleToUpdate = vehicleService.getVehicleById(vehicleId);
+
+        if (vehicleToUpdate.getImage() != null) {
+            var imageInfo = uploadImage(file);
+
+            var imageInfoToUpdate = vehicleToUpdate.getImage();
+            imageInfoToUpdate.setVehicleImagePublicId(imageInfo.get("publicLink").toString());
+            imageInfoToUpdate.setVehicleImageDirectLink(imageInfo.get("imageUrl").toString());
+
+            vehicleService.updateVehicleWithImageData(imageInfoToUpdate, vehicleId);
+
+            return mapper.mapToVehicleImageDTO(imageInfoToUpdate);
+        }
+        return VehicleImageDTO.builder().build();
+    }
+
+    public void deleteVehicleImage(String vehicleId) {
+        var vehicleToUpdate = vehicleService.getVehicleById(vehicleId);
+
+        if(vehicleToUpdate.getImage().getVehicleImagePublicId() != null) {
+            cloudinary.deleteImage(vehicleToUpdate.getImage().getVehicleImagePublicId());
+
+            var imageInfoToUpdate = vehicleToUpdate.getImage();
+            imageInfoToUpdate.setVehicleImagePublicId("");
+            imageInfoToUpdate.setVehicleImageDirectLink("");
+
+            vehicleService.updateVehicleWithImageData(imageInfoToUpdate, vehicleId);
+
+            mapper.mapToVehicleImageDTO(imageInfoToUpdate);
+        }
+    }
+
+    private Map<String, Object> uploadImage(MultipartFile file) throws Exception {
         if (file.isEmpty()) {
             throw new FileUploadException();
         }
         if (!Arrays.asList(IMAGE_JPEG.getMimeType(), IMAGE_PNG.getMimeType()).contains(file.getContentType())) {
             throw new FileUploadException(file.getContentType());
         }
-        if (repository.findById(id).isEmpty()) {
-            throw new IllegalArgumentException("Vehicle image information not found");
-        }
-        var result = cloudinary.upload(file);
-        updateImageLink(result, id);
-    }
-
-    private void updateImageLink(Map metadata, Long id) {
-        var vehicleImage = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Image not found"));
-        vehicleImage.setPublicImageId(String.valueOf(metadata.get("public_id")));
-        vehicleImage.setLink(String.valueOf(metadata.get("secure_url")));
-        repository.save(vehicleImage);
+        return cloudinary.upload(file);
     }
 }

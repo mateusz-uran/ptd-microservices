@@ -31,8 +31,8 @@ public class PdfController {
 
     @CircuitBreaker(name = "card")
     @GetMapping
-    public ResponseEntity<?> getPDF(@RequestParam Long id, @RequestParam Long userId, HttpServletRequest request, HttpServletResponse response) {
-        var card = service.calculateCardDataForPdf(id);
+    public ResponseEntity<?> getPDF(@RequestParam Long cardId, @RequestParam Long userId, HttpServletRequest request, HttpServletResponse response) {
+        var card = service.calculateCardDataForPdf(cardId);
         var vehicle = service.retrieveVehicleDataForPdf(userId);
 
         var pdf = service.buildResponse(card, vehicle);
@@ -44,7 +44,7 @@ public class PdfController {
         ByteArrayOutputStream target = new ByteArrayOutputStream();
 
         ConverterProperties converterProperties = new ConverterProperties();
-        converterProperties.setBaseUri("http://localhost:8080");
+        converterProperties.setBaseUri("http://localhost:8181");
 
         HtmlConverter.convertToPdf(orderHtml, target, converterProperties);
 
