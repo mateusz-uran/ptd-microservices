@@ -3,6 +3,7 @@ package io.github.mateuszuran.card.exception;
 import io.github.mateuszuran.card.exception.card.CardEmptyException;
 import io.github.mateuszuran.card.exception.card.CardExistsException;
 import io.github.mateuszuran.card.exception.card.CardNotFoundException;
+import io.github.mateuszuran.card.exception.card.UserNotReadyException;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,6 +50,15 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({CardNotFoundException.class})
     public ResponseEntity<ErrorMessage> handleCardNotFound(CardNotFoundException exception) {
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.NOT_FOUND.value(),
+                ErrorMessage.trimExceptionTimestamp(),
+                exception.getMessage());
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({UserNotReadyException.class})
+    public ResponseEntity<ErrorMessage> handleNotToggled(UserNotReadyException exception) {
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.NOT_FOUND.value(),
                 ErrorMessage.trimExceptionTimestamp(),

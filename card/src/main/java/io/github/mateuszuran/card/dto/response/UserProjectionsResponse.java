@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class UserProjectionsResponse {
     private Long id;
     private String username;
+    private boolean active;
 }

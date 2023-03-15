@@ -35,11 +35,6 @@ public class UserController {
         return ResponseEntity.ok().body(service.getUsernamesAndNames());
     }
 
-/*    @GetMapping("/get/{username}")
-    public ResponseEntity<Long> getSingleUser(@PathVariable String username) {
-        return ResponseEntity.ok().body(service.getUserByUsernameFromDB(username));
-    }*/
-
     @GetMapping("/get/{username}")
     public ResponseEntity<UserProjections> getSingleUserInformation(@PathVariable String username) {
         return ResponseEntity.ok().body(service.getUserInfo(username));

@@ -71,7 +71,7 @@ function Navbar(props) {
                                 value={username}
                                 onChange={handleChangeUsername}
                             />
-                            <IconButton>
+                            <IconButton onClick={handleSubmit}>
                                 <PersonSearchIcon className={darkMode ? 'text-white' : ''} />
                             </IconButton>
                         </div>
