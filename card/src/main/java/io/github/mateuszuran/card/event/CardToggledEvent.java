@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CardToggledEvent {
     private String cardNumber;
-    private String message;
+    private String cardAuthor;
+    private String cardEvent;
 }

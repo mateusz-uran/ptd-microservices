@@ -51,8 +51,8 @@ public class CardController {
     }
 
     @GetMapping("/toggle")
-    public ResponseEntity<Boolean> toggleCard(@RequestParam Long id) {
-        return ResponseEntity.ok(service.toggleCard(id));
+    public ResponseEntity<Boolean> toggleCard(@RequestParam Long cardId, @RequestParam String username) {
+        return ResponseEntity.ok(service.toggleCard(cardId, username));
     }
 
     @GetMapping("/single")

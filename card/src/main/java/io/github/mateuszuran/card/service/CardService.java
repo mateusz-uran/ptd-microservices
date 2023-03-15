@@ -122,8 +122,8 @@ public class CardService {
                 .collect(Collectors.toList());
     }
 
-    public boolean toggleCard(Long id) {
-        var result = repository.findById(id).orElseThrow();
+    public boolean toggleCard(Long cardId, String username) {
+        var result = repository.findById(cardId).orElseThrow();
 
         if (result.getFuels().isEmpty() || result.getTrips().isEmpty()) {
             throw new CardEmptyException();
@@ -132,8 +132,9 @@ public class CardService {
         result.setDone(!result.isDone());
         repository.save(result);
 
-        String message = result.isDone() ? "Card is ready." : "Card is not ready yet.";
-        kafkaTemplate.send("notificationTopic", new CardToggledEvent(result.getNumber(), message));
+        String message = result.isDone() ? "Card ready" : "Card not ready.";
+
+        kafkaTemplate.send("notificationTopic", new CardToggledEvent(result.getNumber(), username, message));
 
         return result.isDone();
     }

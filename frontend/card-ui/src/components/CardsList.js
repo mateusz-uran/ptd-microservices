@@ -89,7 +89,7 @@ function CardsList(props) {
     });
 
     const handleFinishCard = (id) => {
-        CardService.toggleCard(id)
+        CardService.toggleCard(id, user)
             .then(() => {
                 toggleSelectedCard(id)
             }, (error) => {

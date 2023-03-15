@@ -15,6 +15,8 @@ public class NotificationApplication {
     @KafkaListener(topics = "notificationTopic")
     public void handleNotification(CardToggledEvent card) {
         // TODO: 15.11.2022 Notification logic e.g. send email
-        log.info(card.getMessage(), card.getCardNumber());
+        log.info(card.getCardNumber());
+        log.info(card.getCardAuthor());
+        log.info(card.getCardEvent());
     }
 }

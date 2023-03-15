@@ -45,8 +45,8 @@ const deleteCard = id => {
     return http.delete('/', { params: { id: id } })
 };
 
-const toggleCard = id => {
-    return http.get("/toggle", { params: { id: id } })
+const toggleCard = (cardId, username) => {
+    return http.get("/toggle", { params: { cardId: cardId, username: username } })
 };
 
 const singleCard = id => {
