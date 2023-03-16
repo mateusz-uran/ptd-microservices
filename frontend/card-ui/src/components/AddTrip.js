@@ -51,12 +51,11 @@ function AddTrip(props) {
             rows: [...formik.values.rows,
             {
                 dayStart: '', hourStart: '',
-                locationStart: '', countryStart: '',
-                counterStart: '',
-                dayEnd: '', hourEnd: '',
-                locationEnd: formik.values.rows.length ? formik.values.rows[formik.values.rows.length - 1].locationEnd : '',
-                countryEnd: formik.values.rows.length ? formik.values.rows[formik.values.rows.length - 1].countryEnd : '',
-                counterEnd: formik.values.rows.length ? formik.values.rows[formik.values.rows.length - 1].counterEnd : ''
+                //**location, country and counter are copies from END values */
+                locationStart: formik.values.rows.length ? formik.values.rows[formik.values.rows.length - 1].locationEnd : '', 
+                countryStart: formik.values.rows.length ? formik.values.rows[formik.values.rows.length - 1].countryEnd : '', 
+                counterStart: formik.values.rows.length ? formik.values.rows[formik.values.rows.length - 1].counterEnd : '',
+                dayEnd: '', hourEnd: '', locationEnd: '', countryEnd: '', counterEnd: ''
             }
             ]
         });

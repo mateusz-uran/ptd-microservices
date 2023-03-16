@@ -53,18 +53,19 @@ public class CardService {
     }
 
     public CardResponse saveCard(CardRequest cardDto, int year, int month, int dayOfMonth) {
-        if (repository.existsByNumber(cardDto.getNumber())) {
-            throw new CardExistsException(cardDto.getNumber());
-        }
-
-        if (cardDto.getNumber().isEmpty()) {
-            throw new CardEmptyException();
-        }
 
         var user = getUserInformation(cardDto.getAuthorUsername());
 
         if (!user.isActive()) {
             throw new UserNotReadyException();
+        }
+
+        if (repository.existsByNumberAndUserId(cardDto.getNumber(), user.getId())) {
+            throw new CardExistsException(cardDto.getNumber());
+        }
+
+        if (cardDto.getNumber().isEmpty()) {
+            throw new CardEmptyException();
         }
 
         var now = LocalDateTime.now();
