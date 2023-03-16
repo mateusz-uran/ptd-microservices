@@ -7,7 +7,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 export default function AlertDialog(props) {
-    const { title, open, cardToDelete, setOpen, onConfirm } = props;
+    const { title, subtitle, number, open, selectedCardId, setOpen, onConfirm } = props;
 
     return (
         <div>
@@ -17,13 +17,13 @@ export default function AlertDialog(props) {
                     setOpen(prevState => ({
                         ...prevState,
                         confirmation: false,
-                        cardIdToDelete: 0
+                        cardId: 0
                     }))}
             >
-                <DialogTitle>{title}</DialogTitle>
+                <DialogTitle>{title + number}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
-                        This actions cannot be undone.
+                        {subtitle}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -33,24 +33,20 @@ export default function AlertDialog(props) {
                             setOpen(prevState => ({
                                 ...prevState,
                                 confirmation: false,
-                                cardIdToDelete: 0
+                                cardId: 0
                             }))}
                     >
                         No
                     </Button>
                     <Button
                         variant="contained"
-                        // onClick={() => {
-                        //     setOpen({ cardIdToDelete: cardToDelete, confirmation: false });
-                        //     onConfirm(cardToDelete);
-                        // }}
                         onClick={() => {
                             setOpen(prevState => ({
                                 ...prevState,
                                 confirmation: false,
-                                cardIdToDelete: cardToDelete
+                                cardId: selectedCardId
                             }))
-                            onConfirm(cardToDelete);
+                            onConfirm(selectedCardId);
                         }}
                     >
                         Yes

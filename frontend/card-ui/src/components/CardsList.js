@@ -37,9 +37,12 @@ function CardsList(props) {
     const [openBackdrop, setOpenBackdrop] = useState(false);
 
     const [confirmOpen, setConfirmOpen] = useState({
-        cardIdToDelete: 0,
+        cardId: 0,
         confirmation: false,
-        number: ''
+        title: '',
+        subtitle: '',
+        number: '',
+        confirmFunction: ''
     });
 
     const retrieveCardByUserAndDate = () => {
@@ -152,11 +155,13 @@ function CardsList(props) {
                 <CircularProgress color="inherit" />
             </Backdrop>
             <AlertDialog
-                title={'Delete card number: ' + confirmOpen.number}
+                title={confirmOpen.title}
+                subtitle={confirmOpen.subtitle}
+                number={confirmOpen.number}
                 open={confirmOpen.confirmation}
-                cardToDelete={confirmOpen.cardIdToDelete}
+                selectedCardId={confirmOpen.cardId}
                 setOpen={setConfirmOpen}
-                onConfirm={handleDelete}
+                onConfirm={confirmOpen.confirmFunction}
             ></AlertDialog>
             <CustomSnackbar
                 open={snackBarInformation.open}
@@ -204,7 +209,16 @@ function CardsList(props) {
                                         <ToggleButton
                                             value="check"
                                             selected={card.done}
-                                            onClick={() => handleFinishCard(card.id)}
+                                            onClick={() =>
+                                                setConfirmOpen(prevState => ({
+                                                    ...prevState,
+                                                    confirmation: true,
+                                                    cardId: card.id,
+                                                    title: card.done ? 'Undone card number: ' : 'Done card number: ',
+                                                    subtitle: 'Employer will get a message.',
+                                                    number: card.number,
+                                                    confirmFunction: handleFinishCard
+                                                }))}
                                             sx={{ marginRight: 1 }}
                                         >
                                             <CheckIcon />
@@ -223,8 +237,12 @@ function CardsList(props) {
                                                 setConfirmOpen(prevState => ({
                                                     ...prevState,
                                                     confirmation: true,
-                                                    cardIdToDelete: card.id,
+                                                    cardId: card.id,
                                                     number: card.number,
+                                                    title: 'Delete card number: ',
+                                                    subtitle: 'This action cannot be undone.',
+                                                    number: card.number,
+                                                    confirmFunction: handleDelete
                                                 }))}>
                                             <DeleteIcon />
                                         </IconButton>
