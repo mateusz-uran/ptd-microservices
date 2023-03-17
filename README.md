@@ -70,7 +70,23 @@ is calling user service to check if User exists in system. When user-service is 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-Application is using Cloudinary so you need to provide secret key and api key.
+Application is using Cloudinary, below is required config located in directory:
+
+src/main/java/io/github/mateuszuran/config/CloudinaryConfig.java
+```
+@Configuration
+public class CloudinaryConfig {
+
+    @Bean
+    public Cloudinary cloud() {
+        return new Cloudinary(ObjectUtils.asMap(
+                "cloud_name", "xyz",
+                "api_key", "123456780",
+                "api_secret", "abc123xyz",
+                "secure", true));
+    }
+}
+```
 
 ### Prerequisites
 
@@ -80,23 +96,24 @@ so I had to build it with:
 mvn clean package spring-boot:repackage
 
 ```
-Run this command in each service directory so Dockerfile can then get this JAR file to build image.
+Run this command in each service directory and image will be build from Dockerfile configuration.
 
 ### Installation
 
-As application is still developed I havent configured all services with Dockerfile yet, but in docker branch there are available
-two configurations - for card and user service.
+Dockerfiles are in each directory
 
 In root directory run:
 ```
 docker compose up -d
 
 ```
-Docker will build image from each Dockerfile and then container. Each endpoints is available via localhost:8080/api/(service name)
+Docker will build image from each Dockerfile and then container. Each endpoints is available via localhost:8181/api/(service name)
 but in frontend directory are two projects. 
 For card and pdf service React Application and for user and vehicle Angular App.
 
-Later I will provide screenshots explaing how whole system works but application is still developed.
+User service and Vehicle service are configured to be secured, keycloak as IDP Provider, API Gateway as resource server and
+Angular App as client configured with PKCE. 
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
