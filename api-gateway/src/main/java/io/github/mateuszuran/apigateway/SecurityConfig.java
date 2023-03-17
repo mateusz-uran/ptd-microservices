@@ -37,7 +37,7 @@ public class SecurityConfig {
         http.csrf().disable()
                 .authorizeExchange()
                 .pathMatchers("/api/user/get/{username}").permitAll()
-                .pathMatchers("/api/card/**", "/api/trip/**", "/api/fuel/**", "/api/pdf/**").permitAll()
+                .pathMatchers("/api/card/**", "/api/trip/**", "/api/fuel/**", "/api/pdf/**", "/actuator/**").permitAll()
                 .anyExchange().authenticated()
                 .and()
                 .oauth2ResourceServer()
