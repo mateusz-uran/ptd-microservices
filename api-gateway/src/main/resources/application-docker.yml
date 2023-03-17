@@ -42,7 +42,7 @@ spring:
         - id: card-service
           uri: lb://card-service
           predicates:
-            - Path=/api/card/**, /api/fuel/**, /api/trip/**
+            - Path=/api/card/**, /api/fuel/**, /api/trip/**, /actuator/**
         - id: pdf-service
           uri: lb://pdf-service
           predicates:
