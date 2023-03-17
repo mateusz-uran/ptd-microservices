@@ -7,12 +7,14 @@ import io.github.mateuszuran.pdfgenerator.dto.card.FuelResponse;
 import io.github.mateuszuran.pdfgenerator.dto.card.TripResponse;
 import io.github.mateuszuran.pdfgenerator.dto.vehicle.VehiclePDFResponse;
 import io.github.mateuszuran.pdfgenerator.exception.CardNotReadyException;
+import io.github.mateuszuran.pdfgenerator.exception.card.CardNotFoundException;
+import io.github.mateuszuran.pdfgenerator.exception.card.InvalidCardDataException;
+import io.github.mateuszuran.pdfgenerator.exception.card.ServiceNotAvailableException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
@@ -20,15 +22,17 @@ import java.util.NoSuchElementException;
 public class PdfService {
     private final WebClient.Builder webClientBuilder;
 
-    private CardPDFResponse getCardValues(Long id) {
+    @CircuitBreaker(name = "card")
+    private CardPDFResponse getCardValues(Long cardId) {
         return webClientBuilder.build().get()
                 .uri("http://card-service/api/card",
-                        uriBuilder -> uriBuilder.queryParam("id", id).build())
+                        uriBuilder -> uriBuilder.queryParam("id", cardId).build())
                 .retrieve()
                 .bodyToMono(CardPDFResponse.class)
                 .block();
     }
 
+    @CircuitBreaker(name = "vehicle")
     private VehiclePDFResponse getVehicleValues(Long userId) {
         return webClientBuilder.build().get()
                 .uri("http://vehicle-service/api/vehicle",
@@ -38,24 +42,35 @@ public class PdfService {
                 .block();
     }
 
-    public VehiclePDFResponse retrieveVehicleDataForPdf(Long id) {
-        return getVehicleValues(id);
+    public VehiclePDFResponse retrieveVehicleDataForPdf(Long userId) {
+        var result = getVehicleValues(userId);
+        if (result == null) {
+            throw new ServiceNotAvailableException();
+        }
+        return  result;
     }
 
     public CardPDFResponse calculateCardDataForPdf(Long id) {
         var card = getCardValues(id);
-        if (card.getCardInfo().isDone()) {
-            var minimalCounter = card.getTrips().stream().mapToInt(TripResponse::getCounterStart).min()
-                    .orElseThrow(NoSuchElementException::new);
-            var maximumCounter = card.getTrips().stream().mapToInt(TripResponse::getCounterEnd).max()
-                    .orElseThrow(NoSuchElementException::new);
-            var sumMileage = card.getTrips().stream().mapToInt(TripResponse::getCarMileage).sum();
-            var cardRefuelingAmount = card.getFuels().stream().mapToInt(FuelResponse::getRefuelingAmount).sum();
-            card.setCounter(new CounterResponse(minimalCounter, maximumCounter, sumMileage, cardRefuelingAmount));
-            return card;
-        } else {
+        if (card == null) {
+            throw new CardNotFoundException();
+        }
+
+        if (!card.getCardInfo().isDone()) {
             throw new CardNotReadyException();
         }
+
+        var minimalCounter = card.getTrips().stream().mapToInt(TripResponse::getCounterStart).min()
+                .orElseThrow(InvalidCardDataException::new);
+        var maximumCounter = card.getTrips().stream().mapToInt(TripResponse::getCounterEnd).max()
+                .orElseThrow(InvalidCardDataException::new);
+
+        var sumMileage = card.getTrips().stream().mapToInt(TripResponse::getCarMileage).sum();
+
+        var cardRefuelingAmount = card.getFuels().stream().mapToInt(FuelResponse::getRefuelingAmount).sum();
+        card.setCounter(new CounterResponse(minimalCounter, maximumCounter, sumMileage, cardRefuelingAmount));
+
+        return card;
     }
 
     public PdfResponse buildResponse(CardPDFResponse card, VehiclePDFResponse vehicle) {

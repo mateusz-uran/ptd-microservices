@@ -1,0 +1,31 @@
+<div class="wrapper">
+    <mat-card>
+        <form [formGroup]="userEditForm" (ngSubmit)="updateUser()">
+
+            <mat-form-field appearance="fill">
+                <mat-label>Firstname</mat-label>
+                <input matInput formControlName="firstName" required>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Lastname</mat-label>
+                <input matInput formControlName="lastName" required>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Username</mat-label>
+                <input matInput formControlName="username" required>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" required>
+            </mat-form-field>
+
+            <div class="submit-wrapper">
+                <button mat-flat-button (click)="mode.emit(false)">Cancel</button>
+                <button mat-flat-button [disabled]="userEditForm.invalid" color="primary">Submit</button>
+            </div>
+        </form>
+    </mat-card>
+</div>

@@ -7,11 +7,14 @@ import io.github.mateuszuran.card.event.CardToggledEvent;
 import io.github.mateuszuran.card.exception.card.CardEmptyException;
 import io.github.mateuszuran.card.exception.card.CardExistsException;
 import io.github.mateuszuran.card.exception.card.CardNotFoundException;
+import io.github.mateuszuran.card.exception.card.UserNotReadyException;
 import io.github.mateuszuran.card.mapper.CardMapper;
 import io.github.mateuszuran.card.mapper.FuelMapper;
 import io.github.mateuszuran.card.mapper.TripMapper;
 import io.github.mateuszuran.card.model.Card;
+import io.github.mateuszuran.card.repository.CardProjections;
 import io.github.mateuszuran.card.repository.CardRepository;
+import io.github.mateuszuran.card.repository.UserProjections;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -21,7 +24,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
@@ -38,30 +43,43 @@ public class CardService {
     private final FuelMapper fuelMapper;
     private final CardMapper cardMapper;
 
-    public UserResponse getUsername(String username) {
+    public UserProjectionsResponse getUserInformation(String username) {
         return webClientBuilder.build().get()
                 .uri("http://user-service/api/user",
-                        uriBuilder -> uriBuilder.queryParam("username", username).build())
+                        uriBuilder -> uriBuilder.path("/get/{username}").build(username))
                 .retrieve()
-                .bodyToMono(UserResponse.class)
+                .bodyToMono(UserProjectionsResponse.class)
                 .block();
     }
 
     public CardResponse saveCard(CardRequest cardDto, int year, int month, int dayOfMonth) {
-        if (repository.existsByNumber(cardDto.getNumber())) {
-            throw new CardExistsException(cardDto.getNumber());
-        } else {
-            var username = getUsername(cardDto.getAuthorUsername());
-            var actualDate = LocalDateTime.now();
-            var date = LocalDateTime.of(year, month, dayOfMonth, actualDate.getHour(), actualDate.getMinute(), actualDate.getSecond());
-            Card card = Card.builder()
-                    .number(cardDto.getNumber())
-                    .userId(username.getId())
-                    .creationTime(date)
-                    .build();
-            repository.save(card);
-            return cardMapper.mapToCardResponseWithModelMapper(card);
+
+        var user = getUserInformation(cardDto.getAuthorUsername());
+
+        if (!user.isActive()) {
+            throw new UserNotReadyException();
         }
+
+        if (repository.existsByNumberAndUserId(cardDto.getNumber(), user.getId())) {
+            throw new CardExistsException(cardDto.getNumber());
+        }
+
+        if (cardDto.getNumber().isEmpty()) {
+            throw new CardEmptyException();
+        }
+
+        var now = LocalDateTime.now();
+        var date = LocalDateTime.of(year, month, dayOfMonth, now.getHour(), now.getMinute(), now.getSecond());
+
+        var card = Card.builder()
+                .number(cardDto.getNumber())
+                .userId(user.getId())
+                .creationTime(date)
+                .build();
+
+        repository.save(card);
+
+        return cardMapper.mapToCardResponseWithModelMapper(card);
     }
 
     public Card checkIfCardExists(Long id) {
@@ -70,13 +88,18 @@ public class CardService {
     }
 
     public List<CardResponse> getAllCardByUserAndDate(String username, int year, int month) {
-        var user = getUsername(username);
+        var userInfo = getUserInformation(username);
+
+        if (!userInfo.isActive()) {
+            throw new UserNotReadyException();
+        }
+
         var actualDate = LocalDate.of(year, month, 1);
 
         LocalDateTime startDate = actualDate.with(firstDayOfMonth()).atStartOfDay();
         LocalDateTime endDate = actualDate.with(lastDayOfMonth()).atStartOfDay();
 
-        var result = repository.findAllByUserIdAndCreationTimeBetween(user.getId(), startDate, endDate);
+        var result = repository.findAllByUserIdAndCreationTimeBetween(userInfo.getId(), startDate, endDate);
         return result.stream().map(cardMapper::mapToCardResponseWithFormattedCreationTime)
                 .sorted(Comparator.comparing(CardResponse::getCreationTime).reversed())
                 .toList();
@@ -100,22 +123,20 @@ public class CardService {
                 .collect(Collectors.toList());
     }
 
-    public boolean toggleCard(Long id) {
-        var result = repository.findById(id).orElseThrow();
+    public boolean toggleCard(Long cardId, String username) {
+        var result = repository.findById(cardId).orElseThrow();
 
-        if (result.getFuels().isEmpty()) {
+        if (result.getFuels().isEmpty() || result.getTrips().isEmpty()) {
             throw new CardEmptyException();
-        } else if (result.getTrips().isEmpty()) {
-            throw new CardEmptyException();
-        } else {
-            result.setDone(!result.isDone());
-            repository.save(result);
-            if (result.isDone()) {
-                kafkaTemplate.send("notificationTopic", new CardToggledEvent(result.getNumber(), "Card is ready."));
-            } else {
-                kafkaTemplate.send("notificationTopic", new CardToggledEvent(result.getNumber(), "Card is not ready yet."));
-            }
         }
+
+        result.setDone(!result.isDone());
+        repository.save(result);
+
+        String message = result.isDone() ? "Card ready" : "Card not ready.";
+
+        kafkaTemplate.send("notificationTopic", new CardToggledEvent(result.getNumber(), username, message));
+
         return result.isDone();
     }
 

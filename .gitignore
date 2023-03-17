@@ -12,3 +12,5 @@
 /frontend/card-ui/src/components/card.html
 /frontend/card-ui/src/components/main.css
 /mongodb-vehicle/
+/mysql_keycloak_data/
+/keycloak-authorization-server/mysql_keycloak_data/

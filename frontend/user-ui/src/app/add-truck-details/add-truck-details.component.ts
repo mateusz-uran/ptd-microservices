@@ -25,8 +25,8 @@ export class AddTruckDetailsComponent implements OnInit {
 
     this.truckForm = new FormGroup({
       model: new FormControl(''),
-      type: new FormControl(''),
-      licensePlate: new FormControl(''),
+      truckType: new FormControl(''),
+      truckLicensePlate: new FormControl(''),
       leftTankFuelCapacity: new FormControl(''),
       rightTankFuelCapacity: new FormControl(''),
       adBlueCapacity: new FormControl('')

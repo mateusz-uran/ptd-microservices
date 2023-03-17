@@ -1,11 +1,12 @@
 package io.github.mateuszuran.user.controller;
 
+import io.github.mateuszuran.user.dto.UserInfoDto;
 import io.github.mateuszuran.user.dto.UserRequestDto;
 import io.github.mateuszuran.user.dto.UserResponseDto;
+import io.github.mateuszuran.user.repository.UserProjections;
 import io.github.mateuszuran.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,9 +30,14 @@ public class UserController {
         return ResponseEntity.ok().body(service.getAllUsersUsername());
     }
 
-    @GetMapping
-    public ResponseEntity<UserResponseDto> getSingleUser(@RequestParam String username) {
-        return ResponseEntity.ok().body(service.getUserByUsernameFromDB(username));
+    @GetMapping("/all-info")
+    public ResponseEntity<List<UserInfoDto>> getUsersInformation() {
+        return ResponseEntity.ok().body(service.getUsernamesAndNames());
+    }
+
+    @GetMapping("/get/{username}")
+    public ResponseEntity<UserProjections> getSingleUserInformation(@PathVariable String username) {
+        return ResponseEntity.ok().body(service.getUserInfo(username));
     }
 
     @PostMapping("/{userId}")
@@ -42,5 +48,10 @@ public class UserController {
     @GetMapping("/{username}")
     public ResponseEntity<UserResponseDto> getUserInformation(@PathVariable String username) {
         return ResponseEntity.ok().body(service.getUserInformation(username));
+    }
+
+    @PatchMapping("/update")
+    public ResponseEntity<UserResponseDto> editUser(@RequestBody UserRequestDto user) {
+        return ResponseEntity.ok().body(service.updateUser(user));
     }
 }

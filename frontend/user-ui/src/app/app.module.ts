@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { UserListComponent } from './user-list/user-list.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,6 +25,17 @@ import { AddTrailerDetailsComponent } from './add-trailer-details/add-trailer-de
 import { AddImageDetailsComponent } from './add-image-details/add-image-details.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DialogContentComponent } from './dialog-content/dialog-content.component';
+import { EditControlsComponent } from './edit-controls/edit-controls.component';
+import { EditTruckComponent } from './edit-truck/edit-truck.component';
+import { EditTrailerComponent } from './edit-trailer/edit-trailer.component';
+import { EditImageInfoComponent } from './edit-image-info/edit-image-info.component';
+import { ImageUploadComponent } from './image-upload/image-upload.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { OAuthModule } from "angular-oauth2-oidc";
+import { InterceptorService } from './service/interceptor.service';
+import { CachingInterceptorService } from './service/caching.interceptor.service';
+import { AddUserComponent } from './add-user/add-user.component';
+import { EditUserComponent } from './edit-user/edit-user.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +48,14 @@ import { DialogContentComponent } from './dialog-content/dialog-content.componen
     AddTruckDetailsComponent,
     AddTrailerDetailsComponent,
     AddImageDetailsComponent,
-    DialogContentComponent
+    DialogContentComponent,
+    EditControlsComponent,
+    EditTruckComponent,
+    EditTrailerComponent,
+    EditImageInfoComponent,
+    ImageUploadComponent,
+    AddUserComponent,
+    EditUserComponent
   ],
   imports: [
     BrowserModule,
@@ -55,9 +73,22 @@ import { DialogContentComponent } from './dialog-content/dialog-content.componen
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSnackBarModule,
+    OAuthModule.forRoot(),
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: InterceptorService,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: CachingInterceptorService,
+      multi: true
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

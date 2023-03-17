@@ -1,0 +1,13 @@
+server:
+  port: '0'
+
+spring:
+  data:
+    mongodb:
+      username: mateuszuran
+      database: mongo-vehicle
+      password: password123
+      port: '27017'
+      host: localhost
+  application:
+    name: vehicle-service

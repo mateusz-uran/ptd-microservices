@@ -7,22 +7,31 @@ export interface VehicleResponse {
 export interface Truck {
     id: string;
     model: string;
-    type: string;
-    licensePlate: string;
+    truckType: string;
+    truckLicensePlate: string;
+    leftTankFuelCapacity: number;
+    rightTankFuelCapacity: number;
+    adBlueCapacity: number;
+}
+
+export interface TruckInput {
+    model: string;
+    truckType: string;
+    truckLicensePlate: string;
     leftTankFuelCapacity: number;
     rightTankFuelCapacity: number;
     adBlueCapacity: number;
 }
 
 export interface Trailer {
-    type: string;
-    licensePlate: string;
-    fuelCapacity: string;
+    trailerType: string;
+    trailerLicensePlate: string;
+    trailerFuelCapacity: string;
 }
 
 export interface VehicleImage {
-    name: string;
-    description: string;
-    publicImageId: string;
-    link: string;
+    vehicleImageName: string;
+    vehicleImageDescription: string;
+    vehicleImagePublicId: string;
+    vehicleImageDirectLink: string;
 }

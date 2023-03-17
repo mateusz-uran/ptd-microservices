@@ -3,7 +3,18 @@
         <mat-card-title>User Details</mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
-    <mat-card-content class="card-content">
+
+    <mat-card-content>
+        <mat-card-header class="sub-header">
+            <span class="card-header-spacer"></span>
+            <span>
+                <button mat-flat-button color="accent" (click)="editModeUser=true"
+                [disabled]="editModeUser" class="user-button">edit</button>
+            </span>
+        </mat-card-header>
+    </mat-card-content>
+
+    <mat-card-content *ngIf="!editModeUser" class="card-content">
         <span>
             <p class="user-data-headers">Name & Surname</p>
             <p class="user-data">{{userDto.firstName}}&nbsp;{{userDto.lastName}}</p>&nbsp;
@@ -17,12 +28,13 @@
             <p class="user-data">{{userDto.active ? 'Active' : 'Inactive'}}</p>
         </span>
     </mat-card-content>
+
+    <app-edit-user *ngIf="editModeUser" [user]="userDto" (mode)="editModeUser = $event"
+    (updateUserInformation)="userDto = $event"></app-edit-user>
+
     <mat-divider></mat-divider>
     <mat-card-actions>
         <button mat-raised-button (click)="toggleUser()">{{userDto.active ? 'Lock' : 'Unlock'}}</button>
     </mat-card-actions>
-    <mat-card-footer>
-        <mat-progress-bar mode="determinate" value="100" [color]="userDto.active ? '' : 'accent'"></mat-progress-bar>
-    </mat-card-footer>
 </mat-card>
 <app-vehicle-details *ngIf="userId" [userId]="userId"></app-vehicle-details>

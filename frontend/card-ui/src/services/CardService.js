@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const http = axios.create({
-    baseURL: "http://localhost:8080/api/card",
+    baseURL: "http://localhost:8181/api/card",
     headers: {
         "Content-type": "application/json"
     }
@@ -45,8 +45,8 @@ const deleteCard = id => {
     return http.delete('/', { params: { id: id } })
 };
 
-const toggleCard = id => {
-    return http.get("/toggle", { params: { id: id } })
+const toggleCard = (cardId, username) => {
+    return http.get("/toggle", { params: { cardId: cardId, username: username } })
 };
 
 const singleCard = id => {

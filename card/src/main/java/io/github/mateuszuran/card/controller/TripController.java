@@ -19,8 +19,8 @@ public class TripController {
     private final TripService service;
 
     @PostMapping
-    public ResponseEntity<?> addTripsList(@RequestBody List<TripValues> trips, @RequestParam Long id) {
-        service.addManyTips(trips, id);
+    public ResponseEntity<?> addTripsList(@RequestBody List<TripValues> trips, @RequestParam Long cardId) {
+        service.addManyTips(trips, cardId);
         return ResponseEntity.ok().body(HttpStatus.CREATED);
     }
 
@@ -38,6 +38,12 @@ public class TripController {
     @DeleteMapping
     public ResponseEntity<?> delete(@RequestParam Long id) {
         service.delete(id);
+        return ResponseEntity.ok().body(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/list")
+    public ResponseEntity<?> deleteAll(@RequestBody List<Long> selectedTripId) {
+        service.deleteSelected(selectedTripId);
         return ResponseEntity.ok().body(HttpStatus.NO_CONTENT);
     }
 }

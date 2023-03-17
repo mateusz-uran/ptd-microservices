@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { UserDto } from '../model/user-dto';
 import { UserService } from '../service/user.service';
@@ -17,7 +18,9 @@ export class UserDetailsComponent implements OnInit {
     username: ''
   };
 
-  constructor(private route: ActivatedRoute, private userService: UserService) { }
+  editModeUser: boolean = false;
+
+  constructor(private route: ActivatedRoute, private userService: UserService, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -38,6 +41,8 @@ export class UserDetailsComponent implements OnInit {
     this.userService.toggleUserActiveStatus(this.userDto.id)
       .subscribe(data => {
         this.userDto.active = data;
+        let message = data ? "active" : "inactive";
+        this.snackBar.open("User is now " + message, "OK");
       })
   }
 }

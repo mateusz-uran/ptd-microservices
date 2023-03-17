@@ -1,12 +1,16 @@
 <mat-sidenav mode="side" opened class="sidenav">
 
-    <mat-nav-list role="list" *ngFor="let user of username">
-        <mat-list-item [routerLink]="['/user-details', user]" routerLinkActive="active">
+    <div class="button-wrapper">
+        <button mat-stroked-button color="primary" [routerLink]="['new-user']">Add user</button>
+    </div>
+
+    <mat-nav-list role="list" *ngFor="let user of userInfo">
+        <mat-list-item [routerLink]="['/user-details', user.username]" routerLinkActive="active">
             <div class="element">
-                <div class="image-wrapper">
-                    <img src="https://material.angular.io/assets/img/examples/shiba1.jpg">
+                <div class="image-wrapper" [style.background-color]="user.color">
+                    <p>{{user.initials}}</p>
                 </div>
-                <div class="user-wrapper">{{user}}</div>
+                <div class="user-wrapper">{{user.username}}</div>
             </div>
         </mat-list-item>
     </mat-nav-list>

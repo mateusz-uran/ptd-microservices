@@ -11,6 +11,8 @@ services:
       PGDATA: /data/postgres
     volumes:
       - ./postgres-user:/data/postgres
+    networks:
+      - auth-network
     expose:
       - "5431"
     ports:
@@ -28,27 +30,17 @@ services:
       PGDATA: /data/postgres
     volumes:
       - ./postgres-card:/data/postgres
+    networks:
+      - auth-network
     ports:
       - "5432:5432"
     restart: unless-stopped
 
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin@pgadmin.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    volumes:
-      - pgadmin:/var/lib/pgadmin
-    ports:
-      - "8282:80"
-    restart: unless-stopped
-
-  ## MongoDB for Vehicle Service
   mongodb-vehicle:
     container_name: mongodb-vehicle
     image: mongo
+    networks:
+      - auth-network
     environment:
       MONGO_INITDB_ROOT_USERNAME: mateuszuran
       MONGO_INITDB_ROOT_PASSWORD: password
@@ -60,10 +52,27 @@ services:
       - '27017:27017'
     restart: unless-stopped
 
-  ## Broker, Kafka Configuration
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    networks:
+      - auth-network
+    ports:
+      - "8282:80"
+    restart: unless-stopped
+
+  ## Broker
   zookeeper:
     image: confluentinc/cp-zookeeper:5.4.10-1-ubi8
     container_name: zookeeper
+    networks:
+      - auth-network
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -75,6 +84,8 @@ services:
       - "9092:9092"
     depends_on:
       - zookeeper
+    networks:
+      - auth-network
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
@@ -87,6 +98,8 @@ services:
   zipkin:
     image: openzipkin/zipkin
     container_name: zipkin
+    networks:
+      - auth-network
     ports:
       - "9411:9411"
   ## Eureka Server
@@ -97,6 +110,8 @@ services:
     image: discovery-server
     container_name: discovery-server
     hostname: discovery-server
+    networks:
+      - auth-network
     ports:
       - "8761:8761"
     depends_on:
@@ -106,19 +121,34 @@ services:
     build:
       context: ./api-gateway/
       dockerfile: Dockerfile
-    image: api-gateway
+    image: api-gateway:1.3
     container_name: api-gateway
+    networks:
+      - auth-network
     ports:
-      - "8080:8080"
-    expose:
-      - "8080"
+      - "8181:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - zipkin
       - discovery-server
 
-  ## PDF Generator Service
+  ## Notification Service
+  notification-service:
+    container_name: notification
+    build:
+      context: ./notification/
+      dockerfile: Dockerfile
+    image: notification
+    networks:
+      - auth-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - discovery-server
+      - api-gateway
+      - broker
+
   ## Card Service
   card-service:
     container_name: card
@@ -126,13 +156,15 @@ services:
       context: ./card/
       dockerfile: Dockerfile
     image: card
+    networks:
+      - auth-network
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - discovery-server
       - api-gateway
       - postgres-card
-  ## Vehicle Service
+
   ## User Service
   user-service:
     container_name: user
@@ -140,16 +172,52 @@ services:
       context: ./user/
       dockerfile: Dockerfile
     image: user
+    networks:
+      - auth-network
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - discovery-server
       - api-gateway
       - postgres-user
-  ## Notification Service
+
+  ## Pdf Service
+  pdf-service:
+    container_name: pdf
+    build:
+      context: ./pdf-generator/
+      dockerfile: Dockerfile
+    image: pdf
+    networks:
+      - auth-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - discovery-server
+      - api-gateway
+
+  ## Vehicle Service
+  vehicle-service:
+    container_name: vehicle
+    build:
+      context: ./vehicle/
+      dockerfile: Dockerfile
+    image: vehicle
+    networks:
+      - auth-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - discovery-server
+      - api-gateway
+      - mongodb-vehicle
 
 volumes:
   postgres-user:
   postgres-card:
   pgadmin:
   mongodb-vehicle:
+
+networks:
+  auth-network:
+    external: true

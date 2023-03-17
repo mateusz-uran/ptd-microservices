@@ -1,0 +1,24 @@
+<mat-card>
+    <form [formGroup]="trailerEditForm" (ngSubmit)="saveEditedTrailer()">
+
+        <mat-form-field appearance="fill">
+            <mat-label>Type</mat-label>
+            <input matInput formControlName="trailerType" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>License Plate</mat-label>
+            <input matInput formControlName="trailerLicensePlate" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Fuel capacity</mat-label>
+            <input matInput formControlName="trailerFuelCapacity" required>
+        </mat-form-field>
+
+        <div class="submit-wrapper">
+            <button mat-flat-button (click)="mode.emit(false)">Cancel</button>
+            <button mat-flat-button>Submit</button>
+        </div>
+    </form>
+</mat-card>

@@ -1,0 +1,13 @@
+<div class="wrapper">
+    <mat-progress-bar *ngIf="currentFile" mode="determinate" color="primary" [value]="progress"></mat-progress-bar>
+    <div class="input-wrapper">
+        <label for="file-upload" *ngIf="!currentFile">Choose a file...</label>
+        <label *ngIf="currentFile">{{currentFile.name}}</label>
+        <input #fileInput id="file-upload" type="file" (change)="onChange($event)" />
+    </div>
+    <div>
+        <button mat-icon-button [disabled]="!currentFile" (click)="uploadImage()">
+            <mat-icon>cloud_upload</mat-icon>
+        </button>
+    </div>
+</div>

@@ -60,6 +60,11 @@ public class TripService {
                 });
     }
 
+    public void deleteSelected(List<Long> selectedTrips) {
+        var result = repository.findAllById(selectedTrips);
+        repository.deleteAll(result);
+    }
+
     private Integer calculateCarMileage(Integer min, Integer max) {
         return max - min;
     }
