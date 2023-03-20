@@ -223,15 +223,25 @@ services:
       - auth-network
     ports:
       - "3000:3000"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
     depends_on:
-      - discovery-server
-      - api-gateway
-      - postgres-user
-      - postgres-card
       - card-service
       - user-service
+      - pdf-service
+
+  ## User UI Service
+  user-ui-service:
+    container_name: user-ui
+    build:
+      context: ./frontend/user-ui/
+      dockerfile: Dockerfile
+    image: user-ui
+    networks:
+      - auth-network
+    ports:
+      - "4200:4200"
+    depends_on:
+      - user-service
+      - vehicle-service
 
 volumes:
   postgres-user:
