@@ -212,6 +212,27 @@ services:
       - api-gateway
       - mongodb-vehicle
 
+  ## Card UI Service
+  card-ui-service:
+    container_name: card-ui
+    build:
+      context: ./frontend/card-ui/
+      dockerfile: Dockerfile
+    image: card-ui
+    networks:
+      - auth-network
+    ports:
+      - "3000:3000"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - discovery-server
+      - api-gateway
+      - postgres-user
+      - postgres-card
+      - card-service
+      - user-service
+
 volumes:
   postgres-user:
   postgres-card:

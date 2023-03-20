@@ -4,8 +4,8 @@ import Switch from '@mui/material/Switch';
 import IconButton from '@mui/material/IconButton';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { MdDarkMode } from 'react-icons/md';
-import { BsFillSunFill } from 'react-icons/bs';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import Divider from '@mui/material/Divider';
 import CardsList from './CardsList';
 import { useNavigate } from 'react-router-dom';
@@ -77,12 +77,12 @@ function Navbar(props) {
                         </div>
                     </form>
                     <div className='flex items-center'>
-                        <BsFillSunFill className={darkMode ? 'text-blue-200' : 'text-white'} />
+                        <WbSunnyIcon className={darkMode ? 'text-blue-200' : 'text-white'} />
                         <Switch
                             checked={darkMode}
                             onChange={handleChangeTheme}
                         />
-                        <MdDarkMode className={darkMode ? 'text-white' : ''} />
+                        <DarkModeIcon className={darkMode ? 'text-white' : ''} />
                     </div>
                 </div>
                 <Divider sx={{ borderBottomWidth: 2, marginBottom: 0 }} />
