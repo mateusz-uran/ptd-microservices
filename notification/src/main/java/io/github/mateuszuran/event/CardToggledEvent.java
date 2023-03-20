@@ -1,4 +1,4 @@
-package io.github.mateuszuran;
+package io.github.mateuszuran.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
