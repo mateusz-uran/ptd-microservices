@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PdfService from '../services/PdfService';
 import axios from "axios";
 import { IconButton } from '@mui/material';

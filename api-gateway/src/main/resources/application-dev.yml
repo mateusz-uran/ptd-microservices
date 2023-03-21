@@ -16,7 +16,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8080/auth/realms/ptd-auth
+          issuer-uri: http://keycloak:8080/auth/realms/ptd-auth
 
   cloud:
     gateway:
@@ -53,3 +53,7 @@ spring:
           uri: lb://vehicle-service
           predicates:
             - Path=/api/vehicle/**
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/notification/**

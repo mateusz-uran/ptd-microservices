@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { UserInfo } from 'angular-oauth2-oidc';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserInfoDto } from '../model/user-dto';
+import { NotificationService } from '../service/notification.service';
 import { UserService } from '../service/user.service';
+import { WebsocketService } from '../service/websocket.service';
 
 @Component({
   selector: 'app-user-list',
@@ -18,7 +20,12 @@ export class UserListComponent implements OnInit {
     '#3670b2',
   ]
 
-  constructor(private userService: UserService) { }
+  constructor(
+    private userService: UserService, 
+    private notificationService: NotificationService,
+    private webSocketService: WebsocketService, 
+    private snackBar: MatSnackBar
+    ) { }
 
   ngOnInit(): void {
     this.userService.getAllUsersInfo()
@@ -26,6 +33,19 @@ export class UserListComponent implements OnInit {
         this.userInfo = data;
         this.createInitials();
       })
+    this.connect();
+  }
+
+  connect(): void {
+    this.webSocketService.connect();
+
+    this.notificationService.notificationMessage.subscribe((data) => {
+      this.snackBar.open("User " + data.cardAuthor + " toggled card: " + data.cardNumber, "OK");
+    })
+  }
+
+  disconnect(): void {
+    this.webSocketService.disconnect();
   }
 
   createInitials(): void {
