@@ -13,19 +13,19 @@ const routes: Routes = [
     path: '', component: HomeComponent, canActivate: [AuthGuardService],
     children: [
       {
-        path: 'new-user', component: AddUserComponent
+        path: 'new-user', component: AddUserComponent,
       },
       {
         path: 'user-details/:username', component: UserDetailsComponent,
       },
       {
-        path: 'user-details/:username/add-truck/:userId', component: AddTruckDetailsComponent
+        path: 'user-details/:username/add-truck/:userId', component: AddTruckDetailsComponent,
       },
       {
-        path: 'user-details/:username/add-trailer/:vehicleId', component: AddTrailerDetailsComponent
+        path: 'user-details/:username/add-trailer/:vehicleId', component: AddTrailerDetailsComponent,
       },
       {
-        path: 'user-details/:username/add-image/:vehicleId', component: AddImageDetailsComponent
+        path: 'user-details/:username/add-image/:vehicleId', component: AddImageDetailsComponent,
       }
     ]
   }

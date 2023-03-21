@@ -57,8 +57,6 @@ public class KafkaConsumerConfiguration {
                 deserializer);
     }
 
-
-
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, CardToggledEvent> notificationKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, CardToggledEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
