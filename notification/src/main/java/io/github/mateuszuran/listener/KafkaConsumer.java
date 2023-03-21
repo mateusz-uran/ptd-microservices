@@ -1,18 +1,25 @@
 package io.github.mateuszuran.listener;
 
-/*@Slf4j
+import io.github.mateuszuran.event.CardToggledEvent;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Component;
+
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class KafkaConsumer {
 
-    private final SimpMessagingTemplate template;
+    @Value(value = "${spring.kafka.template.default-topic}")
+    private String greetingTopicName;
 
-    @KafkaListener(topics = "notificationTopic")
-    public void handleNotification(CardToggledEvent card) {
+    @KafkaListener(topics = "${spring.kafka.template.default-topic}", containerFactory = "notificationKafkaListenerContainerFactory")
+    public void greetingListener(CardToggledEvent card) {
         log.info(card.getCardNumber());
         log.info(card.getCardAuthor());
         log.info(card.getCardEvent());
-
-        template.convertAndSend("/notification", card);
     }
-}*/
+}
