@@ -4,10 +4,7 @@ import com.ctc.wstx.shaded.msv_core.util.Uri;
 import io.github.mateuszuran.card.dto.request.CardRequest;
 import io.github.mateuszuran.card.dto.response.*;
 import io.github.mateuszuran.card.event.CardToggledEvent;
-import io.github.mateuszuran.card.exception.card.CardEmptyException;
-import io.github.mateuszuran.card.exception.card.CardExistsException;
-import io.github.mateuszuran.card.exception.card.CardNotFoundException;
-import io.github.mateuszuran.card.exception.card.UserNotReadyException;
+import io.github.mateuszuran.card.exception.card.*;
 import io.github.mateuszuran.card.mapper.CardMapper;
 import io.github.mateuszuran.card.mapper.FuelMapper;
 import io.github.mateuszuran.card.mapper.TripMapper;
@@ -89,6 +86,10 @@ public class CardService {
 
     public List<CardResponse> getAllCardByUserAndDate(String username, int year, int month) {
         var userInfo = getUserInformation(username);
+
+        if (userInfo == null) {
+            throw new UserNotFoundException();
+        }
 
         if (!userInfo.isActive()) {
             throw new UserNotReadyException();

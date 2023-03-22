@@ -7,7 +7,7 @@
     <mat-nav-list role="list" *ngFor="let user of userInfo">
         <mat-list-item [routerLink]="['/user-details', user.username]" routerLinkActive="active">
             <div class="element">
-                <div class="image-wrapper" [style.background-color]="user.color">
+                <div class="image-wrapper" [style.background-color]="user.hexAvatarColor">
                     <p>{{user.initials}}</p>
                 </div>
                 <div class="user-wrapper">{{user.username}}</div>
