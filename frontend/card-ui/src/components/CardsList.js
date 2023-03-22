@@ -54,6 +54,12 @@ function CardsList(props) {
             }, (error) => {
                 setOpenBackdrop(false);
                 console.log(error);
+                setSnackbarInformation(prevState => ({
+                    ...prevState,
+                    open: true,
+                    type: 'warning',
+                    message: error.response.data.description
+                }))
             });
     }
 
@@ -97,6 +103,12 @@ function CardsList(props) {
                 toggleSelectedCard(id)
             }, (error) => {
                 console.log(error);
+                setSnackbarInformation(prevState => ({
+                    ...prevState,
+                    open: true,
+                    type: 'warning',
+                    message: error.response.data.description
+                }))
             })
     }
 

@@ -206,6 +206,76 @@ Message looks like that when user from Card UI will hit this address
 
 #### Card UI
 
+To run Card UI you need these containers:
+- postgres-user (card-service is communicating with user-service)
+- user-service
+- postgres-card
+- mongodb-vehicle (same like with user-service)
+- pdf-service (these service is fetching data about user's vehicle)
+
+Card Service which is a one of backends for Card UI is communicating with pdf, user and notification 
+services. PDF service is fetching data required to generate file from vehicle service, that's why
+in Admin Panel user can add, delete etc. vehicle information.
+
+1. As previous this is flow when user hits http://localhost:3000
+- shared navbar contains theme toggle button and input field to retrieve card information based on username
+  and actual year and month 
+- user can change this values 
+- when user is "locked" (toggle button in User UI) or when user is not in database (card-service is making request to user-service to check if user is available)
+  snackbar information will be shown.
+- after pressing available card information will be shown if they are any.
+
+2. Main features
+- formik and yup validations
+- dynamic form
+- localy stored theme and username information
+- application is based on material-ui
+- routing and error page
+- validations 
+
+3. Gifs of how application looks and works
+
+Theme info and username is stored in local storage, fetched cards are refetched if username or "calendar" values
+will change.
+
+![main_page_gif]
+
+After pressing available card information are rendered, trips and fuels info is fetched with sorting
+from backend and trip table contains paging feature. User can select multiple rows and delete at once
+or delete only one. 
+
+![card_info_gif]
+
+By pressing Add Trip button user is redirected to trip form component. Form is validated, dynamic 
+and fully responsive. When user is adding new row of inputs some data is transferred because
+previous row end trip values are the same as start values in next row.
+Validations are configured with Yup and formik.
+
+![add_trip_gif]
+
+Fuel form shows how validations works, when user is trying to submit not filled form Yup shows up,
+in trip from is the same but code looks different due to dynamic form.
+
+![add_fuel_gif]
+
+In User UI there was a popup information about card that user can toggle.
+This is how it looks, when user will fill his card he can toggle it to send notification
+that card is ended and can be finalized. Validations secure from toggling empty card
+due to further operations like generating pdf. Card info is fetched and calculated so it cannot be empty
+when it has status 'done'.
+
+![toggle_card_gif]
+
+When all data is filled correctly, card is toggled to 'done' user can generate PDF based on card
+and vehicle information. Card UI is calling pdf-service endpoint and then from there card information
+are fetched, vehicle information and PDF is generated. I've used iText library to handle this.
+
+![pdf_generate_gif]
+
+Generating PDF based on card data is actually main feature and reason why this application was made.
+Instead of writing it on paper user can add info via pc or phone because this application can run 
+as web application across the internet.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTACT -->
@@ -214,7 +284,6 @@ Message looks like that when user from Card UI will hit this address
 Email - mateusz.uranowski@onet.pl
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 [Spring-Boot]: https://img.shields.io/badge/Spring--Boot-black?logo=springboot&logoColor=6DB33F
 [Apache Kafka]: https://img.shields.io/badge/Apache_Kafka-000?logo=Apache+Kafka
@@ -243,3 +312,9 @@ Email - mateusz.uranowski@onet.pl
 [add_vehicle_gif]: readme-images/add-vehicle-git-800.gif
 [delete_vehicle_gif]: readme-images/delete-vehicle-gif-800.gif
 [notify]: readme-images/notification.png
+[main_page_gif]: readme-images/main-page-gif.gif
+[card_info_gif]: readme-images/card-info-gif.gif
+[add_trip_gif]: readme-images/add-trip-gif.gif
+[add_fuel_gif]: readme-images/add-fuel-gif.gif
+[toggle_card_gif]: readme-images/toggle-card-gif.gif
+[pdf_generate_gif]: readme-images/pdf-generate-gif.gif

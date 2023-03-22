@@ -55,7 +55,8 @@ function Navbar(props) {
 
     useEffect(() => {
         checkStorage();
-        setDarkMode(JSON.parse(localStorage.getItem('theme')));
+        let availableTheme = JSON.parse(localStorage.getItem('theme'));
+        availableTheme && setDarkMode(availableTheme);
     }, []);
 
     return (
