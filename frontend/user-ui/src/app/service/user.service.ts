@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, pipe, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { UserDto, UserFormDto, UserInfoDto } from '../model/user-dto';
-import { UserInfo } from 'angular-oauth2-oidc';
-import { COLORS, createInitials, getInitials } from '../utility/avatat-utils';
+import { createInitials } from '../utility/avatat-utils';
 
 @Injectable({
   providedIn: 'root'

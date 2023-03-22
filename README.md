@@ -116,26 +116,95 @@ In windows to workaround this add in
 ``c:\Windows\System32\Drivers\etc\hosts`` `127.0.0.1 keycloak`.
 
 ### Usage
-First part will be for User UI - required services to work are:
-- discovery-server 
+
+To run backend for User UI and Card UI this are required containers:
+- discovery-server
 - api-gateway
-- postgres-user
-- mongodb-vehicle
-- user-ui-service
-- (optional) broker
-- (optional) notification-service
-- (optional) zipkin
+- zipkin (optional)
 
-1. Main page contains navbar, after pressing Login user is redirected to IDP and asked for credentials,
-when user is login he can retrieve data from user-service and vehicle-service.
+#### User UI
 
-![diagram_user]
+User UI frontend needs those containers to work properly:
 
-Then user can add, edit or delete users and signed to them vehicles. Vehicle service contains configuration
-to store uploaded images in Cloudinary, you need to change credentials for you cloud or use another one. Its up to you.
+- keycloak (it's separated docker compose in ptd-micro root directory)
+- postgres-user - DB for user-service
+- mongodb-vehicle - DB for vehicle-service
+- user-service
+- vehicle-service
+- broker (optional) - apache kafka, will run zookeeper automatically
+- notification-service (optional)
+
+1. Simple flow when users hits http://localhost:4200 link:
+- main page with navbar
+- login, redirect to keycloak login page
+- successful login user return to localhost:4200 with token that is stored in session storage
+- user can make CRUD operations
+
+![login_gif]
+
+Angular application is using `angular-oauth2-oidc` to handle PKCE security flow. When user
+login stored token is refreshed just before expiration time automatically.
+
+2. Here are main features:
+- ADD or EDIT users
+- Toggle user status (based on status user can or not use Card UI)
+- ADD, EDIT, DELETE vehicle signed to users
+- ADD, UPDATE, DELETE images for vehicles
+- validations in forms
+- interceptor that adds auth header in each request
+- cache interceptor
+- websocket notification service (Card UI is sending messages via Apache Kafka to Notification Service,
+  message is rendered as popup in User UI)
+- application is build based on predefined material-ui components
 
 
+3. Gifs how application works and looks:
 
+Users list on left side contains avatar with color randomly generated in backend,
+initials are generated in Angular app.
+
+Previously fetched users are updated with shared service with new added user information.
+![add_user_gif]
+
+Edit user form with validations, updated version is insta rendered, popup message when user
+status is toggled, auth header in each request.
+![single_user_gif]
+
+After selecting user from list vehicle data is fetched and rendered. User can edit each field by
+toggling edit form, changes are applied immediately. User can delete all vehicle information
+including image stored in cloud by pressing confirm button in rendered modal.
+
+![vehicle_details_gif]
+
+User can add vehicle information and sign them to user. Process has three parts:
+first truck information are added, then trailer and at the end image information and image file.
+When format is correct file is uploaded to cloud.
+
+![add_vehicle_gif]
+
+User can delete all vehicle information with one button, including image stored in cloud.
+To avoid accidental data delete when user clicks Delete button modal will show up and only
+when user confirms action data will be erased.
+
+![delete_vehicle_gif]
+
+---
+
+User UI is only part of whole project, data stored and managed in Admin Panel are later fetched by
+another services like PDF or Card.
+Later I will provide information about webesocket message system available in angular project,
+from Card UI when user will fill and end card API will send message via Apache Kafka to notification
+service. Angular App is listening notification service and when message will be received
+popup window will show up.
+
+Message looks like that when user from Card UI will hit this address
+``http://localhost:8181/api/card/toggle?cardId=440&username=john``
+
+![notify]
+
+---
+
+#### Card UI
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -167,4 +236,10 @@ Email - mateusz.uranowski@onet.pl
 
 
 [diagram_main]: readme-images/diagram.png
-[diagram_user]: readme-images/diagram_user.png
+[login_gif]: readme-images/login-gif-800.gif
+[add_user_gif]: readme-images/add-user-gif-800.gif
+[single_user_gif]: readme-images/single-user-gif-800.gif
+[vehicle_details_gif]: readme-images/vehicle-details-gif-800.gif
+[add_vehicle_gif]: readme-images/add-vehicle-git-800.gif
+[delete_vehicle_gif]: readme-images/delete-vehicle-gif-800.gif
+[notify]: readme-images/notification.png
