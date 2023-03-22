@@ -33,8 +33,6 @@ class FuelServiceUnitTest {
     @Mock
     private ModelMapperConfig mapper;
     @Mock
-    private ModelMapper modelMapper;
-    @Mock
     private FuelRepository repository;
     private Fuel fuel;
 
@@ -59,37 +57,6 @@ class FuelServiceUnitTest {
         service.addRefuelling(fuelDto, card.getId());
         verify(repository, times(1)).save(fuel);
         verify(repository).save(any(Fuel.class));
-    }
-
-    @Test
-    void getSingleFuel() {
-        FuelResponse fuelResponse = FuelResponse.builder()
-                .id(anyLong())
-                .refuelingDate("15.12.2022")
-                .vehicleCounter(123500)
-                .refuelingAmount(500).build();
-        when(repository.findById(fuel.getId())).thenReturn(Optional.of(fuel));
-        when(fuelMapper.mapToFuelResponseWithModelMapper(fuel)).thenReturn(fuelResponse);
-        var result = service.getSingleFuel(fuel.getId());
-        assertThat(result.getVehicleCounter()).isEqualTo(fuel.getVehicleCounter());
-    }
-
-    @Test
-    void update() {
-        FuelRequest updateFuel = FuelRequest.builder()
-                .refuelingDate("15.12.2022")
-                .vehicleCounter(135500)
-                .refuelingAmount(500).build();
-        FuelResponse fuelResponseUpdated = FuelResponse.builder()
-                .id(anyLong())
-                .refuelingDate("15.12.2022")
-                .vehicleCounter(135500)
-                .refuelingAmount(500).build();
-        when(repository.findById(fuel.getId())).thenReturn(Optional.of(fuel));
-        when(mapper.modelMapper()).thenReturn(modelMapper);
-        when(fuelMapper.mapToFuelResponseWithModelMapper(fuel)).thenReturn(fuelResponseUpdated);
-        var result = service.update(fuel.getId(), updateFuel);
-        assertThat(result.getVehicleCounter()).isEqualTo(updateFuel.getVehicleCounter());
     }
 
     @Test

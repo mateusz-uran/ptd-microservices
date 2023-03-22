@@ -5,7 +5,6 @@ import io.github.mateuszuran.card.dto.response.CardPDFResponse;
 import io.github.mateuszuran.card.dto.response.CardResponse;
 import io.github.mateuszuran.card.dto.response.FuelResponse;
 import io.github.mateuszuran.card.dto.response.TripResponse;
-import io.github.mateuszuran.card.repository.CardProjections;
 import io.github.mateuszuran.card.service.CardService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -53,11 +51,6 @@ public class CardController {
     @GetMapping("/toggle")
     public ResponseEntity<Boolean> toggleCard(@RequestParam Long cardId, @RequestParam String username) {
         return ResponseEntity.ok(service.toggleCard(cardId, username));
-    }
-
-    @GetMapping("/single")
-    public ResponseEntity<?> getSingleCard(@RequestParam Long id) {
-        return ResponseEntity.ok().body("single card" + id);
     }
 
     @GetMapping

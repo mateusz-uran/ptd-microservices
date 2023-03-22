@@ -24,23 +24,6 @@ public class TripController {
         return ResponseEntity.ok().body(HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity<TripResponse> getTrip(@RequestParam Long id) {
-        return ResponseEntity.ok().body(service.loadTrip(id));
-    }
-
-    @PutMapping
-    public ResponseEntity<?> edit(@RequestParam Long id, @RequestBody TripValues tripDto) {
-        service.updateTrip(id, tripDto);
-        return ResponseEntity.ok().body(HttpStatus.CREATED);
-    }
-
-    @DeleteMapping
-    public ResponseEntity<?> delete(@RequestParam Long id) {
-        service.delete(id);
-        return ResponseEntity.ok().body(HttpStatus.NO_CONTENT);
-    }
-
     @DeleteMapping("/list")
     public ResponseEntity<?> deleteAll(@RequestBody List<Long> selectedTripId) {
         service.deleteSelected(selectedTripId);

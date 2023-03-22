@@ -7,7 +7,6 @@
 /pdf-generator/target/
 /user/target/
 /vehicle/target/
-/vehicle/src/main/java/io/github/mateuszuran/config/CloudinaryConfig.java
 /postgres-vehicle/
 /frontend/card-ui/src/components/card.html
 /frontend/card-ui/src/components/main.css

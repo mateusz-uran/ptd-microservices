@@ -10,12 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    boolean existsByUsername(String username);
 
     Optional<User> findByUsername(String username);
-
-    @Query("SELECT username FROM User")
-    List<String> getUsernameList();
 
     @Query("SELECT id AS id, username AS username, active AS active FROM User u WHERE u.username=:username")
     UserProjections findUserInfo(@Param("username") String username);

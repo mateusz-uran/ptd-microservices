@@ -1,5 +1,6 @@
 package io.github.mateuszuran.pdfgenerator.exception;
 
+import io.github.mateuszuran.pdfgenerator.exception.card.CardNotReadyException;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

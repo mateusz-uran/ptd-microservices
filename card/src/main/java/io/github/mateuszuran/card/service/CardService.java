@@ -1,17 +1,16 @@
 package io.github.mateuszuran.card.service;
 
-import com.ctc.wstx.shaded.msv_core.util.Uri;
 import io.github.mateuszuran.card.dto.request.CardRequest;
 import io.github.mateuszuran.card.dto.response.*;
 import io.github.mateuszuran.card.event.CardToggledEvent;
 import io.github.mateuszuran.card.exception.card.*;
+import io.github.mateuszuran.card.exception.user.UserNotFoundException;
+import io.github.mateuszuran.card.exception.user.UserNotReadyException;
 import io.github.mateuszuran.card.mapper.CardMapper;
 import io.github.mateuszuran.card.mapper.FuelMapper;
 import io.github.mateuszuran.card.mapper.TripMapper;
 import io.github.mateuszuran.card.model.Card;
-import io.github.mateuszuran.card.repository.CardProjections;
 import io.github.mateuszuran.card.repository.CardRepository;
-import io.github.mateuszuran.card.repository.UserProjections;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -21,9 +20,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;

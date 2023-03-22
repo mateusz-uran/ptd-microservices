@@ -47,10 +47,6 @@ public class UserService {
         return mapper.mapToDto(user);
     }
 
-    public List<String> getAllUsersUsername() {
-        return repository.getUsernameList();
-    }
-
     public List<UserInfoDto> getUsernamesAndNames() {
         var userList = repository.findAll();
         List<UserInfoDto> userInfoDtoList = new ArrayList<>();

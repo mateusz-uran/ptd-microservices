@@ -25,11 +25,6 @@ public class UserController {
                 service.addUserToDB(userDto));
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<String>> getUsersNicknames() {
-        return ResponseEntity.ok().body(service.getAllUsersUsername());
-    }
-
     @GetMapping("/all-info")
     public ResponseEntity<List<UserInfoDto>> getUsersInformation() {
         return ResponseEntity.ok().body(service.getUsernamesAndNames());
