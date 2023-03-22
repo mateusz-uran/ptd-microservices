@@ -73,7 +73,23 @@ is calling user service to check if User exists in system. When user-service is 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-Application is using Cloudinary so you need to provide secret key and api key.
+Application is using Cloudinary, below is required config located in directory:
+
+src/main/java/io/github/mateuszuran/config/CloudinaryConfig.java
+```
+@Configuration
+public class CloudinaryConfig {
+
+    @Bean
+    public Cloudinary cloud() {
+        return new Cloudinary(ObjectUtils.asMap(
+                "cloud_name", "xyz",
+                "api_key", "123456780",
+                "api_secret", "abc123xyz",
+                "secure", true));
+    }
+}
+```
 
 ### Prerequisites
 
@@ -83,7 +99,7 @@ so I had to build it with:
 mvn clean package spring-boot:repackage
 
 ```
-Run this command in each service directory so Dockerfile can then get this JAR file to build image.
+Run this command in each service directory and image will be build from Dockerfile configuration.
 
 ### Installation
 
@@ -94,6 +110,7 @@ In root directory run:
 docker compose up -d
 
 ```
+
 There is seven services, three databases, zipkin, pgAdmin, two fronted apps which is Angular and React.
 In second docker compose is keycloak configuration.
 For both PostgresSQL databases configuration is in docker compose as env variables but for MongoDB
