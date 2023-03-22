@@ -19,5 +19,5 @@ export interface UserInfoDto {
     firstName?: string;
     lastName?: string;
     initials?: string;
-    color?: string;
+    hexAvatarColor?: string;
 }

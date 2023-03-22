@@ -12,10 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,6 +24,9 @@ public class UserService {
 
     public UserResponseDto addUserToDB(UserRequestDto userDto) {
         var user = mapper.mapToUser(userDto);
+        var generatedColor = getRandomHex();
+        //generate random hex code
+        user.setHexAvatarColor(generatedColor);
         repository.save(user);
         return mapper.mapToDto(user);
     }
@@ -58,7 +58,9 @@ public class UserService {
             userInfoDtoList.add(UserInfoDto.builder()
                     .username(user.getUsername())
                     .firstName(user.getFirstName())
-                    .lastName(user.getLastName()).build());
+                    .lastName(user.getLastName())
+                    .hexAvatarColor(user.getHexAvatarColor())
+                    .build());
         }
         return userInfoDtoList;
     }
@@ -75,5 +77,11 @@ public class UserService {
         mapper.mapToUpdate(userDto, result);
         repository.save(result);
         return mapper.mapToDto(result);
+    }
+
+    private static String getRandomHex() {
+        Random random = new Random();
+        int nextInt = random.nextInt(0xffffff + 1);
+        return String.format("#%06x", nextInt);
     }
 }

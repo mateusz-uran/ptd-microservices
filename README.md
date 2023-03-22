@@ -30,6 +30,7 @@
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
+        <li><a href="#usage">Usage</a></li>
       </ul>
     </li>
     <li><a href="#contact">Contact</a></li>
@@ -44,6 +45,8 @@ All funcionalities are similar to the previous version but design is different. 
 which means system is divided into services. Some are independent but some requeire the action of others. Like for example card service
 is calling user service to check if User exists in system. When user-service is down, card service cant do any operations. Card and PDF services are managed by one Frontend Application written in react and User and Vehicle services are working with angular app.
 
+
+![diagram_main]
 
 ### Built With
 
@@ -84,23 +87,57 @@ Run this command in each service directory so Dockerfile can then get this JAR f
 
 ### Installation
 
-As application is still developed I havent configured all services with Dockerfile yet, but in docker branch there are available
-two configurations - for card and user service.
+Dockerfiles are in each directory
 
 In root directory run:
 ```
 docker compose up -d
 
 ```
-Docker will build image from each Dockerfile and then container. Each endpoints is available via localhost:8080/api/(service name)
-but in frontend directory are two projects. 
-For card and pdf service React Application and for user and vehicle Angular App.
+There is seven services, three databases, zipkin, pgAdmin, two fronted apps which is Angular and React.
+In second docker compose is keycloak configuration.
+For both PostgresSQL databases configuration is in docker compose as env variables but for MongoDB
+there is configuration file in project root directory
 
-Later I will provide screenshots explaing how whole system works but application is still developed.
+``docker-entrypoint-initdb.d/mongo-init.js``
+
+With those credentials you can login to each container via:  
+``docker it -exec <container_name> bash``
+
+Keycloak compose is Keycloak image and MySQL database to store added users etc. 
+In docker compose are credentials to login as master admin.
+
+**!IMPORTANT!**
+
+Security to work properly outside of docker compose you need to add 'keycloak' as hostname
+because when creating token with angular app token is sent to api gateway which is also running in docker compose
+so hostname is names with docker container which is keycloak.
+In windows to workaround this add in 
+``c:\Windows\System32\Drivers\etc\hosts`` `127.0.0.1 keycloak`.
+
+### Usage
+First part will be for User UI - required services to work are:
+- discovery-server 
+- api-gateway
+- postgres-user
+- mongodb-vehicle
+- user-ui-service
+- (optional) broker
+- (optional) notification-service
+- (optional) zipkin
+
+1. Main page contains navbar, after pressing Login user is redirected to IDP and asked for credentials,
+when user is login he can retrieve data from user-service and vehicle-service.
+
+![diagram_user]
+
+Then user can add, edit or delete users and signed to them vehicles. Vehicle service contains configuration
+to store uploaded images in Cloudinary, you need to change credentials for you cloud or use another one. Its up to you.
+
+
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-![diagram]
 
 <!-- CONTACT -->
 ## Contact
@@ -129,4 +166,5 @@ Email - mateusz.uranowski@onet.pl
 [TypeScript]: https://img.shields.io/badge/TypeScript-000?logo=TypeScript
 
 
-[diagram]: diagram.png
+[diagram_main]: readme-images/diagram.png
+[diagram_user]: readme-images/diagram_user.png
