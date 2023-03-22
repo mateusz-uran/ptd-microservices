@@ -15,14 +15,4 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     Optional<Card> findById(Long id);
 
     List<Card> findAllByUserIdAndCreationTimeBetween(Long id, LocalDateTime start, LocalDateTime end);
-
-    @Query("SELECT id AS id, number AS number " +
-            "FROM Card c " +
-            "WHERE c.userId=:userId " +
-            "AND c.creationTime " +
-            "BETWEEN :start AND :end")
-    List<CardProjections> findCardsInfo(
-            @Param("userId") Long userId,
-            @Param("start") LocalDateTime start,
-            @Param("end") LocalDateTime end);
 }

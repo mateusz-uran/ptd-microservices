@@ -7,10 +7,6 @@ const http = axios.create({
     }
 });
 
-const getCardByUser = username => {
-    return http.get('/', { params: { username: username } })
-};
-
 const getCardByUserAndMonth = (username, year, month) => {
     return http.get('/all', {
         params:
@@ -49,19 +45,13 @@ const toggleCard = (cardId, username) => {
     return http.get("/toggle", { params: { cardId: cardId, username: username } })
 };
 
-const singleCard = id => {
-    return http.get('/single', { params: { id: id } })
-}
-
 const CardService = {
-    getCardByUser,
     getCardByUserAndMonth,
     create,
     getTripFromCard,
     getFuelFromCard,
     deleteCard,
     toggleCard,
-    singleCard
 };
 
 export default CardService;

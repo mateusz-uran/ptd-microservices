@@ -1,6 +1,8 @@
 package io.github.mateuszuran.card.exception;
 
 import io.github.mateuszuran.card.exception.card.*;
+import io.github.mateuszuran.card.exception.user.UserNotFoundException;
+import io.github.mateuszuran.card.exception.user.UserNotReadyException;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

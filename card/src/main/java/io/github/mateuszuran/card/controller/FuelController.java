@@ -20,18 +20,6 @@ public class FuelController {
         return ResponseEntity.ok().body(HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity<FuelResponse> getFuel(@RequestParam Long id) {
-        return ResponseEntity.ok().body(fuelService.getSingleFuel(id));
-    }
-
-
-    @PutMapping
-    public ResponseEntity<?> ediFuel(@RequestBody FuelRequest fuelDto, @RequestParam Long id) {
-        fuelService.update(id, fuelDto);
-        return ResponseEntity.ok().body(HttpStatus.CREATED);
-    }
-
     @DeleteMapping
     public ResponseEntity<?> delete(@RequestParam Long id) {
        fuelService.delete(id);

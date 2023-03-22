@@ -1,4 +1,4 @@
-package io.github.mateuszuran.pdfgenerator.exception.card;
+package io.github.mateuszuran.pdfgenerator.exception;
 
 public class ServiceNotAvailableException extends RuntimeException {
     public ServiceNotAvailableException() {

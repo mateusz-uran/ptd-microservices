@@ -1,4 +1,4 @@
-package io.github.mateuszuran.card.exception.card;
+package io.github.mateuszuran.card.exception.user;
 
 public class UserNotReadyException extends RuntimeException {
     public UserNotReadyException() {

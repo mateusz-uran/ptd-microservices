@@ -23,18 +23,6 @@ public class FuelService {
         repository.save(fuel);
     }
 
-    public FuelResponse getSingleFuel(Long id) {
-        var fuel = repository.findById(id).orElseThrow();
-        return fuelMapper.mapToFuelResponseWithModelMapper(fuel);
-    }
-
-    public FuelResponse update(Long id, FuelRequest fuelRequest) {
-        var fuel = repository.findById(id).orElseThrow();
-        mapper.modelMapper().map(fuelRequest, fuel);
-        repository.save(fuel);
-        return fuelMapper.mapToFuelResponseWithModelMapper(fuel);
-    }
-
     public void delete(Long id) {
         repository.findById(id)
                 .ifPresent(fuel -> {

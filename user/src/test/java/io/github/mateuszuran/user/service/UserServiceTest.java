@@ -74,18 +74,6 @@ class UserServiceTest {
     }
 
     @Test
-    void getAllUsersUsername() {
-        //given
-        var usernames = List.of("john123", "adam444", "michael790");
-        //when
-        when(repository.getUsernameList()).thenReturn(usernames);
-        var result = service.getAllUsersUsername();
-        //then
-        assertThat(result.size()).isEqualTo(3);
-        assertThat(result.contains("john123")).isTrue();
-    }
-
-    @Test
     void toggleUserLock() {
         //given
         User user = User.builder().id(10L).firstName("John").lastName("Woo").username("john123").active(true).build();
